@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>欢迎页面-X-admin2.1</title>
+        <meta name="renderer" content="webkit" accept-charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <link rel="stylesheet" th:href="@{/css/font.css}">
+        <link rel="stylesheet" th:href="@{/css/xadmin.css}">
+        <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+        <script type="text/javascript" th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+        <script type="text/javascript" th:src="@{/js/xadmin.js}"></script>
+        <script type="text/javascript" th:src="@{/js/cookie.js}"></script>
+        <link rel="shortcut icon" href="favicon.ico">
+
+
+    </head>
+
+    <body>
+        <div class="x-body">
+            <form action="" method="post" class="layui-form layui-form-pane" id="form">
+                <input class="id" type="hidden" name="id" th:value="${menuBean.id}">
+                <input class="mth" type="hidden" name="_method" value="PUT">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">
+                        <span class="x-red">*</span>选择类型
+                    </label>
+                    <div class="layui-input-inline" onclick="selectCheck()">
+                        <select id="type" lay-verify="required" lay-filter="chanage" disabled="disabled">
+                            <option value="">请选择类型</option>
+                            <option value="0" th:selected="${menuBean.parent_id==0}">目录</option>
+                            <option value="1" th:selected="${menuBean.parent_id!=0}">菜单</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item" id="mulu" style="display: none">
+                    <label class="layui-form-label">
+                        <span class="x-red">*</span>请选择目录
+                    </label>
+                    <div class="layui-input-inline">
+                        <select id="union">
+                            <option value="">请选择</option>
+                            <option th:each="menus : ${menu}" th:text="${menus.name}" th:value="${menus.id}"
+                            th:selected="${menus.id == menuBean.parent_id}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label for="name" class="layui-form-label">
+                        <span class="x-red">*</span>名称
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="name" name="name" th:value="${menuBean.name}" required=""
+                               lay-verify="required|checkname"
+                               autocomplete="off" class="layui-input" onchange="menuName()">
+                        <span id="sp"></span>
+                    </div>
+                </div>
+                <div class="layui-form-item" id="adress" style="display: none">
+                    <label for="name" class="layui-form-label">
+                        <span class="x-red">*</span>请求地址
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="url" name="url" th:value="${menuBean.url}" required=""
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="name" class="layui-form-label">
+                        <span class="x-red">*</span>图标：
+                    </label>
+                    <div class="layui-input-inline">
+                        <input id="icon1" name="icon1" required="" th:value="${menuBean.icon}" lay-verify="required"
+                               autocomplete="off"
+                               class="layui-input" type="text" placeholder="选择图标" disabled>
+                        <input id="icon" name="icon" required="" autocomplete="off"
+                               class="layui-input" type="hidden">
+                        <div class="ms-parent" style="width: 100%;">
+                            <div class="icon-drop animated flipInX"
+                                 style="display: none;max-height:200px;overflow-y:auto">
+                                <div data-th-include="menu/icon"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--<div class="form-group">-->
+                <!--<label class="col-sm-3 control-label">图标：</label>-->
+                <!--<div class="col-sm-8">-->
+                <!--<input id="icon" name="icon" class="form-control" type="text" placeholder="选择图标">-->
+                <!--<div class="ms-parent" style="width: 100%;">-->
+                <!--<div class="icon-drop animated flipInX" style="display: none;max-height:200px;overflow-y:auto">-->
+                <!--<div data-th-include="/menu/icon"></div>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</div>-->
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit="" lay-filter="add">保存信息</button>
+                </div>
+            </form>
+        </div>
+        <script>
+            window.onload = function () {
+                var value = $("#type").val();
+                if (value == 1) {
+                    $("#mulu").show();
+                    $("#adress").show();
+                    $("#selectid").attr('lay-verify', 'required');
+                    $("#url").attr('lay-verify', 'required');
+                    $("#type").removeAttr('name');
+                    $("#union").attr('name', 'parent_id');
+                }
+                if ($("#type").val() == 0) {
+                    $("#type").attr('disabled', 'disabled');
+
+                }
+            }
+
+            function selectCheck() {
+                if ($("#type").val()==0) {
+                    layer.msg("目录以创建不能选择");
+                }else{
+                    layer.msg("菜单以创建不能选择");
+                }
+            }
+
+            // 菜单名称效验
+            var sss = false;
+            var message ='';
+            function menuName(){
+                var name = $("#name").val();
+                $.post("/menu/check",{"name":name},function (data) {
+                    if (data==true) {
+                        message="菜单名称已存在！";
+                        sss = true;
+                    }else {
+                        sss = false;
+                    }
+                });
+            }
+
+            $(function () {
+                $(".icon-drop").show();
+
+                $(".icon-drop").find(".ico-list i").on("click", function () {
+                    $('#icon1').val($(this).attr('code'));
+                    $('#icon').val($(this).attr('code'));
+                });
+
+            });
+
+            layui.use(['form', 'layer'], function () {
+                $ = layui.jquery;
+                var form = layui.form
+                    , layer = layui.layer;
+
+                //自定义验证规则
+                form.verify({
+                    nikename: function(value){
+                        if(value.length < 5){
+                            return '昵称至少得5个字符啊';
+                        }
+                    }
+                    ,pass: [/(.+){6,12}$/, '密码必须6到12位']
+                    ,repass: function(value){
+                        if($('#L_pass').val()!=$('#L_repass').val()){
+                            return '两次密码不一致';
+                        }
+                    },checkname: function (value) {
+                        if (sss==true){
+                            return message;
+                        }
+                    }
+                });
+
+
+                //监听提交
+                form.on('submit(add)', function (data) {
+                    console.log(data);
+                    var form = $("#form");
+                    $.post('/menu/save', form.serialize(), function (datas) {
+                        //根据返回来的code判定，0为正常
+                        if (datas.code == 200) {
+                            //弹出返回来的msg
+                            layer.alert(datas.msg, {icon: 6}, function () {
+                                // 获得frame索引
+                                var index = parent.layer.getFrameIndex(window.name);
+                                //关闭当前frame
+                                parent.layer.close(index);
+                                //刷新父级页面
+                                window.parent.location.reload();
+                            });
+                        }else {
+                            //弹出返回来的msg
+                            layer.alert(datas.msg, {icon: 6}, function () {
+                                // 获得frame索引
+                                var index = parent.layer.getFrameIndex(window.name);
+                                //关闭当前frame
+                                parent.layer.close(index);
+                                //刷新父级页面
+                                window.parent.location.reload();
+                            });
+                        }
+                    });
+                    return false;
+                });
+
+                form.on('select(chanage)', function (data) {
+                    console.log(data);
+                    if (data.value == 1) {
+                        $("#mulu").show();
+                        $("#adress").show();
+                        $("#selectid").attr('lay-verify', 'required');
+                        $("#url").attr('lay-verify', 'required');
+                        $("#type").removeAttr('name');
+                        $("#union").attr('name', 'parent_id');
+                    } else {
+                        $("#mulu").hide();
+                        $("#adress").hide();
+                        $("#selectid").removeAttr('lay-verify');
+                        $("#url").removeAttr('lay-verify');
+                        $("#union").removeAttr('name');
+                        $("#type").attr('name', 'parent_id');
+                    }
+
+                });
+
+                form.on('checkbox(father)', function (data) {
+
+                    if (data.elem.checked) {
+                        $(data.elem).parent().siblings('td').find('input').prop("checked", true);
+                        form.render();
+                    } else {
+                        $(data.elem).parent().siblings('td').find('input').prop("checked", false);
+                        form.render();
+                    }
+                });
+            });
+        </script>
+        <script>var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script>
+    </body>
+</html>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.AskDao">
+
+    <resultMap id="AskResult" type="com.znsd.instapundit.bean.AskBean">
+        <id property="id" column="id"/>
+        <result property="issue" column="issue"/>
+        <result property="user.id" column="uid"/>
+        <result property="user.username" column="username"/>
+        <result property="user.picture" column="picture"/>
+        <result property="ask_time" column="ask_time"/>
+        <result property="reward" column="reward"/>
+        <result property="ask_status" column="ask_status"/>
+    </resultMap>
+
+    <update id="updateAskcount">
+        update tb_store set ask_count = ask_count + 1 where id = #{storeID}
+    </update>
+
+    <select id="getAskByStoreID" resultMap="AskResult">
+        SELECT
+            a.id,
+            a.uid,
+            a.issue,
+            u.username,
+            u.picture,
+            a.ask_time,
+            a.reward,
+            a.ask_status
+        FROM
+            tb_ask a
+            LEFT JOIN tb_user u ON a.uid = u.id
+        WHERE
+            a.sid = #{storeID}
+            AND a.`status` = 1
+        ORDER BY
+	        ask_time DESC
+    </select>
+
+    <select id="getAskByUserID" resultMap="AskResult">
+        SELECT
+            a.id,
+            a.uid,
+            a.issue,
+            u.username,
+            u.picture,
+            a.ask_time,
+            a.reward,
+            a.ask_status
+        FROM
+            tb_ask a
+            LEFT JOIN tb_user u ON a.uid = u.id
+        WHERE
+            a.uid = #{userID}
+            AND a.`status` = 1
+        ORDER BY
+	        ask_time DESC
+    </select>
+
+    <select id="getAskByStoreIDAndUserID" resultMap="AskResult">
+        SELECT
+            a.id,
+            a.uid,
+            a.issue,
+            u.username,
+            u.picture,
+            a.ask_time,
+            a.reward,
+            a.ask_status
+        FROM
+            tb_ask a
+            LEFT JOIN tb_user u ON a.uid = u.id
+        WHERE
+            a.sid = #{storeID}
+            AND a.uid = #{userID}
+            AND a.`status` = 1
+        ORDER BY
+	        ask_time DESC
+    </select>
+
+    <insert id="insertIssue">
+        insert into tb_ask (uid,sid,issue,reward,ask_time)
+        values (#{userID},#{storeID},#{issue},#{reward},now())
+    </insert>
+
+
+    <resultMap id="Ask" type="AskBean">
+        <id property="id" column="id"/>
+        <result property="issue" column="issue"/>
+        <result property="reward" column="reward"/>
+        <result property="ask_time" column="ask_time"/>
+        <result property="ask_status" column="ask_status"/>
+        <result property="status" column="status"/>
+        <result property="user.id" column="uid"/>
+        <result property="user.username" column="username"/>
+        <result property="user.picture" column="picture"/>
+        <result property="store.id" column="sid"/>
+    </resultMap>
+
+
+    <select id="getAskByAskId" resultMap="Ask">
+        SELECT
+            a.id,
+            a.uid,
+            a.sid,
+            a.issue,
+            a.reward,
+            a.ask_time,
+            a.ask_status,
+            a.`status`,
+            u.username,
+            u.picture
+        FROM
+	    tb_ask a
+	    LEFT JOIN tb_user u ON a.uid = u.id
+	    where a.id = #{id}
+    </select>
+
+
+    <resultMap id="record" type="AskRecordBean">
+        <id property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="issue" column="issue"/>
+        <result property="record_time" column="record_time"/>
+        <result property="status" column="status"/>
+        <result property="askBean.id" column="ask_id"/>
+        <result property="askBean.user.id" column="uid"/>
+        <result property="askBean.store.id" column="sid"/>
+        <result property="askBean.store.sname" column="sname"/>
+        <result property="askBean.store.simg" column="simg"/>
+        <result property="askBean.user.username" column="username"/>
+        <result property="askBean.user.picture" column="picture"/>
+
+    </resultMap>
+
+    <resultMap id="stores" type="StoreBean">
+        <id property="id" column="id"/>
+        <id property="sname" column="sname"/>
+        <id property="simg" column="simg"/>
+        <id property="user.id" column="uid"/>
+        <id property="user.username" column="username"/>
+    </resultMap>
+
+    <select id="getUserByStoreId" resultMap="stores">
+        SELECT
+        s.id,
+        s.sname,
+        s.simg,
+        u.id 'uid',
+        u.username
+      FROM
+        tb_store s
+        LEFT JOIN tb_user u ON s.uid = u.id
+        where s.id = #{id}
+    </select>
+
+
+
+    <select id="getRecordByAskById" resultMap="record">
+        SELECT
+            r.id,
+            r.ask_id,
+            r.type,
+            r.issue,
+            r.record_time,
+            r.`status`,
+            a.sid,
+            a.uid,
+            s.sname,
+	        s.simg,
+	        u.username,
+	        u.picture
+        FROM
+        tb_ask_record r
+        LEFT JOIN tb_ask a ON r.ask_id = a.id
+        LEFT JOIN tb_store s on a.sid = s.id
+	    LEFT JOIN tb_user u on a.uid = u.id
+        WHERE r.ask_id = #{id}
+
+    </select>
+
+
+    <insert id="addRecord" parameterType="com.znsd.instapundit.param.AskRecordParam">
+        INSERT INTO `instapundit`.`tb_ask_record`( `ask_id`, `type`, `issue`, `record_time`, `status`) VALUES ( #{askId}, #{type}, #{issue}, NOW(), 1);
+    </insert>
+
+
+
+</mapper>

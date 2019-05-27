@@ -1,0 +1,187 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="multipart/form-data;  charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+    <title></title>
+    <link rel="stylesheet" th:href="@{/css/myCenterCss/weui.min.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+    <link rel="stylesheet" th:href="@{/css/dingdan.css}"/>
+    <link rel="stylesheet" th:href="@{/css/dialog.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery-1.9.0.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/dialog.js}"></script>
+    <style type="text/css">
+        .show {
+            margin-top: 5px;
+            position: relative;
+            width: 950px;
+        }
+
+        .show .item {
+            position: absolute;
+            width: 350px;
+            height: 150px;
+            text-align: center;
+        }
+
+        .show img {
+            max-width: 350px;
+            max-height: 150px;
+            box-shadow: 0px 1px 1px 1px #AAA3A3;
+        }
+
+        .show img:hover {
+            box-shadow: 0px 1px 1px 2px #83ABD2;
+        }
+
+        .show .big {
+            z-index: 2;
+        }
+
+        .show .big img {
+            max-width: none;
+            max-height: none;
+            box-shadow: 2px 2px 10px 2px #666;
+        }
+    </style>
+<body id="global">
+
+<div class="container">
+    <header class="m-header z-img-ready border-top border-bottom z-no-menu ">
+        <div class="aui-navBar aui-navBar-fixed">
+            <a href="javascript:void(0)" onclick="javascript :history.go(-1);" class="aui-navBar-item">
+                <img th:src="@{/img/ht.png}" style="width: 25px;height: 25px">
+            </a>
+            <div class="aui-center">
+                <span class="aui-center-title">视频管理</span>
+            </div>
+            <a th:href="@{/index}" class="aui-navBar-item" id="home">
+                <img th:src="@{/img/home.png}" style="width: 25px;height: 25px">
+            </a>
+        </div>
+
+
+    </header>
+    <div class="tab">
+
+        <div class="tab__bar f-border-1px" style="visibility: visible;">
+            <div class="tab__bar--item">
+                <h3 class="tab__bar--title"><a th:href="@{/video/to_upload}">视频上传</a></h3>
+            </div>
+            <div class="tab__bar--item">
+                <h3 class="tab__bar--title"><a th:href="@{/video/to_create_column}">创建专栏</a><span
+                        class="tab__bar--num"></span></h3>
+            </div>
+            <div class="tab__bar--item">
+                <h3 class="tab__bar--title"><a th:href="@{/video/toVideoManagerList}">视频列表</a></h3>
+            </div>
+            <div class="tab__bar--item z-active">
+                <h3 class="tab__bar--title"><a th:href="@{/video/toColumnManagerList}">专栏列表</a><span
+                        class="tab__bar--num"></span></h3>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tab__content" style="height: 100%;">
+    <div id="order" class="tab__content--item">
+        <ul>
+            <li class="tab__list--item" data-id="0_100389859_0" th:each="column:${columnList}">
+								<span class="details">
+								<div class="tab__item--status black">专栏</div>
+								<div class="tab__item--org">
+									<h3 class="tab__org--name"></h3> <i
+                                        class="icon-font i-arrow-right tab__org--icon"></i>
+								</div>
+								<div class="tab__item--content f-border-1px" th:data-id="${column.id}">
+									<div class="tab__item--cover">
+										<img class="tab__item--cover" th:src="${column.cover_img}">
+									</div>
+									<div class="tab__item--main">
+										<h2 class="tab__item--title" th:text="${column.spe_title}"></h2>
+										<p class="tab__item--price"><span>价格：￥</span><span
+                                                th:text="${column.price}"></span> </p>
+										<p class="tab__item--price"><span>时间：</span><span
+                                                th:text="${#dates.format(column.create_time,'yyyy-MM-dd kk:mm:ss')}"></span></p>
+									</div>
+								</div>
+								</span>
+                <div class="tab__item--btns">
+                    <button class="tab__item--btn" th:data-id="${column.id}">删除专栏</button>
+                </div>
+            </li>
+
+        </ul>
+    </div>
+
+</div>
+
+</body>
+
+<script>
+    // 抽取dialog方法
+    function show(out) {
+        var d = dialog({
+            content: out
+        });
+        d.show();
+        setTimeout(function () {
+            d.close().remove();
+        }, 2000);
+    }
+
+    $(function () {
+        $('.tab__item--content').on('click', function () {
+            var columnID = $(this).attr('data-id');
+            $.ajax({
+                url: '/video/columnPlayHandle?columnID=' + columnID,
+                type: 'get',
+                success: (data) => {
+                    if (data instanceof Array && data.length > 0) {
+                        var video = data[0];
+                        window.location.href = "/video/play?videoID=" + video.id;
+                    } else {
+                        show('专栏下还没有视频，暂不支持跳转到播放页面');
+                    }
+                },
+                error: (error) => {
+                    show('出错啦');
+                }
+            })
+
+        })
+
+        $('.tab__item--btn').on('click', function () {
+            var columnID = $(this).attr('data-id');
+            var d = dialog({
+                title: '删除专栏',
+                content: '删除专栏，专栏下视频成为免费？',
+                okValue: '确定',
+                ok: function () {
+                    this.title('提交中…');
+                    $.ajax({
+                        url: '/video/deleteColumn',
+                        type: 'post',
+                        data: {'_method': 'DELETE', 'columnID': columnID},
+                        success: (result) => {
+                            show(result.msg);
+                            if (result.code == 200) {
+                                window.location.href = "/video/toColumnManagerList";
+                            }
+                        },
+                        error: (error) => {
+                            show('出错啦');
+                        }
+                    })
+                    return true;
+                },
+                cancelValue: '取消',
+                cancel: function () {
+                }
+            });
+            d.show();
+            d.showModal();
+        })
+    })
+</script>
+</html>

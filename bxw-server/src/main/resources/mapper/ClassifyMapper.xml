@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.ClassifyDao">
+    <select id="listPage" parameterType="PageBean" resultType="ClassifyBean">
+    select
+        s.id,
+        s.`name`,
+        s.`desc`,
+        s.number,
+        s.create_by,
+        s.update_by,
+        s.`status`,
+        s.create_time,
+        s.update_time
+      from sys_classify s WHERE s.`status` = 1
+        LIMIT #{page},#{limit}
+    </select>
+
+    <select id="listPageCount" resultType="java.lang.Integer">
+         SELECT
+          count(s.id)
+        FROM `instapundit`.`sys_classify` s WHERE s.status = 1
+
+    </select>
+
+    <insert id="addClassify" parameterType="ClassifyBean">
+        INSERT INTO
+         `instapundit`.`sys_classify`
+         (
+         `name`,
+          `desc`,
+          `number`,
+          `create_by`,
+          `update_by`,
+          `create_time`,
+          `update_time`
+          )
+      VALUES
+           (
+            #{name},
+            #{desc},
+            #{number},
+           '1',
+           '1',
+            NOW(),
+            NOW()
+            );
+
+    </insert>
+    <select id="getClassifyById" parameterType="ClassifyBean" resultType="ClassifyBean">
+      select
+        s.id,
+        s.`name`,
+        s.`desc`,
+        s.number,
+        s.create_by,
+        s.update_by,
+        s.`status`,
+        s.create_time,
+        s.update_time
+      from sys_classify s WHERE s.id = #{id} and s.`status` = 1
+
+    </select>
+
+    <update id="updateClassify" parameterType="ClassifyBean">
+          UPDATE `instapundit`.`sys_classify`
+          SET `name` = #{name}, `desc` = #{desc},
+           `number` = 2,
+            `update_by` = 1,
+            `update_time` = NOW() WHERE `id` = #{id};
+    </update>
+
+    <delete id="delete">
+        UPDATE `instapundit`.`sys_classify`
+        SET
+        `status` = 2,
+        `update_by` = '1',
+        `update_time` = NOW()
+        WHERE
+        `id` in
+        <foreach collection="ids" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+
+    </delete>
+    <select id="seek"  resultType="ClassifyBean">
+      select
+        s.id,
+        s.`name`,
+        s.`desc`,
+        s.number,
+        s.create_by,
+        s.update_by,
+        s.`status`,
+        s.create_time,
+        s.update_time
+      from sys_classify s
+       <where>
+        <if test="classifyBean.name!=null and classifyBean.name!='' ">
+            s.name LIKE CONCAT('%',#{classifyBean.name},'%')
+        </if>
+        <if test="classifyBean.create_time!=null and classifyBean.update_time!=null">
+            AND  s.update_time BETWEEN #{classifyBean.create_time} AND #{classifyBean.update_time}
+        </if>
+        <if test="classifyBean.create_time!=null and classifyBean.update_time==null">
+            AND  s.update_time &gt;= #{classifyBean.create_time}
+        </if>
+        <if test="classifyBean.create_time==null and classifyBean.update_time!=null">
+            AND  s.update_time &lt;= #{classifyBean.update_time}
+        </if>
+            AND s.status = 1
+      </where>
+        LIMIT #{pageBean.page},#{pageBean.limit}
+    </select>
+    <select id="seekCount" resultType="java.lang.Integer">
+        select
+          count( s.id)
+        from sys_classify s
+        <where>
+            <if test="classifyBean.name!=null and classifyBean.name!='' ">
+                s.name LIKE CONCAT('%',#{classifyBean.name},'%')
+            </if>
+            <if test="classifyBean.create_time!=null and classifyBean.update_time!=null">
+                AND  s.update_time BETWEEN #{classifyBean.create_time} AND #{classifyBean.update_time}
+            </if>
+            <if test="classifyBean.create_time!=null and classifyBean.update_time==null">
+                AND  s.update_time &gt;= #{classifyBean.create_time}
+            </if>
+            <if test="classifyBean.create_time==null and classifyBean.update_time!=null">
+                AND  s.update_time &lt;= #{classifyBean.update_time}
+            </if>
+            AND s.status = 1
+        </where>
+
+
+    </select>
+</mapper>

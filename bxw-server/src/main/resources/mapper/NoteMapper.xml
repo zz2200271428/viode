@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.NoteDao">
+
+
+    <!--分页查询-->
+    <select id="noteList" resultType="com.znsd.instapundit.bean.NoteBean" parameterType="com.znsd.instapundit.param.MenuParam">
+        SELECT
+        id,
+        phone,
+        note,
+        type,
+        time
+        FROM
+        tb_note
+        <where>
+            <if test="phone != null">
+                phone LIKE CONCAT('%',#{phone},'%')
+            </if>
+            <if test="type != null">
+                AND type = #{type}
+            </if>
+            <if test="time != null">
+                AND TO_DAYS(time) = TO_DAYS(#{time})
+            </if>
+        </where>
+        LIMIT #{page},#{limit}
+    </select>
+
+    <!--查询总记录数-->
+    <select id="queryNoteCount" resultType="Integer" parameterType="com.znsd.instapundit.param.NoteParam">
+        SELECT
+        count(1)
+        FROM
+        tb_note
+        <where>
+            <if test="phone != null">
+                phone LIKE CONCAT('%',#{phone},'%')
+            </if>
+            <if test="type != null">
+                AND type = #{type}
+            </if>
+            <if test="time != null">
+                AND TO_DAYS(time) = TO_DAYS(#{time})
+            </if>
+        </where>
+    </select>
+
+    <select id="queryNoteType" resultType="com.znsd.instapundit.bean.NoteBean">
+        select type from tb_note
+    </select>
+
+</mapper>

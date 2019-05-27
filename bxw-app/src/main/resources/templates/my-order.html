@@ -1,0 +1,139 @@
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="applicable-device" content="mobile">
+		<link rel="stylesheet" th:href="@{/css/font.css}" />
+		<link rel="stylesheet" th:href="@{/css/dingdan.css}" />
+		<link rel="stylesheet" th:href="@{/css/dialog.css}" />
+		<link rel="stylesheet" th:href="@{/css/foot.css}" />
+		<script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/dialog.js}"></script>
+		<title>订单列表</title>
+
+	</head>
+	<body id="global" style="font-size: 36px;">
+
+		<div class="container">
+            <header class="m-header z-img-ready border-top border-bottom z-no-menu ">
+                <div class="aui-navBar aui-navBar-fixed">
+                    <a href="/app/MoveUser" class="aui-navBar-item">
+                        <i class="icon icon-return">《 </i>
+                    </a>
+                    <div class="aui-center">
+                        <span class="aui-center-title">我的订单</span>
+                    </div>
+                    <a href="javascript:;" class="aui-navBar-item" data-ydui-actionsheet="{target:'#actionSheet',closeElement:'#cancel'}">
+                        <i class="icon "></i>
+                    </a>
+                </div>
+
+
+            </header>
+			<div class="tab">
+
+                <div class="tab__bar f-border-1px" style="visibility: visible;">
+                    <div class="tab__bar--item z-active" data-id="0">
+                        <h3 class="tab__bar--title">全部订单</h3>
+                    </div>
+                    <div class="tab__bar--item" data-id="1" style="">
+                        <h3 class="tab__bar--title">待付款<span class="tab__bar--num"></span></h3>
+                    </div>
+                    <div class="tab__bar--item" data-id="2">
+                        <h3 class="tab__bar--title">已取消</h3>
+                    </div>
+                    <div class="tab__bar--item" data-id="3">
+                        <h3 class="tab__bar--title">交易成功<span class="tab__bar--num"></span></h3>
+                    </div>
+                    <div class="tab__bar--item" data-id="4">
+                        <h3 class="tab__bar--title">已退款</h3>
+                    </div>
+                </div>
+				<div class="tab__content" style="height: 78%;">
+					<div id="order" class="tab__content--item" style="" th:fragment="order_refresh">
+						<ul>
+							<li th:each="orders :${order}" class="tab__list--item" data-id="0_100389859_0" >
+								<span  class="details" th:data-id="${orders.order_number}">
+								<div class="tab__item--status black" th:text="${orders.order_status.label}">报名成功 </div>
+								<div class="tab__item--org">
+									<h3 class="tab__org--name" th:text="${orders.order_number}"></h3> <i class="icon-font i-arrow-right tab__org--icon"></i>
+								</div>
+								<div class="tab__item--content f-border-1px">
+									<div class="tab__item--cover" >
+										<img class="tab__item--cover" th:src="@{/img/agency_bg@2x.40a6142.jpg}">
+									</div>
+									<div class="tab__item--main">
+										<h2 class="tab__item--title " th:text="${orders.title}"> PHP7进阶到架构-Swoole/Laravel/TP5/高并发项目实战【六星教育】 </h2>
+										<p class="tab__item--price"><span>价格：￥</span><span  th:text="${orders.price}"></span> </p>
+										<p class="tab__item--price"><span>时间：</span><span  th:text="${#dates.format(orders.order_time,'yyyy-MM-dd hh:mm:ss')}"></span></p>
+									</div>
+								</div>
+								</span>
+								<div class="tab__item--btns">
+									<button class="tab__item--btn order-del"  th:orderId="${orders.id}">删除订单</button>
+									<button class="tab__item--btn" th:if="${orders.order_status.values}==1">去付款</button>
+								</div>
+							</li>
+
+						</ul><button id="js-load-more" class="load-more-btn loading" style="display: none;">正在拉取数据</button>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+
+		<div th:replace="~{foot::foot(active='order/orderPage')}"></div>
+	</body>
+	<script>
+		$(".tab__bar--item").on('click',function(){
+			var choose = $(this).attr('data-id')
+			var item = $(".tab__bar--item")
+			// var	content =$(".tab__content--item")
+			for(var i = 0; i<item.length;i++){
+				item.eq(i).removeClass('z-active')
+				// content.eq(i).css('display', 'none')
+			}
+			item.eq(choose).addClass('z-active')
+			// content.eq(choose).css('display', 'block')
+
+			$('#order').load("/order/myOrder?status="+choose)
+
+
+        })
+
+        $("body").on('click','.order-del',function () {
+            var id = $(this).attr('orderId')
+			var d = dialog({
+				title: '删除订单',
+				content: '您确定要删除此订单吗？',
+				okValue: '确定',
+				ok: function () {
+					this.title('提交中…');
+					$.post('/order/delete',{'id':id,'_method':'DELETE'},function (datas) {
+						if (datas.code == 200){
+							window.location.reload()
+						}
+					})
+					return true;
+				},
+				cancelValue: '取消',
+				cancel: function () {}
+			});
+			d.show();
+			d.showModal();
+        })
+
+
+
+
+		$("body").on('click',".details",function () {
+			var oid = $(this).attr('data-id')
+			window.location.href="/order/details?oid="+oid
+		})
+
+
+
+	</script>
+</html>

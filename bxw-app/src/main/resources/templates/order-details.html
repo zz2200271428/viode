@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="applicable-device" content="mobile">
+		<link rel="stylesheet" th:href="@{/css/font.css}" />
+		<link rel="stylesheet" th:href="@{/css/xiangqing.css}" />
+		<link rel="stylesheet" th:href="@{/css/dialog.css}" />
+		<script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/dialog.js}"></script>
+		<title>订单详情</title>
+	</head>
+	<body id="global">
+		<div class="order">
+			<!-- 订单头部模块 -->
+			<section id="order-header" class="o-header">
+				<div class="o-header__status">
+					<h1 class="o-header__status__title">订单详情</h1>
+					<p class="o-header__status__desc">鸟欲高飞先振翅，人求上进先读书——李苦禅</p>
+				</div>
+				<div class="o-header__progress"> </div>
+			</section>
+			<!-- 订单内容模块 -->
+			<section id="order-content" class="o-content">
+				<div class="o-content__box"> <a href="javascript:void(0)" class="o-content__agency js-jump-agency" data-aid="26977">
+						<span class="o-content__agency__text text-ellipsis" th:text="${order.order_number}">12313213213123</span> <i class="icon-font i-arrow-right"></i> </a>
+					<div class="o-content__course js-jump-course" data-pid="0" data-cid="328509"> <img class="o-content__course-pic"
+						 th:src="@{/img/agency_bg@2x.40a6142.jpg}"
+						 alt="">
+						<h1 class="o-content__course-title" th:text="${order.title}">PHP7进阶到架构-Swoole/Laravel/TP5/高并发项目实战【六星教育】</h1>
+					</div>
+
+				</div>
+				<div class="o-content__box">
+					<input id="orderId" type="hidden" th:value="${order.id}">
+					<ul class="o-content__ids">
+						<li class="o-content__info-order o-content__info text-ellipsis">
+							<span class="o-content__info__name">订单号</span>
+							<span th:text="${order.order_number}">100389859</span> </li>
+						<li class="o-content__info text-ellipsis">
+							<span class="o-content__info__name">商品标题</span> <span th:text="${order.title}">PHP7进阶到架构-Swoole/Laravel/TP5/高并发项目实战【六星教育】</span>
+						</li>
+						<li class="o-content__info text-ellipsis">
+							<span class="o-content__info__name">商品单价</span> <span th:text="${order.price}">100</span>
+						</li>
+						<li class="o-content__info text-ellipsis">
+							<span class="o-content__info__name">订单状态</span> <span th:text="${order.order_status.label}">交易成功</span>
+						</li>
+						<li class="o-content__info text-ellipsis">
+							<span class="o-content__info__name">下单时间</span> <span th:text="${#dates.format(order.order_time,'yyyy-MM-dd hh:mm:ss')}">2019-05-17</span>
+						</li>
+						<li class="o-content__info text-ellipsis">
+							<span class="o-content__info__name">商户号 </span> <span th:if="${order.order_status.values} > 2" th:text="${order.commer}">123123131456</span>
+						</li>
+						<li class="o-content__info text-ellipsis">
+							<span class="o-content__info__name">交易号 </span> <span th:if="${order.order_status.values} > 2" th:text="${order.deal}">456115156156</span>
+						</li>
+
+						<li class="o-content__info text-ellipsis">
+							<span class="o-content__info__name">付款时间</span> <span th:if="${order.order_status.values} > 2" th:text="${#dates.format(order.payment_time,'yyyy-MM-dd hh:mm:ss')}">2019-05-17</span>
+						</li>
+					</ul>
+				</div>
+			</section>
+			<!-- 底部按钮模块 -->
+			<section id="order-bottom" class="o-bottom border-top iphonex-bottom-fixed" style="display: block;">
+				<button id="pay" class="js-button_cancel order-btn " th:if="${order.order_status.values}<3" >去付款</button>
+				<button id="order-center" class="js-button_cancel order-btn  ">删除订单</button>
+			</section>
+		</div>
+
+	</body>
+<script>
+	$("#order-center").on('click',function () {
+		var id = $("#orderId").val()
+		var d = dialog({
+			title: '删除订单',
+			content: '您确定要删除此订单吗？',
+			okValue: '确定',
+			ok: function () {
+				this.title('提交中…');
+				$.post('/order/delete',{'id':id,'_method':'DELETE'},function (datas) {
+					if (datas.code == 200){
+						window.location.reload()
+					}
+				})
+				return true;
+			},
+			cancelValue: '取消',
+			cancel: function () {}
+		});
+		d.show();
+		d.showModal();
+	})
+</script>
+</html>

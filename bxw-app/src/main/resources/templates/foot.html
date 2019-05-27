@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>foot</title>
+</head>
+<body>
+<div class="btn_menubar_bottom"th:fragment="foot(active)">
+    <span th:text="${active} == 'index' ? 'aa':'bb'"></span>
+    <nav class="nav border-top iphonex-bottom-fixed ">
+        <ul class="nav__list">
+            <li class="nav__item">
+                <a  href="#" th:href="@{/index}" class="nav__link z-active"  th:if="${active} == 'index'"   data-item="首页" ><i class="icon-font i-home4"></i></a>
+                <a  href="#" th:href="@{/index}" class="nav__link"  th:if="${active} != 'index'"  data-item="首页" ><i class="icon-font i-home4"></i></a>
+            </li>
+            <li class="nav__item">
+                <a  href="#" th:href="@{/store/to_askshop}" class="nav__link z-active" th:if="${active} == 'store/to_askshop'" data-item="问答店铺" ><i class="icon-font i-msg"></i></a>
+                <a  href="#" th:href="@{/store/to_askshop}" class="nav__link" th:if="${active} != 'store/to_askshop'" data-item="问答店铺" ><i class="icon-font i-msg"></i></a>
+            </li>
+            <li class="nav__item">
+                <a  href="javascript:;" th:href="@{/order/orderPage}" th:if="${active} == 'order/orderPage'" class="nav__link z-active" data-item="订单" ><i class="icon-font i-management2 info-item-font"></i></a>
+                <a  href="javascript:;" th:href="@{/order/orderPage}" th:if="${active} != 'order/orderPage'" class="nav__link" data-item="订单" ><i class="icon-font i-management2 info-item-font"></i></a>
+            </li>
+            <li class="nav__item">
+                <a   href="#" th:href="@{/app/MoveUser}"   th:if="${active} == 'app/MoveUser'" class="nav__link z-active" data-item="我的" ><i class="icon-font i-center3"></i></a>
+                <a   href="#" th:href="@{/app/MoveUser}" th:if="${active} != 'app/MoveUser'" class="nav__link" data-item="我的" ><i class="icon-font i-center3"></i></a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

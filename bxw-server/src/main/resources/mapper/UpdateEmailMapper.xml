@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.UpdateEmailDao">
+    <select id="listPage" resultType="UpdateEmailBean">
+        SELECT id,
+              userId,
+			username,
+			new_email,
+			old_email,
+			create_time,
+			updated_time
+        FROM `instapundit`.`tb_login_email`
+         LIMIT #{page},#{limit}
+    </select>
+    <select id="listPageCount" resultType="java.lang.Integer">
+        SELECT
+          count(id)
+        FROM `instapundit`.`tb_login_email`
+
+    </select>
+    <select id="seek" resultType="UpdateEmailBean">
+        select
+        s.id,
+        s.userId,
+        s.username,
+        new_email,
+        old_email,
+        s.create_time,
+        s.updated_time
+        from `instapundit`.`tb_login_email` s
+        <where>
+            <if test="updateEmailBean.username!=null and updateEmailBean.username!='' ">
+                s.username LIKE CONCAT('%',#{updateEmailBean.username},'%')
+            </if>
+            <if test="updateEmailBean.userId!=null and updateEmailBean.userId!='' ">
+                AND  s.userId=#{updateEmailBean.userId}
+            </if>
+            <if test="updateEmailBean.create_time!=null and updateEmailBean.updated_time!=null">
+                AND  s.updated_time BETWEEN #{updateEmailBean.create_time} AND #{updateEmailBean.updated_time}
+            </if>
+            <if test="updateEmailBean.create_time!=null and updateEmailBean.updated_time==null">
+                AND  s.updated_time &gt;= #{updateEmailBean.create_time}
+            </if>
+            <if test="updateEmailBean.create_time==null and updateEmailBean.updated_time!=null">
+                AND  s.updated_time &lt;= #{updateEmailBean.updated_time}
+            </if>
+        </where>
+        LIMIT #{pageBean.page},#{pageBean.limit}
+
+    </select>
+    <select id="seekCount" resultType="java.lang.Integer">
+        select
+          count(s.id)
+        from `instapundit`.`tb_login_email` s
+        <where>
+            <if test="updateEmailBean.username!=null and updateEmailBean.username!='' ">
+                s.username LIKE CONCAT('%',#{updateEmailBean.username},'%')
+            </if>
+            <if test="updateEmailBean.userId!=null and updateEmailBean.userId!='' ">
+                AND  s.userId=#{updateEmailBean.userId}
+            </if>
+            <if test="updateEmailBean.create_time!=null and updateEmailBean.updated_time!=null">
+                AND  s.updated_time BETWEEN #{updateEmailBean.create_time} AND #{updateEmailBean.updated_time}
+            </if>
+            <if test="updateEmailBean.create_time!=null and updateEmailBean.updated_time==null">
+                AND  s.updated_time &gt;= #{updateEmailBean.create_time}
+            </if>
+            <if test="updateEmailBean.create_time==null and updateEmailBean.updated_time!=null">
+                AND  s.updated_time &lt;= #{updateEmailBean.updated_time}
+            </if>
+        </where>
+
+    </select>
+</mapper>

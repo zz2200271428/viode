@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.SlideshowDao">
+    <resultMap id="resultSlideshow" type="SlideshowBean">
+        <id column="id" property="id"></id>
+        <result column="photo" property="photo"></result>
+        <result column="shurl" property="shurl"></result>
+        <result column="create_by" property="create_by"></result>
+        <result column="update_by" property="update_by"></result>
+        <result column="status" property="status"></result>
+        <result column="create_time" property="create_time"></result>
+        <result column="update_time" property="update_time"></result>
+    </resultMap>
+
+    <select id="getCount" parameterType="com.znsd.instapundit.bean.SlideshowBean" resultType="int">
+        SELECT
+        count(0)
+        FROM
+        sys_slideshow m
+        <where>
+            <if test="status==null">
+                AND m.status = 1
+            </if>
+            <if test="status!=null">
+                AND m.status = #{status}
+            </if>
+            <if test="start!=null and end!=null">
+                AND  m.create_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND  m.create_time &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND  m.create_time &lt;= #{end}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="addSlideshow" >
+       INSERT INTO `sys_slideshow`
+       (photo,shurl,`create_by`,`status`,create_time)
+       VALUES (#{photo},#{shurl},#{create_by},1,NOW())
+    </insert>
+
+
+    <select id="selectSlideshowById" resultType="com.znsd.instapundit.bean.SlideshowBean">
+		 SELECT `id`,`photo`,`shurl`,`create_by`,`update_by`,`status`,
+        `create_time`,`update_time` FROM sys_slideshow  WHERE  id = #{id}
+    </select>
+
+
+    <update id="deleteSlideshow">
+        UPDATE sys_slideshow SET `status` = '3',update_time=NOW() WHERE id IN
+        <foreach collection="array" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </update>
+
+    <update id="saveSlideshow" parameterType="com.znsd.instapundit.bean.SlideshowBean">
+        UPDATE  `sys_slideshow`
+        <set>
+            <if test="photo != null and photo != ''">photo = #{photo},</if>
+            <if test="shurl != null and shurl != ''">shurl = #{shurl},</if>
+           <if test="update_by != null and update_by != ''">update_by = #{update_by},</if>
+            update_time=NOW()
+        </set>
+        WHERE  id=#{id}
+    </update>
+
+
+    <update id="updateStatus">
+        update sys_slideshow set status = #{status},update_by=#{update_by},update_time = now() where id = #{id}
+    </update>
+
+
+    <select id="queryLikeSlideshow" parameterType="com.znsd.instapundit.param.ImageParam" resultType="com.znsd.instapundit.bean.SlideshowBean">
+        SELECT
+        m.id,
+        m.photo,
+        m.shurl,
+        m.create_by,
+        m.update_by,
+        m.status,
+        m.create_time,
+        m.update_time
+        FROM sys_slideshow m
+        <where>
+            <if test="status==null">
+                AND m.status = 1
+            </if>
+            <if test="status!=null">
+                AND m.status = #{status}
+            </if>
+            <if test="start!=null and end!=null">
+                AND  m.create_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND  m.create_time &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND  m.create_time &lt;= #{end}
+            </if>
+        </where>
+         LIMIT #{page},#{limit}
+    </select>
+
+
+
+
+</mapper>

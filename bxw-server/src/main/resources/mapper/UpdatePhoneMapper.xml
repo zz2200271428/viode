@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.UpdatePhoneDao">
+    <select id="listPage" resultType="UpdatePhoneBean">
+        SELECT
+            id,
+            userId,
+			username,
+			new_phone,
+			old_phone,
+			create_time,
+			updated_time
+        FROM
+            `instapundit`.`tb_login_phone`
+             LIMIT #{page},#{limit}
+    </select>
+    <select id="listPageCount" resultType="java.lang.Integer">
+        SELECT
+            count(id)
+        FROM
+            `instapundit`.`tb_login_phone`
+    </select>
+
+<!--搜索-->
+    <select id="seek" resultType="UpdatePhoneBean">
+        select
+            s.id,
+            s.userId,
+            s.username,
+            s.new_phone,
+            s.old_phone,
+            s.create_time,
+            s.updated_time
+        from `instapundit`.`tb_login_phone` s
+        <where>
+            <if test="updatePhoneBean.username!=null and updatePhoneBean.username!='' ">
+                s.username LIKE CONCAT('%',#{updatePhoneBean.username},'%')
+            </if>
+            <if test="updatePhoneBean.userId!=null and updatePhoneBean.userId!='' ">
+                AND  s.userId=#{updatePhoneBean.userId}
+            </if>
+            <if test="updatePhoneBean.create_time!=null and updatePhoneBean.updated_time!=null">
+                AND  s.update_time BETWEEN #{updatePhoneBean.create_time} AND #{updatePhoneBean.updated_time}
+            </if>
+            <if test="updatePhoneBean.create_time!=null and updatePhoneBean.updated_time==null">
+                AND  s.updated_time &gt;= #{updatePhoneBean.create_time}
+            </if>
+            <if test="updatePhoneBean.create_time==null and updatePhoneBean.updated_time!=null">
+                AND  s.updated_time &lt;= #{updatePhoneBean.updated_time}
+            </if>
+        </where>
+        LIMIT #{pageBean.page},#{pageBean.limit}
+    </select>
+
+    <select id="seekCount" resultType="java.lang.Integer">
+        SELECT
+            count(s.id)
+        FROM `instapundit`.`tb_login_phone` s
+        <where>
+            <if test="updatePhoneBean.username!=null and updatePhoneBean.username!='' ">
+                s.username LIKE CONCAT('%',#{updatePhoneBean.username},'%')
+            </if>
+            <if test="updatePhoneBean.userId!=null and updatePhoneBean.userId!='' ">
+                AND  s.userId=#{updatePhoneBean.userId}
+            </if>
+            <if test="updatePhoneBean.create_time!=null and updatePhoneBean.updated_time!=null">
+                AND  s.update_time BETWEEN #{updatePhoneBean.create_time} AND #{updatePhoneBean.updated_time}
+            </if>
+            <if test="updatePhoneBean.create_time!=null and updatePhoneBean.updated_time==null">
+                AND  s.updated_time &gt;= #{updatePhoneBean.create_time}
+            </if>
+            <if test="updatePhoneBean.create_time==null and updatePhoneBean.updated_time!=null">
+                AND  s.updated_time &lt;= #{updatePhoneBean.updated_time}
+            </if>
+        </where>
+    </select>
+
+</mapper>

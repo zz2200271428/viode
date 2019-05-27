@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.VideoDao">
+
+    <resultMap id="VideoResult" type="com.znsd.instapundit.bean.VideoBean">
+        <id property="id" column="id"/>
+        <result property="upload_by.id" column="upload_by"/>
+        <result property="video_title" column="video_title"/>
+        <result property="video_intro" column="video_intro"/>
+        <result property="video_url" column="video_url"/>
+        <result property="video_status" column="video_status"/>
+        <result property="upload_time" column="upload_time"/>
+        <result property="play_amount" column="play_amount"/>
+        <result property="price" column="price"/>
+        <result property="collect" column="collect"/>
+        <result property="video_length" column="video_length"/>
+        <result property="cover_img" column="cover_img"/>
+        <result property="from_sc" column="from_sc"/>
+        <result property="video_type.label" column="label"/>
+        <result property="video_type.values" column="values"/>
+        <result property="specialColumnBean.spe_title" column="spe_title"/>
+        <result property="specialColumnBean.spe_desc" column="spe_desc"/>
+        <result property="specialColumnBean.cover_img" column="cimg"/>
+        <result property="specialColumnBean.price" column="cp"/>
+        <result property="upload_by.columnCount" column="ccount"/>
+        <result property="upload_by.videoCount" column="vcount"/>
+        <result property="upload_by.username" column="username"/>
+        <result property="upload_by.picture" column="picture"/>
+    </resultMap>
+
+    <insert id="insertCollect">
+        insert into tb_video_collect (uid,vid,time) values (#{userID},#{videoID},now())
+    </insert>
+
+    <insert id="insertVideoPay">
+        insert into tb_video_pay (vid,uid,time) values (#{videoID},#{userID},now())
+    </insert>
+
+    <insert id="insertColumnPay">
+        insert into tb_column_pay (cid,uid,time) values (#{columnID},#{userID},now())
+    </insert>
+
+    <delete id="deleteCollect">
+        delete from tb_video_collect where uid = #{userID} and vid = #{videoID}
+    </delete>
+
+    <delete id="deleteColumnCollect">
+        delete from tb_special_collect where uid = #{userID} and cid = #{columnID}
+    </delete>
+
+    <select id="isCollect" resultType="java.lang.Integer">
+        select count( 1 ) from tb_video_collect where uid = #{userID} and vid = #{videoID}
+    </select>
+
+    <select id="pagingVideoList" resultMap="VideoResult" parameterType="com.znsd.instapundit.param.VideoParam">
+        SELECT
+        v.*,
+        label,
+        `values`
+        FROM
+        tb_video v
+        LEFT JOIN sys_dict d ON v.video_type = d.`values`
+        WHERE
+        d.type = 'videotype'
+        AND check_status = 2
+        <if test="video_status == null">
+            AND video_status not in( 3 )
+        </if>
+        <if test="video_status != null">
+            AND video_status = #{video_status}
+        </if>
+        <if test="video_title != null">
+            AND video_title LIKE CONCAT('%',#{video_title},'%')
+        </if>
+        <if test="video_type != null">
+            AND video_type = #{video_type}
+        </if>
+        <if test="start != null">
+            AND upload_time &gt;= #{start}
+        </if>
+        <if test="end != null">
+            AND upload_time &lt;= #{end}
+        </if>
+        ORDER BY
+        upload_time DESC
+        LIMIT #{page},#{limit}
+    </select>
+
+    <select id="getPagingVideoCount" resultType="int" parameterType="com.znsd.instapundit.param.VideoParam">
+        SELECT
+        count( 1 )
+        FROM
+        tb_video
+        WHERE
+        check_status = 2
+        <if test="video_status == null">
+            AND video_status not in(3)
+        </if>
+        <if test="video_status != null">
+            AND video_status = #{video_status}
+        </if>
+        <if test="video_title != null">
+            AND video_title LIKE CONCAT('%',#{video_title},'%')
+        </if>
+        <if test="video_type != null">
+            AND video_type = #{video_type}
+        </if>
+        <if test="start != null">
+            AND upload_time &gt;= #{start}
+        </if>
+        <if test="end != null">
+            AND upload_time &lt;= #{end}
+        </if>
+    </select>
+
+    <update id="updateStatus">
+        update tb_video set video_status = #{video_status} where id = #{id}
+    </update>
+
+    <update id="delete">
+        update tb_video set video_status = 3 where id in
+        <foreach collection="ids" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="getVideoByID" resultMap="VideoResult">
+        SELECT
+            v.*,
+            label,
+            `values`,
+            spe_title,
+            spe_desc,
+            c.cover_img cimg,
+            c.price cp,
+            ( select count( 1 ) from tb_video_collect where vid = v.upload_by) collect,
+            ( select count( 1 ) from tb_video where check_status = 2 and video_status = 1 and upload_by = v.upload_by ) vcount,
+            ( select count( 1 ) from tb_special_column where spe_status = 1 and create_by = v.upload_by ) ccount,
+            u.username,
+            u.picture
+        FROM
+            tb_video v
+            LEFT JOIN sys_dict d ON v.video_type = d.`values`
+            LEFT JOIN tb_special_column c ON v.from_sc = c.id
+            LEFT JOIN tb_user u ON u.id = v.upload_by
+        WHERE
+            d.type = 'videotype'
+            AND v.id = #{id}
+    </select>
+
+    <select id="getVideosBySpeID" resultMap="VideoResult">
+        select * from tb_video where video_status = 1 and check_status = 2 and from_sc = #{id}
+    </select>
+
+    <select id="pagingApplyList" resultMap="VideoResult" parameterType="com.znsd.instapundit.param.VideoParam">
+        SELECT
+        v.*,
+        label,
+        `values`
+        FROM
+        tb_video v
+        LEFT JOIN sys_dict d ON v.video_type = d.`values`
+        WHERE
+        d.type = 'videotype'
+        AND video_status not in( 2, 3 )
+        <if test="check_status == null">
+            AND check_status = 1
+        </if>
+        <if test="check_status != null">
+            AND check_status = #{check_status}
+        </if>
+        <if test="video_title != null">
+            AND video_title LIKE CONCAT('%',#{video_title},'%')
+        </if>
+        <if test="video_type != null">
+            AND video_type = #{video_type}
+        </if>
+        <if test="start != null">
+            AND upload_time &gt;= #{start}
+        </if>
+        <if test="end != null">
+            AND upload_time &lt;= #{end}
+        </if>
+        ORDER BY
+        upload_time DESC
+        LIMIT #{page},#{limit}
+    </select>
+
+    <select id="getPagingApplyCount" resultType="int" parameterType="com.znsd.instapundit.param.VideoParam">
+        SELECT
+        count(1)
+        FROM
+        tb_video
+        WHERE
+        video_status not in( 2, 3 )
+        <if test="check_status == null">
+            AND check_status = 1
+        </if>
+        <if test="check_status != null">
+            AND check_status = #{check_status}
+        </if>
+        <if test="video_title != null">
+            AND video_title LIKE CONCAT('%',#{video_title},'%')
+        </if>
+        <if test="video_type != null">
+            AND video_type = #{video_type}
+        </if>
+        <if test="start != null">
+            AND upload_time &gt;= #{start}
+        </if>
+        <if test="end != null">
+            AND upload_time &lt;= #{end}
+        </if>
+    </select>
+
+    <select id="isPayVideo" resultType="java.lang.Integer">
+        select count(1) from tb_video_pay where vid = #{videoID} and uid = #{userID}
+    </select>
+
+    <select id="isPayColumn" resultType="java.lang.Integer">
+        select count(1) from tb_column_pay where cid = #{columnID} and uid = #{userID}
+    </select>
+
+    <select id="isColumnCollect" resultType="java.lang.Integer">
+        select count( 1 ) from tb_special_collect where cid = #{columnID} and uid = #{userID}
+    </select>
+
+    <select id="getVideoByUserID" resultMap="VideoResult">
+        SELECT
+        v.*,
+        label,
+        `values`
+        FROM
+        tb_video v
+        LEFT JOIN sys_dict d ON v.video_type = d.`values`
+        WHERE
+        d.type = 'videotype'
+        AND video_status = 1
+        AND upload_by = #{userID}
+        ORDER BY
+        upload_time DESC
+    </select>
+
+    <update id="updateApplyStatus">
+        update tb_video set check_status = #{check_status} where id = #{id}
+    </update>
+
+    <update id="addMoney">
+        update tb_user set money = money + #{money} where id = #{userID}
+    </update>
+
+    <update id="minusMoney">
+        update tb_user set money = money - #{money} where id = #{userID}
+    </update>
+
+    <insert id="insertOrder">
+        insert into tb_order (user_id,order_number,picture,title,price,order_status,commer,deal,payment_time,order_time)
+        values (#{user_id},#{order_number},#{picture},#{title},#{price},#{orderStatus},#{commer},#{deal},now(),now())
+    </insert>
+
+    <insert id="insertColumnCollect">
+        insert into tb_special_collect (uid,cid,time) values (#{userID},#{columnID},now())
+    </insert>
+
+    <insert id="insertColumn">
+        insert into tb_special_column (spe_title,spe_desc,cover_img,price,create_time,create_by)
+        values (#{spe_title},#{spe_desc},#{cover_img},#{price},now(),#{createBy})
+    </insert>
+
+    <insert id="insertVideo">
+        insert into tb_video (upload_by,video_title,video_intro,video_url,video_type,upload_time,price,from_sc,cover_img)
+        values (#{userID},#{video_title},#{video_intro},#{video_url},#{videoType},now(),#{price},#{from_sc},#{cover_img})
+    </insert>
+
+    <insert id="addPlayCount">
+        update tb_video set play_amount = play_amount + 1 where id = #{videoID}
+    </insert>
+
+</mapper>

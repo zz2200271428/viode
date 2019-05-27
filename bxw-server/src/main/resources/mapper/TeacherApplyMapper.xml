@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.TeacherDao">
+
+    <resultMap id="teacher" type="com.znsd.instapundit.bean.TeacherApplyBean">
+        <id property="id" column="id" />
+        <result property="sname" column="sname" />
+        <result property="simg" column="simg" />
+        <result property="datum" column="datum" />
+        <result property="idc_img" column="idc_img" />
+        <result property="cashdeposit" column="cashdeposit" />
+        <result property="contact" column="contact" />
+        <result property="check_status" column="check_status" />
+        <result property="store_desc" column="store_desc" />
+        <result property="apply_time" column="apply_time" />
+        <result property="check_time" column="check_time" />
+        <result property="reason" column="reason" />
+        <result property="user.id" column="u_id" />
+    </resultMap>
+    <select id="pageList" parameterType="com.znsd.instapundit.param.StoreParam"
+            resultMap="teacher">
+        SELECT
+        `id`,
+        `uname`,
+        `datum`,
+        `idc_img`,
+        `cashdeposit`,
+        `contact`,
+        `check_status`,
+        `store_desc`,
+        `apply_time`,
+        `check_time`,
+        `reason`,
+        `u_id`
+        FROM
+        tb_teacher_apply
+        <where>
+            <if test="uname != null">
+                uname LIKE CONCAT('%',#{uname},'%')
+            </if>
+            <if test="check_status != null ">
+                and check_status=#{check_status}
+            </if>
+            <if test="start != null and end != null">
+                and apply_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND apply_time &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND apply_time &lt;= #{end}
+            </if>
+        </where>
+
+        LIMIT #{page},#{limit}
+    </select>
+    <select id="counter" resultType="Integer">
+        select count(id) from tb_teacher_apply
+        <where>
+            <if test="uname != null">
+                uname LIKE CONCAT('%',#{uname},'%')
+            </if>
+            <if test="check_status != null ">
+                and check_status=#{check_status}
+            </if>
+            <if test="start != null and end != null">
+                and apply_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND apply_time &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND apply_time &lt;= #{end}
+            </if>
+        </where>
+    </select>
+    <update id="save">
+        update tb_teacher_apply set check_status = 2 ,check_time =NOW() where id in
+        <foreach collection="ids" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </update>
+
+    <update id="saveDel">
+        update tb_teacher_apply set check_status = 3 ,check_time =NOW() where id in
+        <foreach collection="ids" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </update>
+
+</mapper>

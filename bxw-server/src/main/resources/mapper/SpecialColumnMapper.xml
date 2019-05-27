@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.SpecialColumnDao">
+
+    <resultMap id="SpecialColumnResult" type="com.znsd.instapundit.bean.SpecialColumnBean">
+        <id property="id" column="id"/>
+        <result property="spe_title" column="spe_title"/>
+        <result property="spe_desc" column="spe_desc"/>
+        <result property="cover_img" column="cover_img"/>
+        <result property="create_by.id" column="create_by"/>
+        <result property="spe_status" column="spe_status"/>
+        <result property="price" column="price"/>
+        <result property="create_time" column="create_time"/>
+    </resultMap>
+
+    <select id="pagingList" resultMap="SpecialColumnResult"
+            parameterType="com.znsd.instapundit.param.SpecialColumnParam">
+        SELECT
+        *
+        FROM
+        tb_special_column
+        WHERE
+        spe_status = 1
+        <if test="spe_title != null">
+            AND spe_title LIKE CONCAT('%',#{spe_title},'%')
+        </if>
+        <if test="start != null">
+            AND create_time &gt;= #{start}
+        </if>
+        <if test="end != null">
+            AND create_time &lt;= #{end}
+        </if>
+        ORDER BY
+        create_time DESC
+        LIMIT #{page},#{limit}
+    </select>
+
+    <select id="getPagingCount" resultType="int" parameterType="com.znsd.instapundit.param.SpecialColumnParam">
+        SELECT
+        count(1)
+        FROM
+        tb_special_column
+        WHERE
+        spe_status = 1
+        <if test="spe_title != null">
+            AND spe_title LIKE CONCAT('%',#{spe_title},'%')
+        </if>
+        <if test="start != null">
+            AND create_time &gt;= #{start}
+        </if>
+        <if test="end != null">
+            AND create_time &lt;= #{end}
+        </if>
+    </select>
+
+    <select id="getSpecByID" resultMap="SpecialColumnResult">
+        select * from tb_special_column where id = #{columnID}
+    </select>
+
+    <update id="clearVideoSpe">
+        update tb_video set from_sc = 0,video_type = 1 where from_sc in
+        <foreach collection="ids" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="delete">
+        update tb_special_column set spe_status = 2 where id in
+        <foreach collection="ids" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="getColumnByUserID" resultType="com.znsd.instapundit.bean.SpecialColumnBean">
+        select * from tb_special_column where create_by = #{userID} and spe_status = 1
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

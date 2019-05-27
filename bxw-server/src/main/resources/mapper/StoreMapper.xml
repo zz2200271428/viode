@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.StoreDao">
+
+    <resultMap id="ApplyResult" type="com.znsd.instapundit.bean.StoreBean">
+        <id property="id" column="id"/>
+        <result property="sname" column="sname"/>
+        <result property="simg" column="simg"/>
+        <result property="uname" column="uname"/>
+        <result property="datum" column="datum"/>
+        <result property="idc_img" column="idc_img"/>
+        <result property="cashdeposit" column="cashdeposit"/>
+        <result property="contact" column="contact"/>
+        <result property="check_status" column="check_status"/>
+        <result property="store_desc" column="store_desc"/>
+        <result property="apply_time" column="apply_time"/>
+        <result property="check_time" column="check_time"/>
+        <result property="reason" column="reason"/>
+        <result property="user.id" column="uid"/>
+    </resultMap>
+
+    <select id="pagingApplyList" resultMap="ApplyResult" parameterType="com.znsd.instapundit.param.StoreParam">
+        SELECT
+        *
+        FROM
+        tb_store_apply
+        WHERE
+        <if test="check_status == null">
+            check_status = 1
+        </if>
+        <if test="check_status != null">
+            check_status = #{check_status}
+        </if>
+        <if test="sname != null">
+            AND sname LIKE CONCAT('%',#{sname},'%')
+        </if>
+        <if test="uname != null">
+            AND uname LIKE CONCAT('%',#{uname},'%')
+        </if>
+        <if test="store_desc != null">
+            AND store_desc LIKE CONCAT('%',#{store_desc},'%')
+        </if>
+        <if test="start != null">
+            AND apply_time &gt;= #{start}
+        </if>
+        <if test="end != null">
+            AND apply_time &lt;= #{end}
+        </if>
+        ORDER BY
+        apply_time DESC
+        LIMIT #{page},#{limit}
+    </select>
+
+    <select id="getPagingApplyCount" resultType="int" parameterType="com.znsd.instapundit.param.StoreParam">
+        SELECT
+        count(1)
+        FROM
+        tb_store_apply
+        WHERE
+        <if test="check_status == null">
+            check_status = 1
+        </if>
+        <if test="check_status != null">
+            check_status = #{check_status}
+        </if>
+        <if test="sname != null">
+            AND sname LIKE CONCAT('%',#{sname},'%')
+        </if>
+        <if test="uname != null">
+            AND uname LIKE CONCAT('%',#{uname},'%')
+        </if>
+        <if test="store_desc != null">
+            AND store_desc LIKE CONCAT('%',#{store_desc},'%')
+        </if>
+        <if test="start != null">
+            AND apply_time &gt;= #{start}
+        </if>
+        <if test="end != null">
+            AND apply_time &lt;= #{end}
+        </if>
+        ORDER BY
+        apply_time DESC
+        LIMIT #{page},#{limit}
+    </select>
+
+    <update id="updateCheckStatus">
+        update tb_store_apply set check_status = #{check_status},check_time = now() where id = #{storeID}
+    </update>
+
+    <insert id="insertStore">
+        insert into tb_store (sname,simg,contact,store_desc,uid,apply_id,open_time)
+        values (#{sname},#{simg},#{contact},#{store_desc},#{user.id},#{id},now())
+    </insert>
+
+    <insert id="insertStoreCollect">
+        insert into tb_store_collect (uid,sid) values (#{userID},#{storeID})
+    </insert>
+
+    <select id="getStoreApplyByID" resultMap="ApplyResult">
+        select * from tb_store_apply where id = #{storeID}
+    </select>
+
+    <update id="updateStatus">
+        update tb_store set status = #{status} where id = #{storeID}
+    </update>
+
+    <update id="delete">
+        update tb_store set status = 3 where id in
+        <foreach collection="ids" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </update>
+
+    <resultMap id="StorePaging" type="com.znsd.instapundit.bean.StoreBean">
+        <id property="id" column="id"/>
+        <result property="sname" column="sname"/>
+        <result property="simg" column="simg"/>
+        <result property="contact" column="contact"/>
+        <result property="store_desc" column="store_desc"/>
+        <result property="user.id" column="uid"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <select id="pagingStoreList" resultMap="StorePaging" parameterType="com.znsd.instapundit.param.StoreParam">
+        select
+        id,
+        sname,
+        simg,
+        contact,
+        store_desc,
+        uid,
+        status,
+        open_time
+        from
+        tb_store
+        where
+        <if test="status == null">
+            status = 1
+        </if>
+        <if test="status != null">
+            status = #{status}
+        </if>
+        <if test="sname != null">
+            AND sname LIKE CONCAT('%',#{sname},'%')
+        </if>
+        <if test="store_desc != null">
+            AND store_desc LIKE CONCAT('%',#{store_desc},'%')
+        </if>
+        <if test="start != null">
+            AND open_time &gt;= #{start}
+        </if>
+        <if test="end != null">
+            AND open_time &lt;= #{end}
+        </if>
+        ORDER BY
+        id DESC
+        LIMIT #{page},#{limit}
+    </select>
+
+    <select id="getPagingStoreCount" resultType="int" parameterType="com.znsd.instapundit.param.StoreParam">
+        select
+        count(1)
+        from
+        tb_store
+        where
+        <if test="status == null">
+            status = 1
+        </if>
+        <if test="status != null">
+            status = #{status}
+        </if>
+        <if test="sname != null">
+            AND sname LIKE CONCAT('%',#{sname},'%')
+        </if>
+        <if test="store_desc != null">
+            AND store_desc LIKE CONCAT('%',#{store_desc},'%')
+        </if>
+        <if test="start != null">
+            AND open_time &gt;= #{start}
+        </if>
+        <if test="end != null">
+            AND open_time &lt;= #{end}
+        </if>
+        ORDER BY
+        id DESC
+        LIMIT #{page},#{limit}
+    </select>
+
+    <resultMap id="StoreResult" type="com.znsd.instapundit.bean.StoreBean">
+        <id property="id" column="id"/>
+        <result property="sname" column="sname"/>
+        <result property="simg" column="simg"/>
+        <result property="contact" column="contact"/>
+        <result property="store_desc" column="store_desc"/>
+        <result property="open_time" column="open_time"/>
+        <result property="click_amount" column="click_amount"/>
+        <result property="ask_count" column="ask_count"/>
+        <result property="count" column="count"/>
+    </resultMap>
+
+    <select id="getStoreByID" resultMap="StoreResult">
+        SELECT
+            s.*,
+            ( SELECT count( 1 ) FROM tb_store_collect WHERE s.id = sid) count
+        FROM
+            tb_store s
+        WHERE
+            id = #{storeID}
+    </select>
+
+    <resultMap id="SortResult" type="com.znsd.instapundit.bean.StoreBean">
+        <id property="id" column="id"/>
+        <result property="sname" column="sname"/>
+        <result property="simg" column="simg"/>
+        <result property="store_desc" column="store_desc"/>
+        <result property="click_amount" column="click_amount"/>
+        <result property="ask_count" column="ask_count"/>
+        <result property="count" column="count"/>
+    </resultMap>
+
+    <select id="getStoreByActive" resultMap="SortResult">
+        SELECT
+        s.*,
+        ( SELECT count( 1 ) FROM tb_store_collect WHERE s.id = sid) count
+        FROM
+        tb_store s
+        WHERE
+        s.`status` = 1
+        <if test="active == 1">
+            ORDER BY s.click_amount DESC
+        </if>
+        <if test="active == 2">
+            ORDER BY count DESC
+        </if>
+    </select>
+
+    <select id="getCollectCount" resultType="java.lang.Integer">
+        select count(1) from tb_store_collect where uid = #{userID} and sid = #{storeID}
+    </select>
+
+    <update id="updateClickCount">
+        update tb_store set click_amount = click_amount + 1 where id = #{storeID}
+    </update>
+
+    <update id="updateAskCount">
+        update tb_store set ask_count = ask_count + 1 where id = #{storeID}
+    </update>
+
+    <insert id="insertCollect">
+        insert into tb_store_collect (uid,sid,time)
+        values (#{userID},#{storeID},now())
+    </insert>
+
+    <delete id="deleteCollect">
+        delete from tb_store_collect where uid = #{userID} and sid = #{storeID}
+    </delete>
+
+</mapper>

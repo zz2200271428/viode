@@ -1,0 +1,165 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="multipart/form-data;  charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <!--<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    -->
+    <title></title>
+    <link rel="stylesheet" th:href="@{/css/myCenterCss/weui.min.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+  <!--  <link rel="stylesheet" href="../css/weui.min.css">-->
+    <style type="text/css">
+        .show{margin-top: 5px; position: relative; width: 950px; }
+        .show .item{position: absolute; width: 350px; height: 150px; text-align:center;}
+        .show img{max-width: 350px;max-height: 150px;   box-shadow: 0px 1px 1px 1px #AAA3A3;}
+        .show img:hover{box-shadow: 0px 1px 1px 2px #83ABD2;}
+        .show .big{z-index: 2;}
+        /*cursor: url(./images/small.cur),auto;,cursor: url(./images/big.cur),auto; */
+        .show .big img{max-width: none; max-height: none; box-shadow: 2px 2px 10px 2px #666;}
+    </style>
+<body>
+<div class="header">
+    <span>店铺申请</span>
+</div>
+<form action="/TS/StoreTwo" method="post" enctype="multipart/form-data">
+<div class="weui-cells weui-cells_form wy-address-edit">
+    <div class="weui-cell" >
+        <div class="weui-cell__hd"  ><label class="weui-label wy-lab">店铺名称</label></div>
+        <div class="weui-cell__bd"><input name="sname" class="weui-input" type="text" required   placeholder="请输入店铺名称" ></div>
+    </div>
+    <div class="weui-cell" >
+        <div class="weui-cell__hd"  ><label class="weui-label wy-lab">讲师姓名</label></div>
+        <div class="weui-cell__bd"><input name="uname" class="weui-input" required  type="text"  placeholder="请输入讲师姓名" ></div>
+    </div>
+    <div class="weui-cell" >
+        <div class="weui-cell__hd"><label class="weui-label wy-lab">手机联系方式</label></div>
+        <div class="weui-cell__bd"><input name="contact" class="weui-input" required  type="text" pattern="^[1][3,4,5,7,8][0-9]{9}$" placeholder="请输入手机联系方式"  ></div>
+    </div>
+    <div class="weui-cell" >
+        <div class="weui-cell__hd"><label class="weui-label wy-lab">保证金（￥）</label></div>
+        <div class="weui-cell__bd"><input name="cashdeposit" required  class="weui-input" type="text"  value="1000"  disabled="disabled"></div>
+    </div>
+    <div class="weui-cell" style="height: 100px;">
+        <div class="weui-cell__bd"><textarea id="store_desc"  class="weui-textarea" name="store_desc" rows="" cols="" style="height: 100px" placeholder="你可以介绍一下你的店铺让别人更好的了解它200字之内"></textarea></div>
+    </div>
+    <div class='upload_box'>
+        <input type="file" id='upimg' name="file" required   multiple style="display: none;">
+    </div>
+    <div id="btn_add2" style="display: block; text-align:center;" >
+        <img  th:src="@{/img/ec8ba40e9a7d3c4687c19d8255bb5844.png}" >
+        <br>法人国徽面
+    </div>
+    <div class='show' id="show" style="height: 200px; "></div>
+    <div class='upload_box'>
+        <input type="file" id='upimg2'name="file" required multiple  style="display: none;">
+    </div>
+    <div id="btn_add3" style="display: block; text-align:center;">
+        <img  th:src="@{/img/7f1a67eed11ddf4aa31aed68c89077de.png}" >
+        <br>法人人脸面
+    </div>
+    <div class='show' id="show2" style="height: 200px;"></div>
+
+    <div class='upload_box'>
+        <input type="file" id='upimg3' name="file"  required multiple  style="display: none;">
+    </div>
+    <div id="btn_add4" style="text-align:center">
+        <img  th:src="@{/img/ba160afd53bf904890f73f0f75ec24fe.png}">
+        <br>营业资格证
+    </div>
+    <div class='show' id="show3" style="height : 200px;"></div>
+    <div class='upload_box'>
+        <input type="file" id='upimg4' name="file"  required multiple  style="display: none;">
+    </div>
+    <div id="btn_add5" style="text-align:center">
+        <img  th:src="@{/img/ba160afd53bf904890f73f0f75ec24fe.png}">
+        <br>店铺头像
+    </div>
+    <div class='show' id="show4" style="height : 200px;"></div>
+    <div id="" style="text-align:center">
+        <span id="span"></span>
+        <input class="weui-btn weui-btn_primary" type="submit" value="上传" />
+        <input  class="weui-btn weui-btn_primary" type="button" id="button" value="重置"/>
+    </div>
+</div>
+</form>
+    <script type="text/javascript" th:src="@{/js/jquery-1.9.0.min.js}" ></script>
+    <script type="text/javascript" th:src="@{/js/myCenter/teach.js}" ></script>
+    <script type="text/javascript">
+       /* $("#button").click(function(){
+            window.location.reload();
+        });*/
+        $(function(){
+            $("#btn_add5").click(function(){
+                $("#upimg4").trigger("click");
+                $("#upimg4").change(function(){
+                    var x = document.getElementById("upimg4").files;
+                    $("#btn_add5").attr("style","display:none;");
+                })
+            });
+            $("#button").click(function(){
+                window.location.reload();
+            });
+        })
+
+        var Upload4 = (function(){
+            var upimg = document.getElementById('upimg4');
+            var show  = document.getElementById('show4');
+
+            function init(){
+                if(!(window.FileReader && window.File && window.FileList && window.Blob)){
+                    show.innerHTML = '您的浏览器不支持fileReader';
+                    upimg.setAttribute('disabled', 'disabled');
+                    return false;
+                }
+                handler();
+            }
+
+            function handler(){
+                upimg.addEventListener('change', function(e){
+                    var files = this.files;
+                    if(files.length){
+                        checkFile(this.files);
+                    }
+                });
+            }
+
+            function checkFile(files){
+                if (files.length != 0) {
+                    //获取文件并用FileReader进行读取
+                    var html = '';
+                    var i = 0, j = show.childElementCount;
+                    var funcs = function(){
+                        if(files[i]){
+                            var x = parseInt((i+j)/4)*250;
+                            var y = ((i+j)%4)*250;
+                            var reader = new FileReader();
+                            if(!/image\/\w+/.test(files[i].type)){
+                                show.innerHTML = "请确保文件为图像类型";
+                                return false;
+                            }
+                            reader.onload = function(e) {
+                                html += '<div class="item" style="top:'+x+'px; left:'+y+'px;text-align:center;"><img src="'+e.target.result+'" alt="img"></div>';
+                                i++;
+                                funcs(); // onload为异步调用
+                            };
+                            reader.readAsDataURL(files[i]);
+                        }else{
+                            show.innerHTML += html;
+                        }
+                    }
+                    funcs();
+                }
+            }
+            return {
+                init : init
+            }
+        })();
+        Upload4.init();
+
+
+    </script>
+</body>
+</html>

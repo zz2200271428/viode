@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.VideoCollectDao">
+    <resultMap id="ResultVideoCollect" type="com.znsd.instapundit.bean.VideoCollectBean">
+        <id column="id" property="id"></id>
+        <result column="uid" property="uid"></result>
+        <result column="vid" property="vid"></result>
+        <result column="status" property="status"></result>
+        <result column="time" property="time"></result>
+       <result property="video.id" column="sid"/>
+        <result property="video.video_status" column="video_status"/>
+        <result property="video.video_title" column="video_title"/>
+        <result property="video.video_intro" column="video_intro"/>
+        <result property="video.video_url" column="video_url"/>
+        <result property="video.cover_img" column="cover_img"/>
+        <result property="video.video_type.label" column="label" />
+        <result property="video.video_type.values" column="values" />
+        <result property="video.price" column="price"/>
+        <result property="video.upload_by.id" column="upload_by"/>
+        <result property="appUser.id" column="aid"/>
+        <result property="appUser.phone" column="phone"/>
+        <result property="appUser.username" column="username"/>
+        <result property="appUser.sex" column="sex"/>
+        <result property="appUser.member" column="member"/>
+    </resultMap>
+    <select id="queryList" resultMap="ResultVideoCollect">
+          SELECT
+            cd.uid,
+            cd.vid,
+            cd.time,
+            vo.id sid,
+            vo.video_status,
+            vo.video_title,
+            vo.video_intro,
+			vo.video_url,
+            vo.price,
+			vo.cover_img,
+			vo.video_type,
+            d.`values`,
+            d.label,
+            u.id aid,
+            u.phone,
+            u.username
+        FROM
+          tb_video_collect cd
+        LEFT JOIN
+          tb_video  vo
+        on
+          vo.id = cd.vid
+        LEFT JOIN
+          tb_user u
+        on
+          u.id = vo.upload_by
+        LEFT JOIN
+          sys_dict  d
+        on d.`values` =vo.video_type
+        <where>
+            d.type= 'videotype'
+            <if test="video_title != null">
+                AND vo.video_title  LIKE CONCAT('%',#{video_title},'%')
+            </if>
+            <if test="video_type != null">
+                AND vo.video_type =#{video_type}
+            </if>
+            <if test="start != null">
+                AND cd.time &gt;= #{start}
+            </if>
+            <if test="end != null">
+                AND cd.time &lt;= #{end}
+            </if>
+        </where>
+        LIMIT #{page},#{limit}
+    </select>
+
+
+    <select id="getCount" parameterType="com.znsd.instapundit.bean.VideoCollectBean" resultType="int">
+        SELECT
+        count(1)
+        FROM
+        tb_video_collect cd
+        LEFT JOIN
+        tb_video  vo
+        on
+        vo.id = cd.vid
+        LEFT JOIN
+        tb_user u
+        on
+        u.id = vo.upload_by
+        LEFT JOIN
+        sys_dict  d
+        on d.`values` =vo.video_type
+        <where>
+            d.type= 'videotype'
+            <if test="video_title != null">
+                AND vo.video_title  LIKE CONCAT('%',#{video_title},'%')
+            </if>
+            <if test="video_type != null">
+                AND vo.video_type = #{video_type}
+            </if>
+            <if test="start != null">
+                AND cd.time &gt;= #{start}
+            </if>
+            <if test="end != null">
+                AND cd.time &lt;= #{end}
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="AppCollect" type="com.znsd.instapundit.bean.VideoCollectBean">
+        <id property="id" column="id"/>
+        <result property="time" column="time"/>
+        <result property="video.id" column="vid"/>
+        <result property="video.video_title" column="video_title"/>
+        <result property="video.video_status" column="video_status"/>
+        <result property="video.cover_img" column="cover_img"/>
+    </resultMap>
+
+
+    <select id="getCollectByUserId" resultMap="AppCollect">
+      SELECT
+        c.id,
+        c.time,
+        c.vid,
+        v.video_title,
+        v.video_status,
+        v.cover_img
+    FROM
+        tb_video_collect c
+        LEFT JOIN tb_video v ON c.vid = v.id
+        WHERE c.uid = #{id}
+        ORDER BY  c.time DESC
+    </select>
+</mapper>

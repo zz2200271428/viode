@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.DictDao">
+
+    <select id="getListType" parameterType="java.lang.String" resultType="DictBean">
+	SELECT
+            id,
+            type,
+            label,
+            `values`,
+            dict_desc,
+            is_system,
+            `status`,
+            create_by,
+            update_by,
+            create_time,
+            update_time
+            FROM
+                sys_dict
+            WHERE
+                STATUS = 1
+                AND type = #{type}
+            ORDER BY
+                `values`
+	</select>
+
+    <insert id="addDict" parameterType="DictBean">
+        INSERT INTO `instapundit`.`sys_dict`
+            ( `type`, `label`, `values`, `status`, `create_by`, `update_by`, `create_time`, `update_time`, `dict_desc` )
+        VALUES
+            ( #{type}, #{label}, #{values}, 1, #{create_by}, #{create_by}, NOW(), NOW(), #{dict_desc} );
+    </insert>
+
+
+    <select id="getDictById" resultType="DictBean">
+         SELECT
+        d.id,
+        d.type,
+        d.label,
+        d.values,
+        d.status,
+        d.create_by,
+        d.create_time,
+        d.update_by,
+        d.update_time,
+        d.dict_desc
+    FROM
+        sys_dict d
+        WHERE d.`status` = 1 and d.id = #{id}
+
+    </select>
+    
+    <update id="updateDict" parameterType="DictBean">
+        UPDATE `instapundit`.`sys_dict`
+        SET `type` = #{type},
+        `label` = #{label},
+        `values` = #{values},
+        `dict_desc` = #{dict_desc},
+        `status` = 1,
+        `update_by` = #{update_by},
+        `update_time` = NOW()
+        WHERE
+        `id` = #{id};
+    </update>
+
+    <update id="delete" >
+        UPDATE `instapundit`.`sys_dict`
+        SET
+        `status` = 2,
+        `update_by` = 'admin',
+        `update_time` = NOW()
+        WHERE
+        `id` in
+        <foreach collection="ids" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </update>
+
+
+
+    <select id="getLabel" resultType="DictBean">
+        SELECT type FROM sys_dict WHERE `status` = 1 GROUP BY type
+    </select>
+
+    <select id="listPage" parameterType="com.znsd.instapundit.param.DictParam" resultType="DictBean">
+        SELECT
+        d.id,
+        d.type,
+        d.label,
+        d.values,
+        d.status,
+        d.create_by,
+        d.create_time,
+        d.update_by,
+        d.update_time,
+        d.dict_desc,
+        d.is_system
+        FROM
+        sys_dict d
+        <where>
+            <if test="label!=null">
+                d.label LIKE CONCAT('%',#{label},'%')
+            </if>
+            <if test="type!=null">
+                AND d.type = #{type}
+            </if>
+            <if test="status!=null">
+                AND d.`status` = #{status}
+            </if>
+            <if test="start!=null and end!=null">
+                AND  d.update_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND  d.update_time &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND  d.update_time &lt;= #{end}
+            </if>
+        </where>
+        LIMIT #{page},#{limit}
+    </select>
+    <select id="getCount" parameterType="com.znsd.instapundit.param.DictParam" resultType="int">
+        SELECT
+        count(0)
+        FROM
+        sys_dict d
+        <where>
+            <if test="label!=null">
+                d.label LIKE CONCAT('%',#{label},'%')
+            </if>
+            <if test="type!=null">
+                AND d.type = #{type}
+            </if>
+            <if test="status!=null">
+                AND d.`status` = #{status}
+            </if>
+            <if test="start!=null and end!=null">
+                AND  d.update_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND  d.update_time &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND  d.update_time &lt;= #{end}
+            </if>
+        </where>
+    </select>
+
+</mapper>

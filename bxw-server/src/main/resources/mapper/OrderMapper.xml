@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.OrderDao">
+
+    <resultMap id="OrderResult" type="OrderBean">
+        <id property="id" column="id"/>
+        <result property="user.id" column="user_id"/>
+        <result property="order_number" column="order_number"/>
+        <result property="picture" column="picture"/>
+        <result property="title" column="title"/>
+        <result property="price" column="price"/>
+        <result property="commer" column="commer"/>
+        <result property="deal" column="deal"/>
+        <result property="payment_time" column="payment_time"/>
+        <result property="order_time" column="order_time"/>
+        <result property="status" column="status"/>
+        <result property="order_status.label" column="label"/>
+        <result property="order_status.values" column="values"/>
+    </resultMap>
+
+    <select id="pagingList" resultMap="OrderResult" parameterType="com.znsd.instapundit.param.OrderParam">
+        SELECT
+            o.id,
+            user_id,
+            order_number,
+            picture,
+            title,
+            price,
+            commer,
+            deal,
+            payment_time,
+            order_time,
+            o.`status`,
+            label,
+            `values`
+        FROM
+            tb_order o
+            LEFT JOIN sys_dict d ON o.order_status = d.`values`
+        WHERE
+            d.type = 'ordertype'
+            <if test="status == null">
+                AND o.`status` in(1,2)
+            </if>
+            <if test="status != null">
+                AND o.`status` = #{status}
+            </if>
+            <if test="order_status != null">
+                AND order_status = #{order_status}
+            </if>
+            <if test="title != null">
+                AND title LIKE CONCAT('%',#{title},'%')
+            </if>
+            <if test="order_number != null">
+                AND order_number = #{order_number}
+            </if>
+            <if test="commer != null">
+                AND commer = #{commer}
+            </if>
+            <if test="deal != null">
+                AND deal = #{deal}
+            </if>
+            <if test="start != null">
+                AND order_time &gt;= #{start}
+            </if>
+            <if test="end != null">
+                AND order_time &lt;= #{end}
+            </if>
+            ORDER BY
+            order_time DESC
+            LIMIT #{page},#{limit}
+    </select>
+
+    <select id="getPagingCount" resultType="int" parameterType="com.znsd.instapundit.param.OrderParam">
+        SELECT
+            count(1)
+        FROM
+            tb_order
+        WHERE
+            <if test="status == null">
+                status in(1,2)
+            </if>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            <if test="order_status != null">
+                AND order_status = #{order_status}
+            </if>
+            <if test="title != null">
+                AND title LIKE CONCAT('%',#{title},'%')
+            </if>
+            <if test="order_number != null">
+                AND order_number = #{order_number}
+            </if>
+            <if test="commer != null">
+                AND commer = #{commer}
+            </if>
+            <if test="deal != null">
+                AND deal = #{deal}
+            </if>
+            <if test="start != null">
+                AND order_time &gt;= #{start}
+            </if>
+            <if test="end != null">
+                AND order_time &lt;= #{end}
+            </if>
+    </select>
+
+    <select id="getMyOrder" resultMap="OrderResult">
+        SELECT
+        o.id,
+        user_id,
+        order_number,
+        picture,
+        title,
+        price,
+        commer,
+        deal,
+        payment_time,
+        order_time,
+        o.`status`,
+        label,
+        `values`
+        FROM
+        tb_order o
+        LEFT JOIN sys_dict d ON o.order_status = d.`values`
+        WHERE
+        d.type = 'ordertype' AND user_id = #{id} and o.status = 1
+        <if test="status != null and status != 0">
+            AND d.VALUES = #{status}
+        </if>
+        ORDER BY order_time DESC
+    </select>
+
+    <select id="getOrderByOid" resultMap="OrderResult">
+          SELECT
+            o.id,
+            user_id,
+            order_number,
+            picture,
+            title,
+            price,
+            commer,
+            deal,
+            payment_time,
+            order_time,
+            o.`status`,
+            label,
+            `values`
+        FROM
+            tb_order o
+            LEFT JOIN sys_dict d ON o.order_status = d.`values` and   d.type = 'ordertype'
+        WHERE
+          order_number = #{oid} and  o.`status` =1
+    </select>
+
+
+    <update id="deleteOrder">
+        UPDATE tb_order SET  `status` = 2 WHERE `id` = #{id};
+    </update>
+
+
+    <select id="getCenterList" resultType="OrderBean">
+        SELECT
+            id,
+            order_time,
+            order_status,
+            `status`
+        FROM
+	        tb_order
+        WHERE
+            NOW( ) > SUBDATE( order_time, INTERVAL - 30 MINUTE )
+            AND order_status = 1
+            AND `status` =1
+
+    </select>
+
+    <update id="centerOrder" parameterType="java.util.List" >
+      UPDATE tb_order
+      SET
+         `order_status` = 2
+      WHERE
+          id in
+        <foreach collection="list" item="ids" open="(" separator="," close=")">
+            #{ids.id}
+        </foreach>
+
+    </update>
+
+</mapper>

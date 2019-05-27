@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.1</title>
+    <meta name="renderer" content="webkit" accept-charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+    <link rel="stylesheet" th:href="@{/css/xadmin.css}">
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/js/xadmin.js}"></script>
+    <script type="text/javascript" th:src="@{/js/cookie.js}"></script>
+
+</head>
+
+<body>
+<div class="x-body">
+    <form id="role" action="" method="post" class="layui-form layui-form-pane">
+        <input class="id" type="hidden" name="id" th:value="${user.id}" th:if="${user != null}">
+        <input class="mth" type="hidden" name="_method" value="put" th:if="${user != null and user.id != null}">
+        <div class="layui-form-item" th:if="${user == null}">
+            <label for="number" class="layui-form-label">
+                <span class="x-red">*</span>账号
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="number"  name="number" required="" lay-verify="required|username"
+                       autocomplete="off" class="layui-input" ><!--//onchange="menuName()"-->
+
+            </div>
+        </div>
+        <div class="layui-form-item" th:if="${user != null and user.id != null}">
+            <label for="number1" class="layui-form-label">
+                <span class="x-red">*</span>账号
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="number1" name="number" th:value="${user != null ? user.number : ''}"  required="" lay-verify="required|username"
+                       autocomplete="off" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item" th:if="${user == null }">
+            <label for="password" class="layui-form-label">
+                <span class="x-red">*</span>密码
+            </label>
+            <div class="layui-input-inline">
+                <input type="password" id="password"  name="password" required="" lay-verify="required|pass"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="nickname" class="layui-form-label">
+                <span class="x-red">*</span>昵称
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="nickname" th:value="${user != null ? user.nickname : ''}" name="nickname" required="" lay-verify="required"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="id_c" class="layui-form-label">
+                <span class="x-red">*</span>身份证
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="id_c" th:value="${user != null ? user.id_c : ''}" name="id_c" required="" lay-verify="required|identity"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="phone" class="layui-form-label">
+                <span class="x-red">*</span>手机号码
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="phone" th:value="${user != null ? user.phone : ''}" name="phone" required="" lay-verify="required|phone|number"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="email" class="layui-form-label">
+                <span class="x-red">*</span>邮箱
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="email" th:value="${user != null ? user.email : ''}" name="email" required="" lay-verify="required|email"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">
+                选择角色
+            </label>
+            <table  class="layui-table layui-input-block" lay-filter="test">
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="layui-input-block">
+                                        <span th:each="role:${role}">
+                                            <input name="ids" lay-skin="primary" type="checkbox"  th:value="${role.id}" th:title="${role.name}" >
+                                        </span>
+                        </div>
+                    </td>
+                    <span style="display: none" th:if="${roleson !=null}" th:each="roles : ${roleson} ">
+                                        <span  class="roleson"  th:text="${roles.id}"></span>
+                    </span>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="layui-form-item">
+            <button class="layui-btn" lay-submit="" lay-filter="add">保存信息</button>
+        </div>
+    </form>
+</div>
+<script>
+    setTimeout(add(),3000);
+    function add(){
+        var menu= $("input:checkbox[name='ids']")// 遍历name=test的多选框
+
+        var rolemenu =$(".roleson")
+
+        console.info(menu)
+        console.info(rolemenu.eq(1).text())
+        for (var i = 0 ;i<menu.length;i++){
+            for (var j = 0;j<rolemenu.length;j++){
+                if (menu.eq(i).val() == rolemenu.eq(j).text()){
+                    menu.eq(i).attr("checked","checked")
+                }
+            }
+        }
+    }
+    /*$(function () {
+        var menu= $("input:checkbox[name='ids']")// 遍历name=test的多选框
+
+        var rolemenu =$(".roleson")
+
+        console.info(menu)
+        console.info(rolemenu.eq(1).text())
+        for (var i = 0 ;i<menu.length;i++){
+            for (var j = 0;j<rolemenu.length;j++){
+                if (menu.eq(i).val() == rolemenu.eq(j).text()){
+                    menu.eq(i).attr("checked","checked")
+                }
+            }
+        }
+
+    })*/
+</script>
+<script>
+
+
+
+
+    layui.use(['form','layer','table'], function(){
+        $ = layui.jquery;
+        var form = layui.form
+            ,layer = layui.layer;
+        var table = layui.table;
+
+        form.verify({
+            username: function(value, item){ //value：表单的值、item：表单的DOM对象
+                if(!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)){
+                    return '用户名不能有特殊字符';
+                }
+                if(/(^\_)|(\__)|(\_+$)/.test(value)){
+                    return '用户名首尾不能出现下划线\'_\'';
+                }
+                if(/^\d+\d+\d$/.test(value)){
+                    return '用户名不能全为数字';
+                }
+                var number = $("#number").val();
+                var message = '';
+                $.ajax({
+                    async: false, //改为同步请求
+                    url: '/user/checkName',
+                    data: {
+                        number: number
+                    },
+                    dataType: 'json',
+                    type: 'get',
+                    success:function(data){
+                        if(data){
+
+                        }else{
+                            message ="用户名已存在，请重新输入！"
+                        }
+                    }
+                });
+                if (message !== '')
+                    return message;
+            }
+            ,phone:[
+                /^1[34578]\d{9}$/
+                ,'请输入正确手机号'
+            ]
+            ,identity:[
+                /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/
+                ,'请输入正确身份证'
+            ]
+            //我们既支持上述函数式的方式，也支持下述数组的形式
+            //数组的两个值分别代表：[正则匹配、匹配不符时的提示文字]
+            ,pass: [
+                /^[\S]{6,12}$/
+                ,'密码必须6到12位，且不能出现空格'
+            ]
+        });
+
+
+        //监听提交
+        form.on('submit(add)', function(data){
+            //发异步，把数据提交给后台
+            //获得表单数据
+            var formData = data.field;
+            //初始化选择框的值
+            var ids = ""
+            //拼接选中的值
+            var menu= $("input:checkbox[name='ids']:checked")// 遍历name=test的多选框
+           if (menu.length==0){
+               layer.msg('请选择角色！')
+               return false;
+           } else{
+               for (var i = 0 ;i<menu.length;i++){
+                   if (i == menu.length-1){
+                       ids+=menu.eq(i).val()
+                   } else{
+                       ids+=menu.eq(i).val()+","
+                   }
+
+               }
+           }
+
+            //打印查看选中的值
+            console.info(ids)
+            console.info(formData)
+            $.post('/user/save',{'_method':$(".mth").val(),'id':$(".id").val(),'phone':formData.phone,'id_c':formData.id_c,'nickname':formData.nickname,'number':formData.number,'email':formData.email,'password':formData.password,'ids':ids},function (datas) {
+                //根据返回来的code判定，0为正常
+                if (datas.code == 200) {
+                    //弹出返回来的msg
+                    layer.alert(datas.msg, {icon: 6},function () {
+                        // 获得frame索引
+                        var index = parent.layer.getFrameIndex(window.name);
+                        //关闭当前frame
+                        parent.layer.close(index);
+                        //刷新父级页面
+                        window.parent.location.reload();
+                    });
+                }
+            });
+            return false;
+        });
+
+
+        form.on('checkbox(father)', function(data){
+
+            if(data.elem.checked){
+                $(data.elem).parent().siblings('td').find('input').prop("checked", true);
+                form.render();
+            }else{
+                $(data.elem).parent().siblings('td').find('input').prop("checked", false);
+                form.render();
+            }
+        });
+
+
+    });
+</script>
+</body>
+</html>

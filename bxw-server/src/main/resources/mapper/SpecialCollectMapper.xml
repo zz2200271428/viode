@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.SpecialCollectDao">
+    <resultMap id="ResultSpecialCollect" type="SpecialCollectBean">
+        <id column="id" property="id"></id>
+        <result column="uid" property="uid"></result>
+        <result column="cid" property="cid"></result>
+        <result column="time" property="time"></result>
+        <result property="specialColumn.id" column="sid"/>
+        <result property="specialColumn.spe_title" column="spe_title"/>
+        <result property="specialColumn.spe_desc" column="spe_desc"/>
+        <result property="specialColumn.cover_img" column="cover_img"/>
+        <result property="specialColumn.create_by.id" column="create_by"/>
+        <result property="specialColumn.price" column="price"/>
+        <result property="appUser.id" column="aid"/>
+        <result property="appUser.phone" column="phone"/>
+        <result property="appUser.username" column="username"/>
+        <result property="appUser.sex" column="sex"/>
+        <result property="appUser.member" column="member"/>
+    </resultMap>
+
+
+    <select id="queryList"  resultMap="ResultSpecialCollect">
+        SELECT
+            cd.uid,
+            cd.cid,
+            cd.time,
+            sc.id sid,
+            sc.spe_status,
+            sc.spe_title,
+            sc.spe_desc,
+            sc.cover_img,
+            sc.price,
+            u.id aid,
+            u.phone,
+            u.username
+        FROM
+          tb_special_collect cd
+        LEFT JOIN
+          tb_special_column  sc
+        on
+          sc.id = cd.cid
+        LEFT JOIN
+          tb_user u
+        on
+          u.id = sc.create_by
+       <where>
+            <if test="spe_title != null">
+                AND sc.spe_title  LIKE CONCAT('%',#{spe_title},'%')
+            </if>
+            <if test="start != null">
+                AND cd.time &gt;= #{start}
+            </if>
+            <if test="end != null">
+                AND cd.time &lt;= #{end}
+            </if>
+      </where>
+            LIMIT #{page},#{limit}
+    </select>
+
+    <select id="getCount" parameterType="com.znsd.instapundit.bean.SpecialCollectBean" resultType="int">
+        SELECT
+          count(1)
+        FROM
+        tb_special_collect cd
+        LEFT JOIN
+        tb_special_column  sc
+        on
+        sc.id = cd.cid
+        LEFT JOIN
+        tb_user u
+        on
+        u.id = sc.create_by
+        <where>
+            <if test="spe_title != null">
+                AND sc.spe_title  LIKE CONCAT('%',#{spe_title},'%')
+            </if>
+            <if test="start != null">
+                AND cd.time &gt;= #{start}
+            </if>
+            <if test="end != null">
+                AND cd.time &lt;= #{end}
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="AppCollect" type="com.znsd.instapundit.bean.SpecialCollectBean">
+        <id property="id" column="id"/>
+        <result property="time" column="time"/>
+        <result property="specialColumn.id" column="cid"/>
+        <result property="specialColumn.spe_title" column="spe_title"/>
+        <result property="specialColumn.cover_img" column="cover_img"/>
+        <result property="specialColumn.spe_status" column="spe_status"/>
+    </resultMap>
+
+
+    <select id="getCollectByUserId" resultMap="AppCollect">
+      SELECT
+        c.id,
+        c.time,
+        c.cid,
+        s.spe_title,
+        s.cover_img,
+        s.spe_status
+    FROM
+        tb_special_collect c
+        LEFT JOIN tb_special_column s ON c.cid = s.id
+	WHERE
+	  uid = #{id}
+	  ORDER BY  c.time DESC
+    </select>
+
+</mapper>

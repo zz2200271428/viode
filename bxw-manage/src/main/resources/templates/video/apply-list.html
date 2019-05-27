@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>欢迎页面-X-admin2.1</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+  <link rel="stylesheet" th:href="@{/css/font.css}">
+  <link rel="stylesheet" th:href="@{/css/xadmin.css}">
+  <script type="text/javascript" th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+  <script type="text/javascript" th:src="@{/js/cookie.js}"></script>
+  <script type="text/javascript" th:src="@{/js/xadmin.js}"></script>
+</head>
+
+<body class="">
+<div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">演示</a>
+        <a><cite>导航元素</cite></a>
+      </span>
+  <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+    <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+</div>
+<div class="x-body">
+  <div class="layui-row">
+    <form class="layui-form layui-col-md12 x-so" id="myform">
+      <input class="layui-input"  autocomplete="off" placeholder="开始日" name="start" id="start">
+      <input class="layui-input"  autocomplete="off" placeholder="截止日" name="end" id="end">
+      <input type="text" name="video_title" placeholder="请输入视频标题" autocomplete="off" class="layui-input">
+      <div class="layui-input-inline">
+        <select name="video_type">
+          <option value="">视频类型</option>
+          <option th:each="os,videoType:${videoTypeList}" th:value="${os.values}" th:text="${os.label}"></option>
+        </select>
+      </div>
+      <div class="layui-input-inline">
+        <select name="check_status">
+          <option value="">审核状态</option>
+          <option value="1">待审核</option>
+          <option value="3">未通过</option>
+        </select>
+      </div>
+      <button class="layui-btn layui-btn-radius" type="reset">重置</button>
+      <button class="layui-btn layui-btn-radius" type="button" id="btn">搜索 <i class="layui-icon">&#xe615;</i></button>
+    </form>
+  </div>
+  <table class="layui-table" id="table" lay-filter="test"></table>
+</div>
+
+<script type="text/html" id="bar">
+  <button lay-event="pass" class="layui-btn layui-btn layui-btn-xs">pass</button>
+  <button lay-event="fail"  class="layui-btn-danger layui-btn layui-btn-xs">fail</button>
+</script>
+
+<script>
+  layui.use(['table','laydate'], function(){
+    var table = layui.table, laydate = layui.laydate, $ = layui.$ ,form = layui.form;
+
+    // 渲染日期控件
+    laydate.render({
+      elem: '#start' // 开始时间
+    });
+    laydate.render({
+      elem: '#end' // 结束时间
+    });
+
+    table.on('tool(test)', function(obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+      var data = obj.data; //获得当前行数据
+      var layEvent = obj.event; //获得 lay-event 对应的值
+      var tr = obj.tr; //获得当前行 tr 的DOM对象
+      var check_status;
+      if (layEvent === 'pass') { // 改变状态为2
+        check_status = 2;
+      }else if (layEvent === 'fail') {
+        if(data.check_status == 1){ // 改变状态为3
+          check_status = 3;
+        }else{
+          return layer.msg("已经fail状态啦！");
+        }
+      }
+      $.post('/video/apply/',{'_method':'PUT','id':data.id,'check_status':check_status},function (result) {
+        if(result.code == 200){
+          layer.msg(result.msg, {icon: 1,time:1000});
+        }else{
+          layer.msg(result.msg, {icon: 2,time:1000});
+        }
+        table.reload('table',{'url':'/video/apply/',page:1});
+      })
+    });
+
+    //所获得的 tableIns 即为当前容器的实例
+    table.render({
+      toolbar:'#',
+      elem:'#table',// 绑定要被渲染的表格id
+      even: true, //开启隔行背景
+      cols: [
+        [
+          {field: 'id', title: 'ID',width:'10%',align:'center', sort: true}
+          ,{field:'upload_by',title:'上传人',width:'10%',align:'center',templet:function (row) {
+            return '<span value="' + row.upload_by.id + '" class="layui-btn layui-btn-normal layui-btn-mini particulars">查看详情</span>'
+          }}
+          ,{field:'video_title',title:'视频标题',width:'10%',align:'center'}
+          ,{field:'video_intro',title:'视频简介',width:'10%',align:'center'}
+          ,{field: 'cover_img',title: '视频封面',templet:'<div><img src="{{d.cover_img}}"></div>'}
+          ,{field:'video_url',title:'视频源',width:'10%',align:'center',templet:function (row) {
+            return '<span value="' + row.id + '" class="layui-btn layui-btn-normal layui-btn-mini play">点击播放</span>'
+          }}
+          ,{field:'video_type',title:'视频类型',width:'10%',align:'center',sort:true,templet:function (row) {
+            return row.video_type.label;
+          }}
+          ,{field:'video_length',title:'时长',width:'10%',align:'center',sort:true}
+          ,{field:'price',title:'价格',width:'10%',align:'center',sort:true,templet:function (row) {
+            return row.price + ' ￥'
+          }}
+          ,{field:'check_status',title:'审核状态',width:'10%',align:'center',sort:true,templet:function (row) {
+            return row.check_status == 1 ? "待审核" : "未通过";
+          }}
+          ,{field:'upload_time',title:'上传时间',width:'13%',align:'center',sort:true}
+          ,{title:'审核操作',width:'10%',align:'center',templet:'#bar',fixed: 'right'}
+        ]
+      ],
+      url: '/video/apply/', //设置异步接口
+      page:true
+    });
+
+    // 模糊搜索
+    $(document).on('click','#btn',function(){
+      var array = $('#myform').serializeArray();
+      var param = {};
+      $.each(array,function (i,v) {
+        if(v.value != ''){
+          param[v.name] = v.value;
+        }
+      })
+      table.render({
+        toolbar:'#',
+        elem:'#table',// 绑定要被渲染的表格id
+        even: true, //开启隔行背景
+        cols: [
+          [
+            {field: 'id', title: 'ID',width:'10%',align:'center', sort: true}
+            ,{field:'upload_by',title:'上传人',width:'10%',align:'center',templet:function (row) {
+              return '<span value="' + row.upload_by.id + '" class="layui-btn layui-btn-normal layui-btn-mini particulars">查看详情</span>'
+            }}
+            ,{field:'video_title',title:'视频标题',width:'10%',align:'center'}
+            ,{field:'video_intro',title:'视频简介',width:'10%',align:'center'}
+            ,{field: 'cover_img',title: '视频封面',templet:'<div><img src="{{d.cover_img}}"></div>'}
+            ,{field:'video_url',title:'视频源',width:'10%',align:'center',templet:function (row) {
+              return '<span value="' + row.id + '" class="layui-btn layui-btn-normal layui-btn-mini play">点击播放</span>'
+            }}
+            ,{field:'video_type',title:'视频类型',width:'10%',align:'center',sort:true,templet:function (row) {
+              return row.video_type.label;
+            }}
+            ,{field:'video_length',title:'时长',width:'10%',align:'center',sort:true}
+            ,{field:'price',title:'价格',width:'10%',align:'center',sort:true,templet:function (row) {
+              return row.price + ' ￥'
+            }}
+            ,{field:'check_status',title:'审核状态',width:'10%',align:'center',sort:true,templet:function (row) {
+              return row.check_status == 1 ? "待审核" : "未通过";
+            }}
+            ,{field:'upload_time',title:'上传时间',width:'13%',align:'center',sort:true}
+            ,{title:'审核操作',width:'10%',align:'center',templet:'#bar',fixed: 'right'}
+          ]
+        ],
+        url: '/video/apply/', //设置异步接口
+        page:true,
+        where:param
+      });
+    });
+
+    $(document).on('click','.play',function(){
+      x_admin_show('播放视频', '/video/play?id='+$(this).attr('value'), 1000, 500,true);
+    });
+
+    $(document).on('click','.particulars',function(){
+      x_admin_show('详情页面', '/appUser/particulars?id='+$(this).attr('value'), 1000, 500);
+    });
+
+  })
+</script>
+</body>
+</html>

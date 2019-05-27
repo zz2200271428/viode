@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>问答店铺</title>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="applicable-device" content="mobile">
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+    <link rel="stylesheet" th:href="@{/css/ask.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/foot.css}">
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+</head>
+<body id="global" class="h5 isuin">
+<div class="mod-teacher__wrap">
+    <div class="mod-banner">
+        <img th:src="@{/img/agency_bg@2x.40a6142.jpg}" alt="banner" width="100%">
+    </div>
+    <div id="js-teacherBaseInfo" class="mod-teacher__info">
+        <div class="mod-teacher__fn"><span class="mod-teacher__face"
+                                           style="background-image: url(/img/ask.jpg);background-size: cover;"></span>
+            <h1 class="mod-teacher__name"></h1>
+        </div>
+        <h2 class="common-title">问答店铺</h2>
+    </div>
+</div>
+<div class="nav1">
+    <nav id="nav" class="nav__tab border-bottom">
+        <div class="nav__tab-item" th:classappend="${active==0}?'nav__tab-item--selected'" active="0">
+            <p class="nav__tab-item__title">综合排序</p>
+            <svg class="icon-svg nav__tab-item__icon svg--v-bottom" viewBox="0 0 480 480">
+                <use xlink:href="#v-bottom"></use>
+            </svg>
+        </div>
+        <div class="nav__tab-item" th:classappend="${active==1}?'nav__tab-item--selected'" active="1">
+            <p class="nav__tab-item__title">按访问量</p>
+            <svg class="icon-svg nav__tab-item__icon svg--v-bottom" viewBox="0 0 480 480">
+                <use xlink:href="#v-bottom"></use>
+            </svg>
+        </div>
+        <div class="nav__tab-item" th:classappend="${active==2}?'nav__tab-item--selected'" active="2">
+            <p class="nav__tab-item__title">按关注量</p>
+            <svg class="icon-svg nav__tab-item__icon svg--v-bottom" viewBox="0 0 480 480">
+                <use xlink:href="#v-bottom"></use>
+            </svg>
+        </div>
+    </nav>
+</div>
+<div id="d1">
+    <div th:each="s,store:${storeList}" class="u-teacher-card" th:data-id="${s.id}" data-hasreported="1"
+         data-reportonce="rid=agencyHome__tt2621811928&amp;module=Y-MQ-Organ&amp;action=TeacherTab_teacher_expo&amp;ver2=2621811928&amp;ver3=11212&amp;ver9=h5">
+        <div class="u-teacher-card__img"><img th:src="${s.simg}" width="65" height="65"></div>
+        <div class="u-teacher-card__right">
+            <h3 class="u-teacher-card__name"><em class="u-teacher-card__word">[[${s.sname}]]</em></h3>
+            <p class="u-teacher-card__info"><span class="u-teacher-card__info-item">收藏：[[${s.count}]]</span><span
+                    class="u-teacher-card__info-item">点击：[[${s.click_amount}]]</span></p>
+            <p class="u-teacher-card__desc">[[${s.store_desc}]]</p>
+        </div>
+        <hr>
+    </div>
+</div>
+<section class="topic-seo">
+    <div class="topic-seo-mod">
+        <h2 class="common-title">博学网</h2>
+    </div>
+</section>
+<div th:replace="~{foot::foot(active='store/to_askshop')}"></div>
+
+
+</body>
+<script>
+    $(function () {
+        $('.nav__tab-item').on('click',function () {
+            var active = $(this).attr('active');
+            window.location.href="/store/to_askshop?active="+active;
+        })
+
+        $('.u-teacher-card').on('click',function () {
+            var storeID = $(this).attr('data-id');
+            console.info(123);
+            window.location.href="/store/to_homepage?storeID="+storeID;
+        })
+
+    })
+</script>
+</html>

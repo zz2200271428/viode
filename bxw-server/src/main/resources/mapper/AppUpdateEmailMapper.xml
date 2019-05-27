@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.AppUpdateEmailDao">
+    <insert id="addEmaillogin">
+         INSERT INTO `instapundit`.`tb_login_email`
+           (
+              `userId`, `username`,
+               `old_email`, `new_email`,
+               `create_time`, `updated_time`
+           )
+          VALUES (
+                #{moveUserBean.id}, #{moveUserBean.username},
+                #{moveUserBean.email}, #{moveUserBean.picture},
+                NOW(),NOW()
+            );
+    </insert>
+    <insert id="addPhonelogin">
+        INSERT INTO `instapundit`.`tb_login_phone`
+           (
+              `userId`, `username`,
+               `old_phone`, `new_phone`,
+               `create_time`, `updated_time`
+           )
+          VALUES (
+                #{moveUserBean.id}, #{moveUserBean.username},
+                #{moveUserBean.phone}, #{moveUserBean.picture},
+                NOW(),NOW()
+            );
+
+
+    </insert>
+    <update id="updateDatePhone">
+        update `instapundit`.`tb_user`
+            <set>
+                <if test="moveUserBean.picture != null and moveUserBean.picture != ''">
+                    phone=#{moveUserBean.picture}
+                </if>
+            </set>
+        where id=#{moveUserBean.id}
+    </update>
+    <update id="updateDateEmail">
+        update tb_user
+              set
+                email=#{moveUserBean.picture}
+
+        where id=#{moveUserBean.id}
+    </update>
+    <update id="update_Date_Password">
+        update tb_user
+            set
+              password=#{moveUserBean.password}
+        where id=#{moveUserBean.id}
+    </update>
+
+</mapper>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>欢迎页面-X-admin2.1</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+  <link rel="stylesheet" th:href="@{/css/font.css}">
+  <link rel="stylesheet" th:href="@{/css/xadmin.css}">
+  <script type="text/javascript" th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+  <script type="text/javascript" th:src="@{/js/cookie.js}"></script>
+  <script type="text/javascript" th:src="@{/js/xadmin.js}"></script>
+</head>
+
+<body class="">
+<div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">演示</a>
+        <a><cite>导航元素</cite></a>
+      </span>
+  <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+    <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+</div>
+<div class="x-body">
+  <div class="layui-row">
+    <form id="myform" class="layui-form layui-col-md12 x-so">
+      <input class="layui-input"  autocomplete="off" placeholder="开始日" name="start" id="start">
+      <input class="layui-input"  autocomplete="off" placeholder="截止日" name="end" id="end">
+      <input type="text" name="sname" placeholder="请输入店铺名称" autocomplete="off" class="layui-input">
+      <input type="text" name="store_desc" placeholder="请输入店铺介绍" autocomplete="off" class="layui-input">
+      <div class="layui-input-inline">
+        <select name="status">
+          <option value="">状态</option>
+          <option value="1">正常</option>
+          <option value="2">冻结</option>
+        </select>
+      </div>
+      <button class="layui-btn layui-btn-radius" type="reset">重置</button>
+      <button class="layui-btn layui-btn-radius" type="button" id="btn">搜索 <i class="layui-icon">&#xe615;</i></button>
+    </form>
+  </div>
+  <table class="layui-table" id="table" lay-filter="test"></table>
+</div>
+
+<script type="text/html" id="barDemo">
+  <button class="layui-btn layui-btn-danger delAll"><i class="layui-icon"></i>批量删除</button>
+</script>
+<script type="text/html" id="checkboxTpl">
+  <input type="checkbox" name="{{d.id}}" value="{{d.status}}" title="冻结" lay-filter="lockDemo"  {{ d.status == 2 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="bar">
+  <a title="删除" class="del" value="{{d.id}}" href="javascript:;"><i class="layui-icon">&#xe640;</i>
+</script>
+<script>
+
+
+  layui.use(['table','laydate'], function(){
+    var table = layui.table, laydate = layui.laydate, $ = layui.$ ,form = layui.form;
+
+    // 渲染日期控件
+    laydate.render({
+      elem: '#start' // 开始时间
+    });
+    laydate.render({
+      elem: '#end' // 结束时间
+    });
+
+    //监听锁定操作
+    form.on('checkbox(lockDemo)', function(obj){
+      var id = obj.elem.name;
+      var status = obj.value == 1 ? 2 : 1;
+      $.post('/store/', {'id': id, '_method': 'PUT','status':status}, function (result) {
+        if(result.code == 200){
+          layer.msg(result.msg, {icon: 1,time:1000});
+        }else{
+          layer.msg(result.msg, {icon: 2,time:1000});
+        }
+        table.reload('table',{'url':'/store/',page:1});
+      })
+    });
+
+    // 删除按钮事件
+    $(document).on('click','.del',function(){
+      var id = $(this).attr("value");
+      layer.confirm('确认要删除' + id + '吗？',function(){
+        $.post('/store/', {'ids':id , '_method': 'DELETE'}, function (result) {
+          if(result.code == 200){
+            layer.msg(result.msg, {icon: 1,time:1000});
+          }else{
+            layer.msg(result.msg, {icon: 2,time:1000});
+          }
+          table.reload('table',{'url':'/store/',page:1});
+        })
+      });
+    });
+
+    // 批量删除按钮事件
+    $(document).on('click','.delAll',function(){
+      var array = table.checkStatus('table').data;
+      if(array.length == 0){
+        return layer.msg('请选择', {icon: 2,time:1000});
+      }
+      var ids = [];
+      $.each(array,function (i,v) {
+        ids.push(v.id);
+      })
+      layer.confirm('确认要删除选中记录吗？',function(){
+        //捉到所有被选中的，发异步进行删除
+        $.post('/store/', {'ids':ids.join(',') , '_method': 'DELETE'}, function (result) {
+          if(result.code == 200){
+            layer.msg(result.msg, {icon: 1,time:1000});
+          }else{
+            layer.msg(result.msg, {icon: 2,time:1000});
+          }
+          table.reload('table',{'url':'/store/',page:1});
+        })
+      });
+    });
+
+    //所获得的 tableIns 即为当前容器的实例
+    table.render({
+      toolbar:'#barDemo',
+      elem:'#table',// 绑定要被渲染的表格id
+      even: true, //开启隔行背景
+      cols: [
+        [
+          {checkbox: true, LAY_CHECKED: false}
+          ,{field: 'id', title: 'ID',width:'10%',align:'center', sort: true}
+          ,{field:'user.id',title:'店主',width:'10%',align:'center',templet:function (row) {
+            return '<span value="' + row.user.id + '" class="layui-btn layui-btn-normal layui-btn-mini particulars">查看详情</span>'
+          }}
+          ,{field:'sname',title:'店铺名称',width:'15%',align:'center'}
+          ,{field: 'simg',title: '店铺头像',templet:'<div><img src="{{d.simg}}"></div>'}
+          ,{field:'store_desc',title:'店铺介绍',width:'25%',align:'center'}
+          ,{field:'contact',title:'联系方式',width:'10%',align:'center'}
+          ,{field:'open_time',title:'开店日期',width:'13%',align:'center',sort:true}
+          ,{field:'status', title:'是否冻结', width:110, templet: '#checkboxTpl',sort:true}
+          ,{toolbar:'#bar',title:'操作',width:'100',align:'center',fixed: 'right'}
+        ]
+      ],
+      url: '/store/', //设置异步接口
+      page:true,
+    });
+
+    // 模糊搜索
+    $(document).on('click','#btn',function(){
+      var array = $('#myform').serializeArray();
+      var param = {};
+      $.each(array,function (i,v) {
+        if(v.value != ''){
+          param[v.name] = v.value;
+        }
+      })
+      table.render({
+        toolbar:'#barDemo',
+        elem:'#table',// 绑定要被渲染的表格id
+        even: true, //开启隔行背景
+        cols: [
+          [
+            {checkbox: true, LAY_CHECKED: false}
+            ,{field: 'id', title: 'ID',width:'10%',align:'center', sort: true}
+            ,{field:'user.id',title:'店主',width:'10%',align:'center',templet:function (row) {
+              return '<span value="' + row.user.id + '" class="layui-btn layui-btn-normal layui-btn-mini particulars">查看详情</span>'
+            }}
+            ,{field:'sname',title:'店铺名称',width:'15%',align:'center'}
+            ,{field: 'simg',title: '店铺头像',templet:'<div><img src="{{d.simg}}"></div>'}
+            ,{field:'store_desc',title:'店铺介绍',width:'25%',align:'center'}
+            ,{field:'contact',title:'联系方式',width:'10%',align:'center'}
+            ,{field:'open_time',title:'开店日期',width:'13%',align:'center',sort:true}
+            ,{field:'status', title:'是否冻结', width:110, templet: '#checkboxTpl',sort:true}
+            ,{toolbar:'#bar',title:'操作',width:'100',align:'center',fixed: 'right'}
+          ]
+        ],
+        url: '/store/', //设置异步接口
+        page:true,
+        where:param
+      });
+    });
+
+    $(document).on('click','.particulars',function(){
+      x_admin_show('详情页面', '/appUser/particulars?id='+$(this).attr('value'), 1000, 500);
+    });
+
+  })
+
+</script>
+</body>
+</html>

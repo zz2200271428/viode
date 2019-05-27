@@ -1,0 +1,84 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="multipart/form-data;  charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <!--<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    -->
+    <title></title>
+    <link rel="stylesheet" th:href="@{/css/myCenterCss/weui.min.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+  <!--  <link rel="stylesheet" href="../css/weui.min.css">-->
+    <style type="text/css">
+        .show{margin-top: 5px; position: relative; width: 950px; }
+        .show .item{position: absolute; width: 350px; height: 150px; text-align:center;}
+        .show img{max-width: 350px;max-height: 150px;   box-shadow: 0px 1px 1px 1px #AAA3A3;}
+        .show img:hover{box-shadow: 0px 1px 1px 2px #83ABD2;}
+        .show .big{z-index: 2;}
+        /*cursor: url(./images/small.cur),auto;,cursor: url(./images/big.cur),auto; */
+        .show .big img{max-width: none; max-height: none; box-shadow: 2px 2px 10px 2px #666;}
+    </style>
+<body>
+<div class="header">
+    <span>讲师申请</span>
+</div>
+<form action="/TS/teachTwo" method="post"   enctype="multipart/form-data">
+<div class="weui-cells weui-cells_form wy-address-edit">
+    <div class="weui-cell" >
+        <div class="weui-cell__hd"  ><label class="weui-label wy-lab">讲师姓名</label></div>
+        <div class="weui-cell__bd"><input name="uname" class="weui-input" type="text"  required placeholder="请输入讲师姓名" ></div>
+    </div>
+    <div class="weui-cell" >
+        <div class="weui-cell__hd"><label class="weui-label wy-lab">电话号码</label></div>
+        <div class="weui-cell__bd"><input name="contact" class="weui-input" type="text" required pattern="[0-9]*" placeholder="请输入联系方式"  ></div>
+    </div>
+    <div class="weui-cell" >
+        <div class="weui-cell__hd"><label class="weui-label wy-lab">保证金（￥）</label></div>
+        <div class="weui-cell__bd"><input name="cashdeposit" class="weui-input" type="text"  required pattern="[0-9]*" value="1000"  disabled="disabled"></div>
+    </div>
+    <div class="weui-cell" style="height: 100px;">
+        <div class="weui-cell__bd"><textarea id="store_desc" class="weui-textarea" name="store_desc" rows="" cols="" style="height: 100px" placeholder="你可以介绍一下自己让别人更好的了解你100字之内"></textarea></div>
+    </div>
+    <div class='upload_box'>
+        <input type="file" id='upimg' name="file"  multiple style="display: none;">
+    </div>
+    <div id="btn_add2" style="display: block; text-align:center;" >
+        <img  th:src="@{/img/ec8ba40e9a7d3c4687c19d8255bb5844.png}" > <br>讲师身份证国徽面
+    </div>
+    <div class='show' id="show" style="height: 200px; "></div>
+
+
+
+    <div class='upload_box'>
+        <input type="file" id='upimg2'name="file"  required  multiple  style="display: none;">
+    </div>
+    <div id="btn_add3" style="display: block; text-align:center;">
+        <img  th:src="@{/img/7f1a67eed11ddf4aa31aed68c89077de.png}" > <br>讲师身份证人脸面
+    </div>
+    <div class='show' id="show2" style="height: 200px;"></div>
+
+
+    <div class='upload_box'>
+        <input type="file" id='upimg3' name="file"  required  multiple  style="display: none;">
+    </div>
+    <div id="btn_add4" style="text-align:center">
+        <img  th:src="@{/img/c16c62ee9ceb41418434bae75613efa7.png}"><br>教师资格证
+    </div>
+    <div class='show' id="show3" style="height : 200px;"></div>
+    <p ></p>
+    <div id="" style="text-align:center">
+        <input class="weui-btn weui-btn_primary" type="submit" value="上传" />
+        <input  class="weui-btn weui-btn_primary" type="button" id="button" value="重置"/>
+    </div>
+
+</div>
+
+</form>
+    <script type="text/javascript" th:src="@{/js/jquery-1.9.0.min.js}" ></script>
+    <script type="text/javascript" th:src="@{/js/myCenter/teach.js}" ></script>
+    <script type="text/javascript">
+    </script>
+</body>
+</html>

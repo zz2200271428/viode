@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.1</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+    <link rel="stylesheet" th:href="@{/css/xadmin.css}">
+    <script type="text/javascript" th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/cookie.js}"></script>
+    <script type="text/javascript" th:src="@{/js/xadmin.js}"></script>
+    <script type="text/javascript"  th:src="@{/js/echarts.min.js}"></script>
+
+
+</head>
+
+<body class="">
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+</div>
+
+    <div id="main" style="width: 1202px;height: 800px;"  align="center" ></div>
+
+</body>
+<script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        myChart.setOption({
+            title: {
+                text: '店铺访问量数据',
+                x: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data: []
+            },
+            series: [
+                {
+                    name: '用户访问量',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '45',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: []
+                }
+            ]
+        });
+
+        $.ajax({
+            url: "/pie/clickCount",
+            async: false,
+            dataType: "json",
+            type: "post",
+            success: function (data) {
+                myChart.hideLoading();
+                myChart.setOption({
+                    legend:[
+                        {
+                            orient: 'vertical',
+                            x: 'left',
+                            data: function () {
+                                var res = [];
+                                $.each(data.data, function (key, vale) {
+                                    res.push({
+                                        name: vale.sname,
+                                    });
+                                });
+                                return res;
+                            }()
+
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '店铺访问量',
+                            type: 'pie',
+                            radius: ['50%', '70%'],
+                            avoidLabelOverlap: false,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                },
+                                emphasis: {
+                                    show: true,
+                                    textStyle: {
+                                        fontSize: '14.5',
+                                        fontWeight: 'bold'
+                                    }
+                                }
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+
+
+                            data: function () {
+                                var res = [];
+                                $.each(data.data, function (key, vale) {
+                                    res.push({
+                                        value: vale.click_amount,
+                                        name: vale.sname
+                                    });
+                                });
+                                return res;
+                            }()
+                        }
+                    ]
+                })
+            }
+        })
+</script>
+</html>

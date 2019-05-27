@@ -1,0 +1,76 @@
+html, body, menu, ul, ol, li, p, dl, dt, dd, div, form, h1, h2, h3, h4, h5, h6, img, a img, input, button, textarea, fieldset {
+    padding:0;
+    margin:0;
+    border:0;
+}
+*{outline: none;}
+ul, ol, li {
+    list-style:none;
+}
+h1, h2, h3, h4, h5, h6, b, i, em {
+    font-size:1em;
+    font-weight:normal;
+    font-style:normal;
+}
+body, input, button, textarea, select {
+    -webkit-text-size-adjust:none;
+    font:normal 14px/1.5 "\5FAE\8F6F\96C5\9ED1", helvetica, verdana, san-serif;
+    outline:none;
+    color:#333;
+    border:none;
+}
+input[type="text"], input[type="password"], input[type="button"], input[type="submit"], button, textarea {
+    -webkit-appearance:none;
+}
+a {
+    text-decoration:none;
+    color:#333;
+}
+.img img, video,img {
+    vertical-align:middle;
+}
+body {
+    min-width:320px;
+    margin:0 auto;
+    background:#fff;
+}
+.btn {
+    display:inline-block;
+    vertical-align:middle;
+}
+.fl{
+	float:left;
+}
+.fr{
+	float:right;
+}
+.cl{clear:both;}
+.cfx:after, nav.mini:after, .h:after, .hn:after,.clearfix {
+    content:' ';
+    clear:both;
+    display:block;
+    height:0;
+    visibility:hidden;
+    line-height:0;
+}
+
+
+
+html{font-size:20px; }
+
+/*修改placeholder的颜色*/
+::-webkit-input-placeholder { /* WebKit browsers */
+color: #ccc;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+color: #ccc;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+color: #ccc;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+color: #ccc;
+}
+
+
+

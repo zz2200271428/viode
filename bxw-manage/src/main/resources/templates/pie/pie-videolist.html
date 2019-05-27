@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.1</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+    <link rel="stylesheet" th:href="@{/css/xadmin.css}">
+    <script type="text/javascript" th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/cookie.js}"></script>
+    <script type="text/javascript" th:src="@{/js/xadmin.js}"></script>
+    <script type="text/javascript"  th:src="@{/js/echarts.min.js}"></script>
+</head>
+<body class="">
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+</div>
+    <div id="main" style="width: 1200px;height: 450px;"  align="left" ></div>
+</body>
+<script type="text/javascript">
+        var myChart = echarts.init(document.getElementById('main'));
+        myChart.setOption({
+            title :{
+                text : '视频播放前五统计图',
+            },
+            xAxis: {
+                type: 'category',
+                data: []
+            },
+            yAxis: {
+                name: '视频播放量',
+                type: 'value'
+            },
+            series: [{
+                name: '名称',
+                data: [],
+                type: 'bar'
+            }]
+        });
+        $.ajax({
+            url: "/pie/videoCount",
+            async: false,
+            dataType: "json",
+            type: "post",
+            success: function (data) {
+                myChart.hideLoading();
+                myChart.setOption({
+                    xAxis:[
+                        {
+                            type: 'category',
+                            data: function () {
+                                var res = [];
+                                $.each(data.data, function (key, vale) {
+                                    res.push({
+                                        value: vale.video_title
+                                    });
+                                });
+                                return res;
+                            }()
+                        }
+                    ],
+                    yAxis: {
+                        name: '视频播放量',
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                            data: function () {
+                                var res = [];
+                                $.each(data.data, function (key, vale) {
+                                    res.push({
+                                        value: vale.play_amount,
+                                    });
+                                });
+                                return res;
+                            }(),
+                            name: '名称',
+                            type: 'bar'
+                        }
+                    ], error: function (err) {
+                        alert("请求错误")
+                        myChart.hideLoading();
+                    }
+                })
+            }
+        })
+</script>
+</html>

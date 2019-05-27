@@ -1,0 +1,164 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>标题</title>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="applicable-device" content="mobile">
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+    <link rel="stylesheet" th:href="@{/css/jiangshi.css}">
+    <link rel="stylesheet" th:href="@{/css/sosuo.css}">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <title>教师主页</title>
+</head>
+<body id="global" class="h5 isuin">
+<header th:replace="header :: header"></header>
+<div class="mod-teacher__wrap">
+    <div class="mod-banner">
+        <img th:src="${userTeacher.picture}" alt="banner" width="100%">
+    </div>
+    <div id="js-teacherBaseInfo" class="mod-teacher__info">
+        <div class="mod-teacher__fn"><img th:src="${userTeacher.picture}" class="mod-teacher__face">
+            <h1 class="mod-teacher__name" th:text="${userTeacher.username}"></h1>
+        </div>
+        <div class="mod-teacher__ai">
+            <div class="mod-teacher__intro"><span class="mod-teacher__label">老师简介</span><span class="mod-teacher__value"
+                                                                                              th:text="${userTeacher.teacherApplyBean.store_desc}"></span>
+            </div>
+        </div>
+    </div>
+    <div id="js-courseList__wrap" class="mod-courseList__wrap">
+        <h2>免费课程</h2>
+        <div class="mod-pagination__wrap">
+            <ul id="js-courseList" class="mod-courseList">
+                <li class="click" th:data-id="${frees.id}" th:each=" frees : ${free}"
+                    th:video-type="${frees.upload_by.dictBean.values}">
+                    <a href="javascript:void(0);" class="mod-courseList__link">
+                        <div class="mod-courseList__item" data-type="5">
+                            <div class="mod-course__face">
+                                <img th:src="${frees.cover_img}" th:alt="${frees.video_intro}" style="display: inline;">
+                            </div>
+                            <div class="mod-course__info">
+                                <h3 th:text="${frees.video_title}"></h3>
+                                <p class="mod-course__agency">播放量：[[${frees.play_amount}]]</p>
+                                <p class="mod-course__pay " th:text="${frees.upload_by.dictBean.label}"></p>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+            <div id="js-mod-pagination__more" class="mod-pagination__more js-mod-pagination__more video" style=""
+                 th:if="${free.size()==3}">查看更多
+            </div>
+        </div>
+    </div>
+</div>
+<div id="js-courseList__wrap" class="mod-courseList__wrap">
+    <h2>讲师专栏</h2>
+    <ul id="js-courseList" class="mod-courseList">
+        <li class="clicks" th:data-id="${columns.id}" th:each=" columns : ${column}">
+            <a href="javascript:void(0);" class="mod-courseList__link">
+                <div class="mod-courseList__item" data-type="5">
+                    <div class="mod-course__face">
+                        <img th:src="${columns.cover_img}" th:alt="${columns.spe_desc}" style="display: inline;">
+                    </div>
+                    <div class="mod-course__info">
+                        <h3 th:text="${columns.spe_title}"></h3>
+                        <p class="mod-course__agency">专栏价格：[[${columns.price}]]</p>
+                        <p class="mod-course__pay " th:text="${columns.spe_desc}"></p>
+                    </div>
+                </div>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="js-mod-pagination__more" class="mod-pagination__more js-mod-pagination__more special" style=""
+     th:if="${column.size()==3}">查看更多
+</div>
+</div>
+</div>
+<div id="js-courseList__wrap" class="mod-courseList__wrap">
+    <h2>会员视频</h2>
+    <div class="mod-pagination__wrap">
+        <ul id="js-courseList" class="mod-courseList">
+            <li class="click" th:data-id="${members.id}" th:each=" members : ${member}"
+                th:video-type="${members.upload_by.dictBean.values}">
+                <a href="javascript:void(0);" class="mod-courseList__link">
+                    <div class="mod-courseList__item" data-type="5">
+                        <div class="mod-course__face">
+                            <img th:src="${members.cover_img}" th:alt="${members.video_intro}" style="display: inline;">
+                        </div>
+                        <div class="mod-course__info">
+                            <h3 th:text="${members.video_title}"></h3>
+                            <p class="mod-course__agency">播放量：[[${members.play_amount}]]</p>
+                            <p class="mod-course__pay " th:text="${members.upload_by.dictBean.label}"></p>
+                        </div>
+                    </div>
+                </a>
+            </li>
+        </ul>
+        <div id="js-mod-pagination__more"
+             class="mod-pagination__more js-mod-pagination__more video" style="" th:if="${member.size()==3}">查看更多
+        </div>
+    </div>
+</div>
+<div id="js-courseList__wrap" class="mod-courseList__wrap">
+    <h2>付费视频</h2>
+    <div class="mod-pagination__wrap">
+        <ul id="js-courseList" class="mod-courseList">
+            <li class="click" th:data-id="${pay.id}" th:each=" pay : ${pay}"
+                th:video-type="${pay.upload_by.dictBean.values}">
+                <a href="javascript:void(0);" class="mod-courseList__link">
+                    <div class="mod-courseList__item" data-type="5">
+                        <div class="mod-course__face">
+                            <img th:src="${pay.cover_img}" th:alt="${pay.video_intro}" style="display: inline;">
+                        </div>
+                        <div class="mod-course__info">
+                            <h3 th:text="${pay.video_title}"></h3>
+                            <p class="mod-course__agency">播放量：[[${pay.play_amount}]]</p>
+                            <p class="mod-course__pay " th:text="${pay.upload_by.dictBean.label}"></p>
+                        </div>
+                    </div>
+                </a>
+            </li>
+        </ul><!--th:each=" pay : ${pay}-->
+        <div id="js-mod-pagination__more"
+             class="mod-pagination__more js-mod-pagination__more video" style="" th:if="${pay.size()==3}">查看更多
+        </div>
+    </div>
+</div>
+</div>
+</body>
+<script>
+    //搜索栏
+    $("#search").click(function () {
+        $(".search-mask").css("display", "block")
+        $(".m-header").addClass("in-search");
+    })
+    $(".u-button").click(function () {
+        $(".search-mask").css("display", "none")
+        $(".m-header").removeClass("in-search");
+    })
+
+    $('body').on('click', '.click', function () {
+        var videoID = $(this).attr('data-id');
+        window.location.href = '/video/play?videoID=' + videoID;
+    })
+    $('body').on('click', '.clicks', function () {
+        var special = $(this).attr('data-id');
+        window.location.href = '/search/listspecial?specialID=' + special;
+    })
+
+    $('body').on('click', '.video', function () {
+        var video_type = $(this).prev().children().eq(0).attr('video-type');
+        console.log(video_type)
+        window.location.href = '/search/listVideo?video_type=' + video_type;
+    })
+
+    $('body').on('click', '.special', function () {
+        window.location.href = '/search/specialAll';
+    })
+
+</script>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>博学网钱包</title>
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <link th:href="@{/css/qianbao.css}" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+
+</head>
+<body>
+
+<section class="aui-flexView">
+    <header class="aui-navBar aui-navBar-fixed">
+        <a th:href="@{/app/MoveUser}" class="aui-navBar-item">
+            <i class="icon icon-return"></i>
+        </a>
+        <div class="aui-center">
+            <span class="aui-center-title">我的钱包</span>
+        </div>
+        <a href="javascript:;" class="aui-navBar-item"
+           data-ydui-actionsheet="{target:'#actionSheet',closeElement:'#cancel'}">
+            <i class="icon "></i>
+        </a>
+    </header>
+    <section class="aui-scrollView">
+        <div class="aui-wallet-head">
+            <div class="aui-flex">
+                <div class="aui-flex-box">
+                    <i class="icon icon-info"></i>
+                </div>
+                <div class="aui-flex-box">
+                    <h3>总资产(元)</h3>
+                </div>
+                <div class="aui-flex-box">
+                    <i class="icon icon-set"></i>
+                </div>
+            </div>
+            <div class="aui-title-wall">
+                <h1 th:text="${user.money}"></h1>
+            </div>
+            <div class="aui-wallet-bottom">
+                <div class="aui-palace aui-palace-one">
+                    <a th:href="@{/pay/charge}" class="aui-palace-grid">
+
+                        <div class="aui-palace-grid-text">
+                            <h2 style="color:#f9fd06">立刻充值</h2>
+                        </div>
+                    </a>
+                    <a href="javascript:;" class="aui-palace-grid">
+                        <div class="aui-palace-grid-text">
+                            <p>现金余额</p>
+                        </div>
+                        <div class="aui-palace-grid-text">
+                            <h2 th:text="${user.money}"></h2>
+                        </div>
+                    </a>
+                    <a href="javascript:;" class="aui-palace-grid">
+                        <div class="aui-palace-grid-text">
+                            <p>我的收益</p>
+                        </div>
+                        <div class="aui-palace-grid-text">
+                            <h2 th:text="${money}+'.00'"></h2>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+        <div class="divHeight"></div>
+        <div class="aui-wallet-cell">
+
+            <div class="aui-flex aui-flex-one" th:each="pay : ${gt}">
+                <div class="details" th:data-id="${pay.orderBean.order_number}">
+                    <div class="aui-flex-box">
+                        <h2 th:text="${pay.payUser.id==user.id ? '博学网支付凭证' : '博学网收款凭证'}"></h2>
+                        <p>[[${pay.payUser.id==user.id ? '付款金额':'收款金额'}]] <em
+                                th:text="'￥ '+${pay.order_money}+'元'"></em></p>
+                        <p>交易状态: <em th:text="${pay.status}==1 ? '交易成功' : '交易失败'"></em></p>
+                        <p onclick="details(this)">点击查看详情</p>
+                    </div>
+                </div>
+            </div>
+            <div class="divHeight"></div>
+
+        </div>
+    </section>
+</section>
+<script>
+    $(".details").on('click',function () {
+       var oid = $(this).attr('data-id');
+       window.location.href="/order/details?oid="+oid;
+    })
+</script>
+</body>
+
+</html>

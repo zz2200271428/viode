@@ -1,0 +1,229 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>标题</title>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="applicable-device" content="mobile">
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+    <link rel="stylesheet" th:href="@{/css/askxq.css}">
+    <link rel="stylesheet" th:href="@{/css/sosuo.css}">
+    <link type="text/css" rel="stylesheet" th:href="@{/css/dialog.css}"/>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/dialog.js}"></script>
+    <title>教师主页</title>
+</head>
+<body id="global" class="h5 isuin">
+<header class="m-header z-img-ready border-top border-bottom z-no-menu ">
+    <div style="background-color:#fff"><a href="/" data-report-module="nav" data-report-position="logo"
+                                          class="m-header__logo"><span
+            class="m-header__logo-pic"></span>腾讯课堂</a>
+        <div class="u-button u-search__btn" cmd='cencel'>取消</div>
+        <div class="m-header__search">
+            <form class="u-search">
+                <svg class="icon-svg i-search svg--search2" viewBox="0 0 480 480">
+                    <use xlink:href="#search2"></use>
+                </svg>
+                <input id="search" type="search" class="u-search__input z-abled" maxLength="40" autoComplete="off"
+                       placeholder="搜索课程/老师/机构"/>
+                <div class="u-search__reset-wrap"><i class="u-search__reset icon-font i-close"></i></div>
+            </form>
+        </div>
+        <div class="search-mask iphonex-padding-bottom-34-fixed" data-report-module="searchbar" style="display: none;">
+            <section class="m-search-page__b">
+                <header class="m-search-page__h">
+                    <svg class="icon-svg icon-font i-hot svg--hot" viewBox="0 0 480 480">
+                        <use xlink:href="#hot"></use>
+                    </svg>
+                    热门搜索
+                </header>
+                <ul class="m-search-page__hotlist">
+                    <li class="m-search-page__hotitem f-border-1px"><a href="javascript:;"
+                                                                       class="m-search-page__hotitem__link">设计</a></li>
+                    <li class="m-search-page__hotitem f-border-1px"><a href="javascript:;"
+                                                                       class="m-search-page__hotitem__link">雅思</a></li>
+                    <li class="m-search-page__hotitem f-border-1px"><a href="javascript:;"
+                                                                       class="m-search-page__hotitem__link">英语</a></li>
+                    <li class="m-search-page__hotitem f-border-1px"><a href="javascript:;"
+                                                                       class="m-search-page__hotitem__link">高考数学</a>
+                    </li>
+                    <li class="m-search-page__hotitem f-border-1px"><a href="javascript:;"
+                                                                       class="m-search-page__hotitem__link">公务员</a></li>
+                    <li class="m-search-page__hotitem f-border-1px"><a href="javascript:;"
+                                                                       class="m-search-page__hotitem__link">ps</a></li>
+                    <li class="m-search-page__hotitem f-border-1px"><a href="javascript:;"
+                                                                       class="m-search-page__hotitem__link">excel</a>
+                    </li>
+                    <li class="m-search-page__hotitem f-border-1px"><a href="javascript:;"
+                                                                       class="m-search-page__hotitem__link">物理</a></li>
+                    <li class="m-search-page__hotitem f-border-1px"><a href="javascript:;"
+                                                                       class="m-search-page__hotitem__link">考研政治</a>
+                    </li>
+                    <li class="m-search-page__hotitem f-border-1px"><a href="javascript:;"
+                                                                       class="m-search-page__hotitem__link">前端开发</a>
+                    </li>
+                    <li class="m-search-page__hotitem f-border-1px"><a href="javascript:;"
+                                                                       class="m-search-page__hotitem__link">前端开发</a>
+                    </li>
+                    <li class="clearfix"></li>
+                </ul>
+            </section>
+            <section class="m-search-page__b m-search-page__b--his">
+                <header class="m-search-page__h i-time border-bottom">最近搜索</header>
+                <ul class="m-search-page__hislist">
+                    <li class="m-search-page__hisitem border-bottom">
+                        <a href="javascript:;" class="m-search-page__hisitem__link">
+                            <p class="m-search-page__hisword" cmd="searchHistory">java</p>
+                            <div class="m-search-page__hisdel icon-close" data-word="java" cmd="clearHistoryItem"><i
+                                    class="icon-close"></i></div>
+                        </a>
+                    </li>
+                    <li class="m-search-page__hisitem border-bottom">
+                        <a href="javascript:;" class="m-search-page__hisitem__link">
+                            <p class="m-search-page__hisword" cmd="searchHistory">js</p>
+                            <div class="m-search-page__hisdel icon-close" data-word="java" cmd="clearHistoryItem"><i
+                                    class="icon-close"></i></div>
+                        </a>
+                    </li>
+                </ul>
+                <div class="m-search-page__clear" cmd="clearHistory">清除搜索记录</div>
+            </section>
+        </div>
+    </div>
+</header>
+<div class="mod-teacher__wrap">
+    <input id="aid" type="hidden" th:value="${ask.id}">
+    <div class="mod-banner">
+        <img th:src="@{/img/agency_bg@2x.40a6142.jpg}" alt="banner" width="100%">
+    </div>
+    <div id="js-teacherBaseInfo" class="mod-teacher__info" >
+        <div class="mod-teacher__fn">
+            <div><img class="mod-teacher__face" th:src="${ask.user.picture}"></div>
+            <h1 class="mod-teacher__name" th:text="${ask.user.username}">小明</h1>
+        </div>
+        <div class="mod-teacher__ai">
+            <div class="mod-teacher__agency">
+                <span class="mod-teacher__label">问题价格</span>
+                <span class="mod-teacher__value" th:text="￥+${ask.reward}">100</span>
+            </div>
+            <div class="mod-teacher__intro">
+                <span class="mod-teacher__label">问题内容：</span>
+                <span class="mod-teacher__value" th:text="${ask.issue}">10年java开发架构经验，曾就职于中国电信、陆金所等大型互联网。熟练掌握分布式、高并发、高可用等技术。掌握支付平台、理财业务等业务架构。</span>
+            </div>
+        </div>
+    </div>
+    <div id="record" class="mod-comments-list__wrap"  th:fragment="record">
+        <ul id="comments-list-page" class="mod-comments-list__list">
+            <li th:each="records : ${record}" class="comments-list-item clearfix">
+                <div th:if="${records.type} == 1">
+                    <div class="comments-list-item__info">
+                        <div class="comments-list-item__cover"><img class="comments-list-item__img"
+                                                                    th:src="${records.askBean.store.simg}"></div>
+                        <div class="comments-list-item__name" th:text="${records.askBean.store.sname}">咕****</div>
+                        <div class="comments-list-item__name answer" style="margin-left: 65%;">回答者</div>
+                    </div>
+                    <div class="comments-list-item__comment">
+                        <div class="comments-list-item__content" th:text="${records.issue}">
+                            这几天听了几次感觉好多似懂非懂的知识一下子思路清晰，get到很多知识，感谢咕泡学院！！！
+                        </div>
+                        <div class="comments-list-item__progress">
+                            <div class="comments-list-item__date">2019-01-08</div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${records.type} == 2">
+                    <div class="comments-list-item__info">
+                        <div class="comments-list-item__cover"><img class="comments-list-item__img"
+                                                                    th:src="${records.askBean.user.picture}"></div>
+                        <div class="comments-list-item__name" th:text="${records.askBean.user.username}">咕****</div>
+                        <div class="comments-list-item__name ask" style="margin-left: 65%;">提问者</div>
+                    </div>
+                    <div class="comments-list-item__comment">
+                        <div class="comments-list-item__content" th:text="${records.issue}">
+                            这几天听了几次感觉好多似懂非懂的知识一下子思路清晰，get到很多知识，感谢咕泡学院！！！
+                        </div>
+                        <div class="comments-list-item__progress">
+                            <div class="comments-list-item__date">2019-01-08</div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<section class="detail__bottom--wrapper iphonex-padding-bottom" >
+    <div id="ask" class="detail__bottom--container" th:if="${session.user.id} == ${ask.user.id} ">
+        <button class="bottom-btn js-report-link apply" style="background-color: #23b8ff;color: #fff;background-image: url(" ")"="">追问
+        </button>
+    </div>
+    <div id="huida" class="detail__bottom--container" th:if="${session.user.id} == ${user.user.id} ">
+        <button class="bottom-btn js-report-link apply" style="background-color: #23b8ff;color: #fff;background-image: url(" ")"="">回答
+        </button>
+    </div>
+</section>
+</body>
+<script>
+
+    $(function () {
+        var id = $("#aid").val()
+        $("#record").load("/ask/record?id="+id);
+    })
+
+    $("#ask").on('click',function () {
+        var id = $("#aid").val()
+        var d = dialog({
+            title: '追问',
+            content: '<input autofocus name="issue" />',
+            okValue: '提交',
+            ok: function () {
+                var issue = $('input[name="issue"]').val().trim();
+                if (issue == '') {
+                    this.title('请输入...');
+                    return false;
+                } else {
+                    $.post('/ask/closely',{askId:id,issue:issue,type:2},function (datas) {
+                        reroad();
+                    })
+
+                }
+            },
+            cancelValue: '取消',
+            cancel: function () {
+            }
+        });
+        d.show();
+        d.showModal();
+    })
+    $("#huida").on('click',function () {
+        var id = $("#aid").val()
+        var d = dialog({
+            title: '回答',
+            content: '<input autofocus name="issue" />',
+            okValue: '提交',
+            ok: function () {
+                var issue = $('input[name="issue"]').val().trim();
+                if (issue == '') {
+                    this.title('请输入...');
+                    return false;
+                } else {
+                    $.post('/ask/closely',{askId:id,issue:issue,type:1},function (datas) {
+                        reroad();
+                    })
+
+                }
+            },
+            cancelValue: '取消',
+            cancel: function () {
+            }
+        });
+        d.show();
+        d.showModal();
+    })
+
+    function reroad() {
+        var id = $("#aid").val()
+        $("#record").load("/ask/record?id="+id);
+    }
+</script>
+</html>

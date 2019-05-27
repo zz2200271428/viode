@@ -1,0 +1,52 @@
+# Tomcat
+server:
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 1000
+    min-spare-threads: 30
+  port: 7000
+  connection-timeout: 5000ms
+  servlet:
+    context-path: /file-service
+
+spring:
+  # 环境 dev|test|prod
+  profiles:
+    #active: ${spring.profiles.active}
+  active: dev
+  # jackson时间格式化
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  servlet:
+    multipart:
+      max-file-size: 1000000000
+      max-request-size: 1000000000
+      enabled: true
+
+### 开发环境配置
+---
+spring:
+  profiles: dev
+
+idp:
+  file:
+    rootPath: f:/static/pictures/ # 文件保存根目录
+
+### 测试环境配置
+---
+spring:
+  profiles: test
+
+idp:
+  file:
+    rootPath: f:/static/pictures/ # 文件保存根目录
+
+### 生产环境配置
+---
+spring:
+  profiles: prod
+
+idp:
+  file:
+    rootPath: /home/nginx/store/ # 文件保存根目录

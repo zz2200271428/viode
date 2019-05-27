@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.StoreCollectDao">
+
+    <resultMap id="StoreCollectResult" type="com.znsd.instapundit.bean.StoreCollectBean">
+        <id column="id" property="id"></id>
+        <result column="uid" property="uid"></result>
+        <result column="sid" property="sid"></result>
+        <result column="count" property="count"></result>
+        <result property="storeBean.id" column="sid"/>
+        <result property="storeBean.sname" column="sname"/>
+        <result property="storeBean.simg" column="simg"/>
+        <result property="storeBean.contact" column="contact"/>
+        <result property="storeBean.user.id" column="suid"/>
+        <result property="storeBean.apply_id" column="apply_id"/>
+        <result property="storeBean.open_time" column="open_time"/>
+        <result property="storeBean.store_desc" column="store_desc"/>
+        <result property="storeBean.click_amount" column="click_amount"/>
+        <result property="storeBean.ask_count" column="ask_count"/>
+        <result property="appUser.id" column="aid"/>
+        <result property="appUser.phone" column="phone"/>
+        <result property="appUser.username" column="username"/>
+        <result property="appUser.sex" column="sex"/>
+        <result property="appUser.member" column="member"/>
+    </resultMap>
+
+
+    <!--分页查询-->
+    <select id="queryStroeList" parameterType="com.znsd.instapundit.param.StoreCollectParam" resultMap="StoreCollectResult">
+
+        SELECT
+        cd.id,
+        cd.uid,
+        cd.sid,
+        sc.id sid,
+        sc.simg,
+        sc.sname,
+        sc.contact,
+        sc.store_desc,
+        sc.`status`,
+        sc.uid uid,
+        sc.open_time,
+        sc.click_amount,
+        sc.ask_count,
+        u.id aid,
+        u.phone,
+        u.username
+        FROM
+        tb_store_collect cd
+        LEFT JOIN
+        tb_store  sc
+        on
+        sc.id = cd.sid
+        LEFT JOIN
+        tb_user u
+        on
+        u.id = sc.uid
+        <where>
+            <if test="sname != null">
+                AND sc.sname  LIKE CONCAT('%',#{sname},'%')
+            </if>
+            <if test="click_amount != null">
+                AND sc.click_amount >= #{click_amount}
+            </if>
+        </where>
+        LIMIT #{page},#{limit}
+    </select>
+
+    <!--查询总条数-->
+    <select id="queryCount" resultType="int" parameterType="com.znsd.instapundit.bean.StoreCollectBean">
+        SELECT
+        count(1)
+        FROM
+        tb_store_collect cd
+        LEFT JOIN
+        tb_store  sc
+        on
+        sc.id = cd.sid
+        LEFT JOIN
+        tb_user u
+        on
+        u.id = sc.uid
+        <where>
+            <if test="sname != null">
+                AND sc.sname  LIKE CONCAT('%',#{sname},'%')
+            </if>
+            <if test="click_amount != null">
+                AND sc.username  LIKE CONCAT('%',#{username},'%')
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="AppCollect" type="com.znsd.instapundit.bean.StoreCollectBean">
+        <id property="id" column="id"/>
+        <result property="time" column="time"/>
+        <result property="storeBean.id" column="sid"/>
+        <result property="storeBean.sname" column="sname"/>
+        <result property="storeBean.simg" column="simg"/>
+        <result property="storeBean.status" column="status"/>
+    </resultMap>
+
+
+    <select id="getCollectByUserId" resultMap="AppCollect">
+    SELECT
+        c.id,
+        c.time,
+        c.sid,
+        s.sname,
+        s.simg,
+        s.`status`
+    FROM
+	  tb_store_collect c
+	LEFT JOIN tb_store s ON c.sid = s.id
+	WHERE
+	    c.uid = #{id}
+	    ORDER BY  c.time DESC
+    </select>
+
+
+</mapper>

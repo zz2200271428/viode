@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+		<title></title>
+		<link rel="stylesheet" th:href="@{/css/myCenterCss/weui.min.css}">
+		<link rel="stylesheet" th:href="@{/css/login.css}">
+	</head>
+	<body>
+
+		 <div class="header">
+	        <span>讲师信息修改</span>
+	    </div>
+		 <form action="/TS/UpdateTeach">
+			<div class="weui-cells weui-cells_form wy-address-edit">
+		    <div class="weui-cell" >
+		        <div class="weui-cell__hd"  ><label class="weui-label wy-lab">讲师姓名</label></div>
+		        <div class="weui-cell__bd"><input name="uname" class="weui-input" type="text"  placeholder="请输入讲师姓名" ></div>
+		    </div>
+		    <div class="weui-cell" >
+		        <div class="weui-cell__hd"><label class="weui-label wy-lab">手机联系方式</label></div>
+		        <div class="weui-cell__bd"><input name="contact" class="weui-input" type="text" pattern="[0-9]{11}" placeholder="请输入手机联系方式"  ></div>
+		    </div>
+		    <div class="weui-cell" >
+		        <div class="weui-cell__bd" style="height: 200px;"><textarea id="store_desc" class="weui-textarea" name="store_desc" rows="" cols="" placeholder="你可以介绍一下自己让别人更好的了解你200字之内"></textarea></div>
+		    </div>
+		  <div id="" style="text-align:center">
+	    	 <input class="weui-btn weui-btn_primary" type="submit" value="确认" />
+	    	 <input  class="weui-btn weui-btn_primary" type="button" id="button" value="重置"/>
+	   	 </div>
+		</div>
+		</form>
+	</body>
+</html>

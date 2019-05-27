@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>更改账号</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1">
+    <meta name="apple-mobile-web-sapp-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body>
+   <!--头部-->
+    <div class="header">
+        <span>个人信息修改</span>
+    </div>
+   <div id="content1">
+       <div id="dx_login">
+           <div class="login_search">
+               <p class="password">
+                   <input id="number"  type="text" placeholder=" 用户名称:" th:value="${moveUserBean.username}">
+               </p>
+               <p class="password">
+                   <input id="number2"  type="text" placeholder="居民身份证:" th:value="${moveUserBean.id_card}">
+               </p>
+               <p class="password">
+                   <input id="number3"  type="text" placeholder="用户邮箱：" th:value="${moveUserBean.email}">
+               </p>
+           </div>
+           <br/>
+           <input type="radio" name="sex" value="男" checked>男
+           <input type="radio" name="sex" value="女">女
+
+           <div class="tip" >
+               <p>温馨提示：跟换博学网帐号的邮箱号，将自动注册变更登录的邮账号，且代表您已同意 <a href="###">《用户服务协议》</a></p>
+                <p id="List"></p>
+               <p id="ListTwo"></p>
+           </div>
+
+           <div class="login">
+               <a id="queDing2">确认</a>
+               <p><a class="about" href="https://www.taobao.com/about/?spm=a21bo.50862.1997523009.28.3DF8ZR" target="_blank">关于我们</a></p>
+           </div>
+       </div>
+
+   </div>
+    <script th:src="@{/js/www.js}"></script>
+   <script th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript">
+           $(function () {
+               $("#queDing2").click(
+                    function () {
+                        var number=$("#number").val();
+                        var number2=$("#number2").val();
+                        var number3=$("#number3").val();
+                        var number5=$('input[name="sex"]:checked').val();
+
+                        var  number6=number2.substring(6,10)+"-"+number2.substring(10,12)+"-"+number2.substring(12,14);
+                        var reg=/^(([1][1-5])|([2][1-3])|([3][1-7])|([4][1-6])|([5][0-4])|([6][1-5])|([7][1])|([8][1-2]))\d{4}(([1][9]\d{2})|([2]\d{3}))(([0][1-9])|([1][0-2]))(([0][1-9])|([1-2][0-9])|([3][0-1]))\d{3}[0-9xX]$/;
+                        var reg2=/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/;
+                        var bel=reg.test(number2);
+                        var bel2=reg2.test(number3);
+                        if(number5 == '男'){
+                            number5=1;
+                        }else {
+                            number5=2;
+                        }
+
+                        if(bel!=true){
+                            $("#number2").css("background-color",'red');
+                            $("#List").text("居民身份证错误");
+                        }
+                        if(bel2!=true){
+                            $("#number3").css("background-color",'red');
+                            $("#number3").attr("value","")
+                            $("#ListTwo").text("用户邮箱错误");
+                        }
+                        if(bel==true && bel2==true ){
+                           $.post('/app/returnMessage',
+                               {
+                                   username:number,
+                                   id_card:number2,
+                                   email:number3,
+                                   birthday:number6,
+                                   sex:number5
+                               },
+                               function(date){
+                                   if(date==1){
+                                       window.location.href="/app/MoveUser";
+                                   }
+                               })
+                        }
+                    }
+                )
+            })
+        </script>
+</body>
+</html>

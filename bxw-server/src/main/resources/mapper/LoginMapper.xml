@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.LoginDao">
+    <resultMap id="loginUser" type="UserBean">
+        <id property="id" column="id"/>
+        <result property="number" column="number"/>
+        <result property="password" column="password"/>
+        <result property="nickname" column="nickname"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <select id="login" parameterType="UserBean" resultType="UserBean">
+		SELECT
+			id,
+			number,
+			`password`,
+			nickname,
+			`status`
+		FROM
+			sys_user
+		WHERE
+			number = #{number}
+			AND `password` = #{password}
+			AND `status` = 1
+	</select>
+
+
+	<insert id="insertLoginInfo" >
+		insert  into sys_login_log (user,way,ip,login_time,login_system)values (#{user},1,#{ip},now(),#{login_system})
+	</insert>
+</mapper>

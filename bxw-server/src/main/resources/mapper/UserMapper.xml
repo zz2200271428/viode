@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.UserDao">
+
+    <resultMap id="users" type="com.znsd.instapundit.bean.UserBean">
+        <id property="id" column="id"/>
+        <result property="number" column="number"/>
+        <result property="password" column="password"/>
+        <result property="status" column="status"/>
+        <result property="id_c" column="id_c"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="nickname" column="nickname"/>
+        <result property="create_time" column="create_time"/>
+        <result property="update_time" column="update_time"/>
+        <collection property="roles" javaType="ArrayList" ofType="com.znsd.instapundit.bean.RoleBean">
+            <id property="id" column="rid"/>
+            <result property="name" column="name"/>
+        </collection>
+    </resultMap>
+    <!--分页查询-->
+    <select id="listPage" parameterType="com.znsd.instapundit.param.UserParam" resultMap="users">
+        SELECT
+        u.id,
+        u.number,
+        u.`password`,
+        u.status,
+        u.id_c,
+        u.create_time,
+        u.nickname,
+        u.update_time,
+        u.email,
+        u.phone
+
+        FROM sys_user u
+        /*LEFT JOIN sys_user_role ur ON u.id = ur.user_id
+        LEFT JOIN sys_role r on r.id = ur.role_id*/
+        <where>
+            <if test="status==null">
+                u.status = 1
+            </if>
+            <if test="status!=null">
+                u.status = #{status}
+            </if>
+            <if test="nickname!=null">
+                and u.nickname LIKE CONCAT('%',#{nickname},'%')
+            </if>
+            <if test="id_c!=null">
+                and u.id_c LIKE CONCAT('%',#{id_c},'%')
+            </if>
+            <if test="email!=null">
+                AND u.email LIKE CONCAT('%',#{email},'%')
+            </if>
+            <if test="phone!=null">
+                AND u.phone LIKE CONCAT('%',#{phone},'%')
+            </if>
+
+            <if test="start!=null and end!=null">
+                AND u.update_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND u.update_time &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND u.update_time &lt;= #{end}
+            </if>
+        </where>
+        LIMIT #{page},#{limit}
+    </select>
+
+    <!--查询总条数-->
+    <select id="queryCount" resultType="int" parameterType="com.znsd.instapundit.param.UserParam">
+        SELECT
+        count(1)
+        FROM sys_user u
+
+        <where>
+            <if test="status==null">
+                u.status = 1
+            </if>
+            <if test="status!=null">
+                u.status = #{status}
+            </if>
+            <if test="nickname!=null">
+                and u.nickname LIKE CONCAT('%',#{nickname},'%')
+            </if>
+            <if test="id_c!=null">
+                and u.id_c LIKE CONCAT('%',#{id_c},'%')
+            </if>
+            <if test="email!=null">
+                AND u.email LIKE CONCAT('%',#{email},'%')
+            </if>
+            <if test="phone!=null">
+                AND u.phone LIKE CONCAT('%',#{phone},'%')
+            </if>
+            <if test="start!=null and end!=null">
+                AND u.update_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND u.update_time &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND u.update_time &lt;= #{end}
+            </if>
+        </where>
+    </select>
+
+    <!--增加用户-->
+    <insert id="addUser" parameterType="com.znsd.instapundit.bean.UserBean" keyProperty="id" useGeneratedKeys="true">
+			INSERT INTO sys_user ( `number`, `password`,id_c,email,phone,nickname, `create_time`, `update_time`, `status` )
+		VALUES
+			( #{number}, #{password},#{id_c},#{email},#{phone},#{nickname}, NOW(), NOW(), 1 )
+	</insert>
+
+    <!--增加用户角色表-->
+    <insert id="addUR">
+        INSERT INTO sys_user_role(`user_id`, `role_id`) VALUES
+        <foreach collection="ids" item="item" index="index" separator=",">
+            (#{id},#{item})
+        </foreach>
+
+    </insert>
+    <!--删除用户-->
+    <update id="delete">
+        UPDATE sys_user
+        SET
+        `status` = 3,
+        `update_time` = NOW()
+        WHERE
+        `id` in
+        <foreach collection="ids" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </update>
+    <!--修改回显-->
+    <select id="getUser" parameterType="com.znsd.instapundit.bean.UserBean" resultMap="users">
+    		SELECT
+        u.id,
+        u.number,
+        u.`password`,
+        u.status,
+        u.id_c,
+        u.create_time,
+        u.nickname,
+        u.update_time,
+        u.email,
+				u.phone,
+				r.id rid,
+				r.name
+    FROM sys_user u
+		LEFT JOIN sys_user_role ur ON u.id = ur.user_id
+		LEFT JOIN sys_role  r on r.id = ur.role_id
+		WHERE     u.id=#{id} AND u.`status` !=3 and r.status=1
+    </select>
+    <!--删除中间表数据-->
+    <delete id="delUR" parameterType="java.lang.Integer">
+		DELETE FROM sys_user_role WHERE user_id = #{id}
+	</delete>
+    <!--修改用户信息-->
+    <update id="updateUser" parameterType="com.znsd.instapundit.bean.UserBean">
+			UPDATE sys_user
+		SET
+		    number = #{number},
+		    id_c = #{id_c},
+		    nickname = #{nickname},
+		    email = #{email},
+		    phone = #{phone},
+			`update_time` = NOW()
+		WHERE
+			`id` = #{id}
+	</update>
+    <!--修改状态-->
+    <update id="updateStatus" parameterType="com.znsd.instapundit.bean.UserBean">
+        update sys_user set status = #{status},update_time = now() where id = #{id}
+    </update>
+
+    <!--校验重复用户名-->
+    <select id="checkName" resultType="com.znsd.instapundit.bean.UserBean">
+        select * from sys_user where  number=#{number} and status not in (3)
+    </select>
+
+    <!--修改菜单默认状态-->
+    <update id="updateAllot">
+        update sys_role
+        set
+        allot = 1,
+        update_time=now()
+        WHERE
+        `id` in
+        <foreach collection="ids" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </update>
+
+    <!--重置密码-->
+    <update id="updatePass" parameterType="com.znsd.instapundit.bean.UserBean">
+        update sys_user
+        set  password=123456,
+        update_time=now()
+        where id=#{id}
+    </update>
+    <!--个人密码修改-->
+    <update id="passUpdate">
+        update sys_user
+        set  password=#{L_repass},
+        update_time=now()
+        where id=#{id} and password=#{password}
+    </update>
+    
+    <select id="queryUser" resultType="com.znsd.instapundit.bean.UserBean">
+        SELECT  id, nickname,`phone`, `email`  FROM  sys_user  where id=#{id}
+    </select>
+
+    <update id="userUpdate">
+        update sys_user
+        set
+        nickname=#{nickname},
+        phone=#{phone},
+        email=#{email},
+        update_time=now()
+        where id=#{id}
+    </update>
+
+</mapper>

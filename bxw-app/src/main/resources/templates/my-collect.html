@@ -1,0 +1,250 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="applicable-device" content="mobile">
+    <link rel="stylesheet" th:href="@{/css/font.css}"/>
+    <link rel="stylesheet" th:href="@{/css/dingdan.css}"/>
+    <link rel="stylesheet" th:href="@{/css/dialog.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/dialog.js}"></script>
+    <title>收藏列表</title>
+
+</head>
+<body id="global" style="font-size: 36px;">
+
+<div class="container">
+    <header class="m-header z-img-ready border-top border-bottom z-no-menu ">
+        <div class="aui-navBar aui-navBar-fixed">
+            <a href="/app/MoveUser" class="aui-navBar-item">
+                <i class="icon icon-return">《 </i>
+            </a>
+            <div class="aui-center">
+                <span class="aui-center-title">我的收藏</span>
+            </div>
+            <a href="javascript:;" class="aui-navBar-item"
+               data-ydui-actionsheet="{target:'#actionSheet',closeElement:'#cancel'}">
+                <i class="icon "></i>
+            </a>
+        </div>
+
+
+    </header>
+    <div class="tab">
+
+        <div class="tab__bar f-border-1px" style="visibility: visible;">
+            <div class="tab__bar--item z-active" data-id="0">
+                <h3 class="tab__bar--title">视频</h3>
+            </div>
+            <div class="tab__bar--item" data-id="1" style="">
+                <h3 class="tab__bar--title">专栏</h3>
+            </div>
+            <div class="tab__bar--item" data-id="2">
+                <h3 class="tab__bar--title">店铺</h3>
+            </div>
+
+        </div>
+        <div class="tab__content" style="height: 85%;">
+            <div class="kuang video" style="display: block">
+                <div id="video" class="tab__content--item " style="display: block" th:fragment="video_collect">
+                    <ul>
+                        <li th:each="videos : ${video}" class="tab__list--item" data-id="0_100389859_0">
+								<span class="video-details" th:data-id="${videos.video.id}">
+								<div class="tab__item--status black">正常</div>
+                                  <div class="tab__item--org">
+                                    <h3 class="tab__org--name" ></h3> <i class="icon-font i-arrow-right tab__org--icon"></i>
+                                </div>
+								<div class="tab__item--content f-border-1px">
+									<div class="tab__item--cover">
+										<img class="tab__item--cover" th:src="@{/img/agency_bg@2x.40a6142.jpg}">
+									</div>
+									<div class="tab__item--main">
+										<h2 class="tab__item--title " th:text="${videos.video.video_title}"> PHP7进阶到架构-Swoole/Laravel/TP5/高并发项目实战【六星教育】 </h2>
+                                        <p class="tab__item--price"> 收藏时间:<span
+                                                th:text="${#dates.format(videos.time,'yyyy-MM-dd hh:mm:ss')}"></span> </p>
+									</div>
+								</div>
+								</span>
+                            <div class="tab__item--btns">
+                                <button class="tab__item--btn video-del" th:data-id="${videos.video.id}">取消收藏</button>
+                            </div>
+                        </li>
+
+                    </ul>
+                    <button class="load-more-btn loading" style="display: none;">正在拉取数据</button>
+                </div>
+            </div>
+            <div class="kuang special" style="display: none">
+                <div id="special" class="tab__content--item " style="display: block" th:fragment="special_collect">
+                    <ul>
+                        <li th:each="specials : ${special}" class="tab__list--item" data-id="0_100389859_0">
+								<span class="special-details" th:data-id="${specials.specialColumn.id}">
+								<div class="tab__item--status black">正常</div>
+                                  <div class="tab__item--org">
+                                    <h3 class="tab__org--name" ></h3> <i class="icon-font i-arrow-right tab__org--icon"></i>
+                                </div>
+								<div class="tab__item--content f-border-1px">
+									<div class="tab__item--cover">
+										<img class="tab__item--cover" th:src="@{/img/agency_bg@2x.40a6142.jpg}">
+									</div>
+									<div class="tab__item--main">
+										<h2 class="tab__item--title " th:text="${specials.specialColumn.spe_title}"> PHP7进阶到架构-Swoole/Laravel/TP5/高并发项目实战【六星教育】 </h2>
+                                        <p class="tab__item--price"> 收藏时间:<span
+                                                th:text="${#dates.format(specials.time,'yyyy-MM-dd hh:mm:ss')}">1998-05-04</span> </p>
+									</div>
+								</div>
+								</span>
+                            <div class="tab__item--btns">
+                                <button class="tab__item--btn special-del" th:data-id="${specials.specialColumn.id}">取消收藏</button>
+                            </div>
+                        </li>
+
+                    </ul>
+                    <button class="load-more-btn loading" style="display: none;">正在拉取数据</button>
+                </div>
+            </div>
+            <div class="kuang store" style="display: none">
+                <div id="store" class="tab__content--item " style="display: block" th:fragment="store_collect">
+                    <ul>
+                        <li th:each="stores : ${store}" class="tab__list--item" data-id="0_100389859_0">
+								<span class="store-details" th:data-id="${stores.storeBean.id}">
+								<div class="tab__item--status black">正常</div>
+                                <div class="tab__item--org">
+                                    <h3 class="tab__org--name" ></h3> <i class="icon-font i-arrow-right tab__org--icon"></i>
+                                </div>
+								<div class="tab__item--content f-border-1px">
+									<div class="tab__item--cover">
+										<img class="tab__item--cover" th:src="@{/img/agency_bg@2x.40a6142.jpg}">
+									</div>
+									<div class="tab__item--main">
+										<h2 class="tab__item--title" th:text="${stores.storeBean.sname}"> PHP7进阶到架构-Swoole/Laravel/TP5/高并发项目实战【六星教育】 </h2>
+                                        <p class="tab__item--price"> 收藏时间:<span
+                                                th:text="${#dates.format(stores.time,'yyyy-MM-dd hh:mm:ss')}">1998-05-04</span> </p>
+									</div>
+								</div>
+								</span>
+                            <div class="tab__item--btns">
+                                <button class="tab__item--btn store-del" th:data-id="${stores.storeBean.id}">取消收藏</button>
+                            </div>
+                        </li>
+
+                    </ul>
+                    <button class="load-more-btn loading" style="display: none;">正在拉取数据</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+<script>
+
+    $(document).ready(function () {
+        $('#video').load("/collect/video")
+    })
+
+    $(".tab__bar--item").on('click', function () {
+        var choose = $(this).attr('data-id')
+        var item = $(".tab__bar--item")
+        var content = $(".kuang")
+        for (var i = 0; i < item.length; i++) {
+            item.eq(i).removeClass('z-active')
+            content.eq(i).css('display', 'none')
+        }
+        item.eq(choose).addClass('z-active')
+        if (choose == 0) {
+            $(".video").css('display', 'block')
+            $('#video').load("/collect/video")
+        } else if (choose == 1) {
+            $(".special").css('display', 'block')
+            $("#special").load('/collect/special')
+
+        } else if (choose == 2) {
+            $(".store").css('display', 'block')
+            $("#store").load('/collect/store')
+        }
+
+
+    })
+
+    $("body").on('click',".store-del",function () {
+        var id = $(this).attr('data-id')
+        var d = dialog({
+            title: '取消收藏',
+            content: '您确定要取消收藏吗？',
+            okValue: '确定',
+            ok: function () {
+                this.title('提交中…');
+                $.post('/store/collect',{'storeID':id,'flag':false},function (datas) {
+                    if (datas == false){
+                        window.location.reload()
+                    }
+                })
+                return true;
+            },
+            cancelValue: '取消',
+            cancel: function () {}
+        });
+        d.show();
+        d.showModal();
+    })
+    $("body").on('click',".video-del",function () {
+        var id = $(this).attr('data-id')
+        var d = dialog({
+            title: '取消收藏',
+            content: '您确定要取消收藏吗？',
+            okValue: '确定',
+            ok: function () {
+                this.title('提交中…');
+                $.post('/video/collect',{'videoID':id,'flag':false},function (datas) {
+                    if (datas == false){
+                        window.location.reload()
+                    }
+                })
+                return true;
+            },
+            cancelValue: '取消',
+            cancel: function () {}
+        });
+        d.show();
+        d.showModal();
+    })
+    $("body").on('click',".special-del",function () {
+        var id = $(this).attr('data-id')
+        var d = dialog({
+            title: '取消收藏',
+            content: '您确定要取消收藏吗？',
+            okValue: '确定',
+            ok: function () {
+                this.title('提交中…');
+                $.post('/search/collect',{'specialID':id,'flag':false},function (datas) {
+                    if (datas == false){
+                        window.location.reload()
+                    }
+                })
+                return true;
+            },
+            cancelValue: '取消',
+            cancel: function () {}
+        });
+        d.show();
+        d.showModal();
+    })
+    $("body").on('click',".store-details",function () {
+        var oid = $(this).attr('data-id')
+        window.location.href="/store/to_homepage?storeID="+oid
+    })
+    $("body").on('click',".special-details",function () {
+        var oid = $(this).attr('data-id')
+        window.location.href="/search/listspecial?specialID="+oid
+    })
+    $("body").on('click',".video-details",function () {
+        var oid = $(this).attr('data-id');
+        window.location.href="/video/play?videoID="+oid
+    })
+
+</script>
+</html>

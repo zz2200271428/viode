@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" th:href="@{/css/common.css}"/>
+    <title></title>
+</head>
+<body>
+<section class="g-flexview">
+    <header class="m-navbar demo-small-pitch " id="header">
+        <a href="JavaScript:window.history.back();" class="navbar-item"><i class="iconjiantou iconimg"></i></a>
+        <div class="navbar-center"><span class="navbar-title" id="header-title">充值中心</span></div>
+        <a href="JavaScript:;" class="navbar-item"></a>
+    </header>
+    <section class="g-scrollview home-module" id="scrollview-content">
+        <div class="module-cell clearfix ptb01rem">
+            <div class="cell-item homename">
+                <div class="cell-left"><img th:src="${vip.picture}" class="zj_logoimg"></div>
+                <div class="cell-right text-content">博识网</div>
+            </div>
+        </div>
+        <div class="module-cell clearfix  pad02rem">
+            <div class="box accountinfo">
+                <div class="box-flex">
+                    <h5 class="title_name">账户信息</h5>
+                    <h3 class="colorhui3" id="username" name="username" th:text="${vip.username}"></h3>
+                </div>
+                <div class="box-flex">
+                    <h5 class="title_name">余额</h5>
+                    <h3 class="color5b" th:text="${vip.money}"></h3>
+                </div>
+            </div>
+            <!--充值-->
+            <div class="rechargeinfo">
+                <h5 class="title_name mb025rem">充值数量</h5>
+                <div class="recharge">
+                    <div class="cell-item recharge_select">
+                        <span class="cell-left font-size035rem">100</span>
+                        <div class="cell-right font-size030rem">
+                            <input type="radio" value="man" name="radio" data-price="100.00" data-discount="10"
+                                   onclick="checkedradio(this)"> ¥100.00<span class="selected checkeds"></span>
+                        </div>
+                    </div>
+                    <div class="cell-item recharge_select">
+                        <span class="cell-left font-size035rem">200</span>
+                        <div class="cell-right font-size030rem">
+                            <input type="radio" value="man" name="radio" data-price="200.00" data-discount="10"
+                                   onclick="checkedradio(this)"> ¥200.00<span class="selected checkeds"></span>
+                        </div>
+                    </div>
+                    <div class="cell-item recharge_select">
+                        <span class="cell-left font-size035rem">300</span>
+                        <div class="cell-right font-size030rem">
+                            <input type="radio" value="man" name="radio" data-price="300.00" data-discount="10"
+                                   onclick="checkedradio(this)"> ¥300.00<span class="selected checkeds"></span>
+                        </div>
+                    </div>
+                    <div class="cell-item recharge_select">
+                        <span class="cell-left font-size035rem">1000</span>
+                        <div class="cell-right font-size030rem">
+                            ¥1000.00 <input type="radio" value="man" name="radio" data-price="1000.00" data-discount="10"
+                                           onclick="checkedradio(this)"> <span class="selected checkeds"></span>
+                        </div>
+                    </div>
+                    <div class="cell-item recharge_select">
+                        <div class="cell-left"><input type="text" class="cell-input" value="" data-discount="10"
+                                                      data-price="" data-unit="1" placeholder="必须大于0元"
+                                                      autocomplete="off" name="quantity"></div>
+                        <div class="cell-right text-content"> ¥<span id="zdy-price">00.00</span></div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="m-tabbar tabbar-fixed">
+            <div class="box">
+                <div class="box-flex7 recharge_price ">
+                    <span class="color5b  ml02rem font-size045rem"><b class="font-size030rem mr01rem">¥</b><span
+                            id="rebate_price"></span></span><span class="yun_price">原价：¥<em id="yun_price"></em></span>
+                </div>
+                <div class="box-flex3">
+                    <span  style="display: none" id="test" th:text="${vip.id}"></span>
+                    <button class="btn-block bg-btn-5b" type="button" onclick="defraybtn()">立即支付</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</section>
+<!--支付选择
+<div class="m-actionsheet" id="defrayselect">
+
+	 m-actionsheet actionsheet-toggle
+	<div class="defray_content" id="de" style="margin-bottom: 50px">
+		<div class="defray_title">
+			付款金额：<span class="color5b font-size045rem"><em class="font-size030rem">¥</em>12345</span>
+			<a href="javascript:void(0)" class="defray_close" id="defra_close"><img th:src="@{/img/close_icon.png}"></a>
+		</div>
+		<div class="defray_content">
+			<div class="cell-item  Payment_mode pad02rem " onclick="zhifubaolink()">
+				<div class="cell-left"><img th:src="@{/img/zhifubao.png}" class="Paymentimg"></div>
+				<div class="cell-right text-content">
+					<h3 class="font-size030rem mb012rem">支付宝支付</h3>
+					<h4 class="colorhui9 font-size030rem">使用支付宝客户端支付</h4>
+				</div>
+			</div>
+			<div class="cell-item  Payment_mode  pad02rem" onclick="weixinlink()">
+				<div class="cell-left"><img th:src="@{/img/weixin.png}" class="Paymentimg"></div>
+				<div class="cell-right text-content">
+					<h3 class="font-size030rem mb012rem">微信支付</h3>
+					<h4 class="colorhui9 font-size030rem">使用微信客户端支付</h4>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+</div>-->
+</body>
+<script type="text/javascript" th:src="@{/js/charge.js}"></script>
+<script type="text/javascript" th:src="@{/js/template.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery-1.9.0.min.js}"></script>
+<script th:src="@{/js/dialog.js}"></script>
+<script>
+    function by(i) {
+        return document.getElementById(i)
+    } //简化document.getElementById方法
+    var radios = document.getElementsByName("radio");
+
+    function checkedradio(e) {
+        e.checked = true;
+        for (var i = 0; i < radios.length; i++) {
+            if (e.checked == radios[i].checked) {
+                zhufuncxinxi(e);
+                e.parentNode.parentNode.className += " checked";
+            } else {
+                radios[i].checked = false;
+                radios[i].parentNode.parentNode.classList.remove("checked");
+            }
+        }
+    };
+    for (var i = 0; i < radios.length; i++) {
+        radios[0].checked = true;
+        if (radios[i].checked == true) {
+            zhufuncxinxi(radios[i]);
+            radios[i].parentNode.parentNode.className += " checked";
+        } else {
+            radios[i].checked = false;
+        }
+    }
+    var quantity = document.getElementsByName("quantity")[0];
+    quantity.onfocus = function (e) {
+        for (var i = 0; i < radios.length; i++) {
+            radios[i].checked = false;
+            radios[i].parentNode.parentNode.classList.remove("checked");
+        }
+        ;
+        by("yun_price").innerHTML = '00.00';
+        by("rebate_price").innerHTML = '00.00';
+        this.onkeyup = function (e) {
+            var value = this.value;
+            var unit = this.dataset.unit;
+            var rebate = Math.round(value * unit);
+            var s = rebate.toString();
+            var rs = s.indexOf('.');
+            if (rs < 0) {
+                rs = s.length;
+                s += '.';
+            }
+            while (s.length <= rs + 2) {
+                s += '0';
+            }
+            by('zdy-price').innerHTML = s;
+            this.dataset.price = s;
+        }
+    };
+    quantity.onblur = function (e) {
+        var value = this.value;
+        var sub = value.substring(0, 7);
+        if (sub.length < 3 || sub.length > 5) {
+            var html = '';
+            sub.length < 3 ? html = "最低充值金额为100" : '';
+            sub.length > 5 ? html = "每次充值金额超过最高限制无法充值" : '';
+            boxmodule(html, 2);
+            this.value = '';
+            by('zdy-price').innerHTML = '00.00';
+            by("yun_price").innerHTML = '00.00';
+            by("rebate_price").innerHTML = '00.00';
+        } else {
+            zhufuncxinxi(this);
+        }
+    };
+
+    //提交支付
+
+    function defraybtn() {
+        if (by("rebate_price").innerHTML <= "00.00") {
+            boxmodule("请输入正确的充值金额", 5)
+        } else {
+            boxmodule("<div class='waitstyle'><img src='/img/timg.gif'><h3>请稍等<h3></div>", 1);
+            var money = document.getElementById("rebate_price").innerHTML;
+            var uid = document.getElementById('test').innerHTML
+            var name = document.getElementById('username').innerHTML
+            setTimeout (function () {
+                $.post("/pay/add-value", {'money': money, 'id': uid,  'username': name}, function (date) {
+                    window.location
+                    var d = dialog({
+                        content: date.msg
+                    });
+                    d.show();
+                    setTimeout(function () {
+                        d.close().remove();
+                        location.replace(location.href)
+                    }, 1000);
+
+                });
+            },1)
+
+            /*var $myAs = $('#de');
+            $('#de').on('click', function () {
+                $myAs.actionSheet('open');
+            });
+            $('#defra_close').on('click', function () {
+                $myAs.actionSheet('close');
+            });
+            //支付宝
+            function zhifubaolink(){
+                window.location.href="http://www.baidu.com";
+            }
+            //微信
+            function weixinlink(){
+                window.location.href="http://www.baidu.com";
+            }*/
+        }
+    };
+
+    //计算金额
+    function zhufuncxinxi(name) {
+        var price = name.dataset.price;
+        var discount = name.dataset.discount;
+        var rebate = Math.round(price * discount) / 10;
+        var s = rebate.toString();
+        var rs = s.indexOf('.');
+        if (rs < 0) {
+            rs = s.length;
+            s += '.';
+        }
+        while (s.length <= rs + 2) {
+            s += '0';
+        }
+        by("yun_price").innerHTML = price;
+        by("rebate_price").innerHTML = s;
+    };
+
+    //提示
+    function boxmodule(texts, time) {
+        var b = document.body.querySelector(".box_Bullet");
+        if (!b) {
+            var box = document.createElement("div");
+            document.body.appendChild(box).className = "box_Bullet";
+            var boxcss = document.querySelector(".box_Bullet");
+            var winWidth = window.innerWidth;
+            document.body.appendChild(box).innerHTML = texts;
+            var wblank = winWidth - boxcss.offsetWidth;
+            box.style.cssText = "width:" + boxcss.offsetWidth + "px" + "; left:" + (wblank / 2) + "px" + ";" + "margin-top:" + (-boxcss.offsetHeight / 2) + "px";
+            var int = setInterval(function () {
+                clock()
+            }, 1000);
+            var num = time;
+
+            function clock() {
+                num > 0 ? num-- : clearInterval(int);
+                if (num == 0) {
+                    clearInterval(int);
+                    document.body.removeChild(box);
+                    return
+                }
+            }
+        }
+    }
+</script>
+</html>

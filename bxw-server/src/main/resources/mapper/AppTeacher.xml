@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.AppTeacherDao">
+    <resultMap id="resultRecommend" type="com.znsd.instapundit.bean.VideoBean">
+        <id column="id" property="id"></id>
+        <result column="picture" property="upload_by.picture"></result>
+        <result column="store_desc" property="upload_by.teacherApplyBean.store_desc"></result>
+        <result column="label" property="upload_by.dictBean.label"></result>
+        <result column="values" property="upload_by.dictBean.values"></result>
+        <result column="userId" property="upload_by.id"></result>
+        <result column="video_title" property="video_title"></result>
+        <result column="video_url" property="video_url"></result>
+        <result column="play_amount" property="play_amount"></result>
+        <result column="video_length" property="video_length"></result>
+        <result column="cover_img" property="cover_img"></result>
+        <result column="spe_desc" property="specialColumnBean.spe_desc"></result>
+        <result column="spe_title" property="specialColumnBean.spe_title"></result>
+        <result column="price" property="specialColumnBean.price"></result>
+        <result column="ScCover_img" property="specialColumnBean.cover_img"></result>
+        <result column="scId" property="specialColumnBean.id"></result>
+
+    </resultMap>
+
+    <!--推荐前三条视频-->
+    <select id="listVideo" resultMap="resultRecommend">
+        SELECT
+            u.id userId,
+            u.picture,
+            sd.label,
+            sd.values,
+            v.video_intro,
+            v.video_title,
+            v.video_type,
+            v.video_url,
+            v.play_amount,
+            v.video_length,
+            v.cover_img,
+             v.video_type,
+            v.id
+        FROM
+            tb_user u
+            LEFT JOIN tb_video v ON u.id = v.upload_by
+            LEFT JOIN sys_dict sd ON
+            sd.VALUES=  v.video_type
+            AND sd.type = 'videotype'
+        WHERE
+            u.`status` = 1
+			and  v.video_type=#{video_type}
+            and v.video_status=1
+            and v.check_status=2
+            and sd.`status`=1
+            and u.id =#{id}
+        ORDER BY
+            v.play_amount DESC
+            LIMIT 3
+    </select>
+    <!--讲师的信息-->
+    <resultMap id="resultTeacher" type="com.znsd.instapundit.bean.AppUserBean">
+        <id column="id" property="id"></id>
+        <result column="picture" property="picture"></result>
+        <result column="username" property="username"></result>
+        <result column="store_desc" property="teacherApplyBean.store_desc"></result>
+    </resultMap>
+
+    <!--查询用户信息-->
+    <select id="userTeacher" resultMap="resultTeacher">
+        SELECT
+          u.id,
+          u.picture,
+          u.username,
+          ta.store_desc
+        FROM
+            tb_user u
+            LEFT JOIN tb_teacher_apply ta ON u.id = ta.u_id
+        WHERE
+            u.`status` = 1
+            and u.id =#{id}
+            and ta.check_status=2
+            GROUP BY u.id
+    </select>
+
+
+    <resultMap id="resultColumn" type="com.znsd.instapundit.bean.SpecialColumnBean">
+        <id column="id" property="id"></id>
+        <result column="userId" property="create_by.id"></result>
+        <result column="spe_title" property="spe_title"></result>
+        <result column="spe_desc" property="spe_desc"></result>
+        <result column="cover_img" property="cover_img"></result>
+        <result column="price" property="price"></result>
+    </resultMap>
+
+    <!--查询三条专栏视频-->
+    <select id="listColumn" resultMap="resultColumn">
+
+	    SELECT
+            u.id userId,
+            sc.id,
+            sc.spe_title,
+            sc.spe_desc,
+            sc.cover_img ,
+            sc.price
+        FROM
+            tb_user u
+            LEFT JOIN  tb_special_column sc ON u.id = sc.create_by
+        WHERE
+            u.`status` = 1
+            AND u.id = #{id}
+            and sc.spe_status=1
+        ORDER BY
+            sc.price DESC
+            LIMIT 3
+    </select>
+
+
+</mapper>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.1</title>
+    <meta name="renderer" content="webkit" accept-charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+    <link rel="stylesheet" th:href="@{/css/xadmin.css}">
+</head>
+
+<body>
+<div class="x-body">
+    <form id="role" action="" method="post" class="layui-form layui-form-pane">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>视频ID
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" th:value="${video.id}" name="id" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>上传人ID
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" th:value="${video.upload_by.id}" name="upload_by" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>视频标题
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" th:value="${video.video_title}" name="video_title" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>视频简介
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" th:value="${video.video_intro}" name="video_intro" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>视频地址
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" th:value="${video.video_url}" name="video_url" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>上传时间
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" th:value="${#dates.format(video.upload_time,'yyyy-MM-dd HH:mm:ss')}" name="upload_time" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+    </form>
+</div>
+
+</body>
+
+</html>

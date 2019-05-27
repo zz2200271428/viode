@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.SearchDao">
+    <resultMap id="resultImage" type="com.znsd.instapundit.bean.ClassifySeparateBean">
+        <id column="id" property="id"></id>
+        <result property="content" column="content"/>
+        <result property="count" column="count"/>
+        <result property="time" column="time"/>
+        <result property="create_time" column="create_time"/>
+    </resultMap>
+
+    <resultMap id="resultRecommend" type="com.znsd.instapundit.bean.VideoBean">
+        <id column="id" property="id"></id>
+        <result column="picture" property="upload_by.picture"></result>
+        <result column="username" property="upload_by.username"></result>
+        <result column="store_desc" property="upload_by.teacherApplyBean.store_desc"></result>
+        <result column="label" property="video_type.label"></result>
+        <result column="values" property="video_type.values"></result>
+        <result column="video_intro" property="video_intro"></result>
+        <result column="userId" property="upload_by.id"></result>
+        <result column="video_title" property="video_title"></result>
+        <result column="video_url" property="video_url"></result>
+        <result column="play_amount" property="play_amount"></result>
+        <result column="price" property="price"></result>
+        <result column="video_length" property="video_length"></result>
+        <result column="cover_img" property="cover_img"></result>
+        <result column="spe_desc" property="specialColumnBean.spe_desc"></result>
+        <result column="spe_title" property="specialColumnBean.spe_title"></result>
+        <result column="ScCover_img" property="specialColumnBean.cover_img"></result>
+        <result column="scId" property="specialColumnBean.id"></result>
+
+    </resultMap>
+
+    <!--查询热键-->
+
+    <select id="getKeyword" resultMap="resultImage">
+          SELECT
+                id,
+                content,
+                count,
+                time,
+                create_time
+            FROM
+                tb_classify_separate
+            GROUP BY
+                count DESC
+                LIMIT 10
+    </select>
+
+    <!--热键模糊搜索-->
+    <select id="listVideo" resultMap="resultRecommend">
+       SELECT
+            u.id userId,
+            u.username,
+            sd.label,
+            sd.values,
+            v.upload_by,
+            v.id,
+            v.video_title,
+            v.video_intro,
+            v.video_url,
+            v.price,
+            v.play_amount,
+            v.from_sc,
+            v.video_length,
+            v.cover_img
+            FROM
+            tb_user u
+            LEFT JOIN tb_video v ON u.id = v.upload_by
+            LEFT JOIN sys_dict sd ON sd.VALUES = v.video_type
+            AND sd.type = 'videotype'
+            WHERE
+            u.`status` = 1
+            and v.video_status = 1
+            AND v.check_status = 2
+            AND sd.`status`=1
+            AND v.video_title LIKE CONCAT('%',#{content},'%')
+            or u.username LIKE CONCAT('%',#{content},'%')
+            ORDER BY v.play_amount DESC
+    </select>
+    <!--查询讲师所有vip视频-->
+    <select id="listMore" resultMap="resultRecommend">
+      SELECT
+            u.id userId,
+            u.username,
+            sd.label,
+            sd.values,
+            v.upload_by,
+            v.id,
+            v.video_title,
+            v.video_intro,
+            v.video_url,
+            v.price,
+            v.play_amount,
+            v.from_sc,
+            v.video_length,
+            v.cover_img
+            FROM
+            tb_user u
+            LEFT JOIN tb_video v ON u.id = v.upload_by
+            LEFT JOIN sys_dict sd ON sd.VALUES = v.video_type
+            AND sd.type = 'videotype'
+            WHERE
+            u.`status` = 1
+            and u.id=#{id}
+            and v.video_type=#{video_type}
+            and v.video_status = 1
+            AND v.check_status = 2
+            AND sd.`status`=1
+            ORDER BY v.play_amount DESC
+    </select>
+
+    <!--查询专栏所有视频-->
+    <select id="listSpecial" resultMap="resultRecommend">
+
+        SELECT
+            sd.values,
+            sd.label,
+            v.upload_by,
+            v.id,
+            v.video_title,
+            v.video_intro,
+            v.video_url,
+            v.price,
+            v.play_amount,
+            v.from_sc,
+            v.video_length,
+            v.cover_img
+        FROM
+            tb_video v
+            LEFT JOIN tb_special_column sc ON v.from_sc = sc.id
+            LEFT JOIN sys_dict sd ON sd.VALUES = v.video_type
+            AND sd.type = 'videotype'
+        WHERE
+            v.from_sc = #{id}
+            and v.video_type=#{video_type}
+            and v.video_status=1
+            and v.check_status=2
+            and sc.spe_status=1
+            ORDER BY v.play_amount DESC
+    </select>
+
+    <resultMap id="resultColumn" type="com.znsd.instapundit.bean.SpecialColumnBean">
+        <id column="id" property="id"></id>
+        <result column="userId" property="create_by.id"></result>
+        <result column="spe_title" property="spe_title"></result>
+        <result column="spe_desc" property="spe_desc"></result>
+        <result column="cover_img" property="cover_img"></result>
+        <result column="price" property="price"></result>
+    </resultMap>
+    <!--查询所有专栏-->
+    <select id="specialAll" resultMap="resultColumn">
+        SELECT
+            u.id userId,
+            sc.id,
+            sc.spe_title,
+            sc.spe_desc,
+            sc.cover_img ,
+            sc.price
+        FROM
+            tb_user u
+            LEFT JOIN  tb_special_column sc ON u.id = sc.create_by
+        WHERE
+            u.`status` = 1
+            AND u.id = #{id}
+            and sc.spe_status=1
+        ORDER BY
+            sc.price DESC
+    </select>
+
+    <!--讲师的信息-->
+    <resultMap id="resultSpecial" type="com.znsd.instapundit.bean.SpecialColumnBean">
+        <id column="id" property="id"></id>
+        <result column="price" property="price"></result>
+        <result column="cover_img" property="cover_img"></result>
+        <result column="spe_desc" property="spe_desc"></result>
+        <result column="spe_title" property="spe_title"></result>
+        <result column="userId" property="create_by.id"></result>
+        <result column="username" property="create_by.username"></result>
+        <result column="picture" property="create_by.picture"></result>
+    </resultMap>
+    <!--查询所属专栏-->
+    <select id="querySpecial" resultMap="resultSpecial">
+        SELECT
+            u.id userId,
+            u.picture,
+            u.username,
+            sc.id,
+            sc.spe_title,
+            sc.spe_desc,
+            sc.cover_img,
+            sc.price
+        FROM
+            tb_user u
+            LEFT JOIN tb_special_column sc ON u.id = sc.create_by
+        WHERE
+            u.`status` = 1
+            AND u.id = #{uId}
+            AND sc.id = #{scId}
+            AND sc.spe_status = 1
+        ORDER BY
+            sc.price DESC
+
+
+    </select>
+
+    <!--增加热键-->
+    <insert id="addContent">
+        insert  into  tb_classify_separate(content,count,time,create_time)values (#{content},#{count},now(),now())
+    </insert>
+    <!--插入热键条数-->
+    <update id="updateCount">
+      update tb_classify_separate set count=count+1,time=now() where content=#{content}
+    </update>
+
+
+</mapper>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>登录</title>
+    <link th:href="@{/css/mobile/basic.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/mobile/index.css}" rel="stylesheet" type="text/css" />
+    <script th:src="@{/js/jquery-1.9.0.min.js}" type="text/javascript"></script>
+    <script th:src="@{/js/mobile/ratio.js}" type="text/javascript"></script>
+    <script type="text/javascript" th:src="@{/js/mobile/login0.js?v=2}"></script>
+    <script type="text/javascript">
+        function init(){
+            $("#joinUserA").css("display","block");
+
+            //filter_notice(9136);
+            hide_third_login(1);
+        }
+    </script>
+</head>
+
+<body class="zlogin" onload="init();">
+<!--main start-->
+<div class="zcenter zlogin">
+    <div class="zforms zlogin">
+        <div class="zlo_box zlogin">
+            <div class="zlo_content">
+                <h1 class="zlo_title">用户登录</h1>
+                <input type="hidden" id="refer_0x001" name="refer_0x001" value="http%3A%2F%2Fi.mooc.chaoxing.com" />
+                <!--login start-->
+                <form  id="form" name="form" action="" method="post">
+                    <tr>
+
+                        <h4 style="display: block;" class="show_error zlo_error" id="show_error">&nbsp;</h4>
+                        <h1 class="zlo_hh">博学网</h1>
+                        <dl class="zlo_row">
+                            <dd class="zlo_dd">
+                                <input type="text" name="phone" id="unameId" value="" placeholder="手机号/邮箱" />
+                            </dd>
+                        </dl>
+                        <dl class="zlo_row">
+                            <dd class="zlo_dd">
+                                <input type="password" name="password" id="passwordId" value="" placeholder="密码" />
+                            </dd>
+                            <dt class="zlo_forget">
+                                <a href="/appuser/pwd">忘记密码？</a>
+                            </dt>
+                        </dl>
+                        <dl class="zlo_row">
+                            <dd class="zlo_dd">
+						<span class="zlo_w">验证码：
+						</span>
+                                <a href="#" class="zlo_img">
+                                    <img src="/appuser/code" width="100" height="40" id="numVerCode" onclick="getNumCode();" style="border:solid 0px #CCC"/>
+                                </a><a class="zlo_txt" href="#" onclick="getNumCode();">看不清</a>
+                            </dd>
+                        </dl>
+                        <dl class="zlo_row">
+                            <dd class="zlo_dd">
+                                <input name="code" id="numcode" type="text" value="" placeholder="请输入验证码" />
+                            </dd>
+                        </dl>
+                        <p class="zfo_btn"><a id="a" href="#" onclick="mysubmit('form')">登录</a></p>
+                </form>
+                <p class="zfo_friend" id="joinUserA" style="display:none">没有账号？ <a href="/register/register">去注册</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+<!--main end-->
+</body>
+
+</html>

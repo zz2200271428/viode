@@ -1,0 +1,110 @@
+
+
+*{
+	margin:0;
+	padding:0;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	list-style: none;
+	text-decoration: none
+}
+
+html,body{
+	width: 100%;
+	height: 100%;
+	overflow-x: hidden;
+	word-break:break-all;
+	font-size: 14px;
+	color: #333;
+    font-family: Helvetica,sans-serif;
+    -webkit-font-smoothing: antialiased; 
+
+    background-color:#FFFFFF
+}
+
+a{
+	color: #333
+}
+
+.tab{
+	width: 100%;
+	overflow: hidden;
+	clear: both;
+	background-color:#fff;
+    position: relative;
+    padding-bottom: 10px;
+}
+.ul-container{
+    overflow: hidden;
+    clear: both; 
+}
+.ul-container li{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    float: left;
+}
+.ul-container li .tab-box{
+    display: block;
+    position: relative;
+    width:25%;
+}
+
+.ul-container li a{
+	display: block;
+    color: #051B28;
+    font-size: 12px;
+    line-height: normal;
+    height: auto;
+    text-align: center;
+    margin: 15px;
+    background-color: #fff;
+    background-clip: content-box;
+    overflow: hidden;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -moz-box-orient: vertical;
+    -moz-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+
+.ul-container li img{
+    display: block;
+    margin: 0 auto 5px;
+    width: 35px;
+    height: 35px;
+}
+
+.dot-container{
+    width: 100%;
+    background:transparent;
+    position: absolute;
+    text-align:center;
+    bottom: 5px;
+}
+
+.dot-container span{
+    background-color:#ddd;
+    border-radius: 50%;
+    width: 6px;
+    height: 6px;
+    display: inline-block;
+    margin:0 2px
+}
+
+.dot-container span.act{
+    background-color:#2196f3;
+}

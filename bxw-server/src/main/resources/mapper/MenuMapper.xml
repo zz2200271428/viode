@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.MenuDao">
+
+    <resultMap id="menuResult" type="com.znsd.instapundit.bean.MenuBean">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="url" property="url"/>
+        <result column="parent_id" property="parent_id"/>
+        <result column="icon" property="icon"/>
+        <result column="create_by" property="create_by"/>
+        <result column="update_by" property="update_by"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="create_time"/>
+        <result column="update_time" property="update_time"/>
+        <result column="nickname" property="createname"/>
+        <result column="cname" property="updatename"/>
+
+    </resultMap>
+
+    <!--分页查询-->
+    <select id="queryList" resultMap="menuResult" parameterType="com.znsd.instapundit.param.MenuParam">
+        SELECT
+        m.id,
+        m.`name`,
+        m.url,
+        m.parent_id,
+        m.icon,
+        m.allot,
+        m.create_by,
+        m.update_by,
+        m.`status`,
+        m.create_time,
+        m.update_time,
+
+        u.nickname,
+        uu.nickname cname
+        FROM
+        sys_menu m
+        LEFT JOIN sys_user u ON m.create_by = u.id
+        LEFT JOIN sys_user uu on m.update_by = uu.id
+        <where>
+            <if test="name != null">
+                m.name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="status != null">
+                AND m.status = #{status}
+            </if>
+            <if test="start != null and end != null">
+                AND m.update_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end == null">
+                AND m.update_time &gt;= #{start}
+            </if>
+            <if test="start==null and end != null">
+                AND m.update_time &lt;= #{end}
+            </if>
+            and m.mtype != 3
+        </where>
+        ORDER BY
+        m.create_time
+        DESC
+        LIMIT #{page},#{limit}
+    </select>
+
+    <!--查询总记录数-->
+    <select id="querySumCount" resultType="Integer" parameterType="com.znsd.instapundit.param.MenuParam">
+        select count(1) from sys_menu m
+        where 1 = 1
+        <if test="name != null">
+            AND m.name LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test="status != null">
+            AND m.status = #{status}
+        </if>
+        <if test="start != null and end != null">
+            AND m.update_time BETWEEN #{start} AND #{end}
+        </if>
+        <if test="start!=null and end == null">
+            AND m.update_time &gt;= #{start}
+        </if>
+        <if test="start==null and end != null">
+            AND m.update_time &lt;= #{end}
+        </if>
+        and m.mtype != 3
+    </select>
+
+    <update id="deleteMenuById">
+        UPDATE
+        sys_menu
+        SET
+        status = 2 ,
+        update_by = #{id},
+        update_time=NOW()
+        WHERE
+        id = #{ids}
+        <!--IN
+        <foreach collection="ids" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>-->
+    </update>
+
+    <select id="queryMenuList" resultType="com.znsd.instapundit.bean.MenuBean" parameterType="com.znsd.instapundit.bean.MenuBean">
+       SELECT
+          *
+        FROM
+            sys_menu
+        WHERE
+            parent_id = 0
+            AND `status` = 1
+    </select>
+
+    <insert id="addMenu" parameterType="com.znsd.instapundit.bean.MenuBean">
+       INSERT INTO sys_menu
+          (
+             `name`,
+             `url`,
+             `parent_id`,
+             `icon`,
+             `create_by`,
+             `update_by`,
+             `status`,
+             `create_time`,
+             `update_time`,
+             `mtype`
+          )
+	   VALUES
+		  (
+            #{name},
+            #{url},
+            #{parent_id},
+            #{icon},
+            #{create_by},
+            #{update_by},
+            #{status},
+            NOW(),
+            NOW(),
+            #{mtype}
+		  )
+    </insert>
+
+    <select id="menuCheck" parameterType="String" resultType="com.znsd.instapundit.bean.MenuBean">
+        SELECT
+            *
+        FROM
+            sys_menu
+        WHERE
+            `name` = #{name}
+    </select>
+
+    <select id="getMenuById" parameterType="Integer" resultType="com.znsd.instapundit.bean.MenuBean">
+        SELECT
+            *
+        FROM
+            sys_menu
+        WHERE
+            id = #{id}
+    </select>
+
+    <update id="editMenu">
+        UPDATE sys_menu
+        <set>
+            <if test="name != null and name !=''">
+                name = #{name},
+            </if>
+            <if test="url != null and url != ''">
+                url = #{url},
+            </if>
+            <if test="parent_id != null and parent_id != ''">
+                parent_id = #{parent_id},
+            </if>
+            <if test="icon != null and icon != ''">
+                icon = #{icon},
+            </if>
+            <if test="update_by != null and update_by != ''">
+                update_by = #{update_by},
+            </if>
+            update_time = NOW()
+        </set>
+        WHERE
+	      id = #{id}
+    </update>
+
+    <update id="editMenuAllot" parameterType="Integer">
+          UPDATE
+            sys_menu set allot = 1
+         WHERE
+            id
+          IN
+           ( select id from (SELECT id from sys_menu WHERE id = #{parent_id}) t )
+    </update>
+
+
+    <resultMap id="resultMenu" type="com.znsd.instapundit.bean.MenuBean">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <collection property="sonMen" ofType="com.znsd.instapundit.bean.MenuBean">
+            <result property="name" column="sname"/>
+            <result property="url" column="url"/>
+        </collection>
+    </resultMap>
+    <select id="querySonMenuById" parameterType="Integer" resultMap="resultMenu">
+        SELECT
+            m.NAME,
+            mm.name sname,
+            mm.url
+        FROM
+            sys_menu m
+            LEFT JOIN sys_menu mm ON mm.parent_id = m.id
+        WHERE
+            m.id = #{id}
+    </select>
+
+    <resultMap id="roleMenu" type="com.znsd.instapundit.bean.MenuBean">
+        <id property="id" column="pid"/>
+        <result property="name" column="pname"/>
+        <result property="icon" column="picon"/>
+        <result property="status" column="pstatus"/>
+        <result property="allot" column="pallot"/>
+        <result property="url" column="purl"/>
+        <collection property="sonMen" ofType="com.znsd.instapundit.bean.MenuBean">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+            <result property="url" column="url"/>
+            <result property="icon" column="icon"/>
+            <result property="status" column="stauts"/>
+            <result property="allot" column="allot"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="queryCatalogs" resultMap="roleMenu">
+        SELECT
+            m.id,
+            m.name,
+            m.url,
+            m.icon,
+            m.allot,
+            m.`status`,
+            ms.id 'pid',
+            ms.name 'pname',
+            ms.icon 'picon',
+            ms.allot 'pallot',
+            ms.`status` 'pstatus'
+        FROM
+            sys_user u
+            LEFT JOIN sys_user_role ur ON u.id = ur.user_id
+            LEFT JOIN sys_role r on ur.role_id = r.id
+            LEFT JOIN sys_role_menu rm on r.id = rm.role_id
+            LEFT JOIN sys_menu m on rm.menu_id = m.id
+            LEFT JOIN sys_menu ms on m.parent_id = ms.id
+            WHERE u.id= #{id} and u.`status` = 1 and r.`status` = 1 and m.`status` = 1 and ms.`status` = 1
+            GROUP BY m.id
+    </select>
+
+
+
+    <select id="queryMenusByuid" resultMap="roleMenu">
+       	  SELECT
+			m.id 'pid',
+            m.name 'pname',
+            m.icon 'picon',
+            m.allot 'pallot',
+            m.`status` 'pstatus',
+            m.url 'purl',
+            ms.id,
+            ms.name,
+            ms.url,
+            ms.icon,
+            ms.allot
+        FROM
+            sys_user u
+            LEFT JOIN sys_user_role ur ON u.id = ur.user_id
+            LEFT JOIN sys_role r ON r.id = ur.role_id
+            LEFT JOIN sys_role_menu rm ON rm.role_id = r.id
+            LEFT JOIN sys_menu m ON m.id = rm.menu_id
+			LEFT JOIN sys_menu ms on ms.parent_id = m.id
+        WHERE
+            u.id = #{id}
+            AND r.`status` = 1
+            AND m.`status` = 1
+            AND u.`status` = 1
+			GROUP BY id
+	</select>
+
+    <select id="querySonMenuList" resultMap="menuResult" parameterType="Integer">
+        SELECT
+            mm.id,
+            mm.name,
+            mm.url,
+            mm.create_time,
+            mm.update_time,
+            mm.create_by,
+            mm.update_by,
+            u.nickname,
+            uu.nickname cname
+        FROM
+            sys_menu m
+            LEFT JOIN sys_menu mm ON mm.parent_id = m.id
+            LEFT JOIN sys_user u ON mm.create_by = u.id
+          LEFT JOIN sys_user uu on mm.update_by = uu.id
+        WHERE
+            m.id = #{id} and m.parent_id!=0 and mm.`status` = 1  ORDER BY mm.create_time DESC
+    </select>
+
+</mapper>

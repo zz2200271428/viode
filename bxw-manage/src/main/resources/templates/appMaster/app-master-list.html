@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.1</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+    <link rel="stylesheet" th:href="@{/css/xadmin.css}">
+    <script type="text/javascript" th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/js/cookie.js}"></script>
+    <script type="text/javascript" th:src="@{/js/xadmin.js}"></script>
+</head>
+
+<body class="">
+<div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">演示</a>
+        <a><cite>导航元素</cite></a>
+      </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+</div>
+<div class="x-body">
+    <div class="layui-row">
+        <form id="myform" class="layui-form layui-col-md12 x-so">
+            <input class="layui-input"  style="width: 110px" autocomplete="off" placeholder="开始日" name="start" id="start">
+            <input class="layui-input" style="width: 110px"  autocomplete="off" placeholder="截止日" name="end" id="end">
+            <input style="width: 110px" type="text" name="username" placeholder="请输入用户名称" autocomplete="off" class="layui-input">
+            <input style="width: 110px" type="text" name="id_card" placeholder="请输入身份证" autocomplete="off" class="layui-input">
+            <input style="width: 110px" type="text" name="phone" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+            <input style="width: 110px" type="text" name="email" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+
+
+            <div class="layui-input-inline" style="width: 110px">
+                <select name="status">
+                    <option value="">用户状态</option>
+                    <option value="1">正常</option>
+                    <option value="2">冻结</option>
+                </select>
+            </div>
+            <div class="layui-input-inline" style="width: 110px">
+                <select name="sex">
+                    <option value="">用户性别</option>
+                    <option value="1">男</option>
+                    <option value="2">女</option>
+                </select>
+            </div>
+            <div class="layui-input-inline" >
+                <select name="member">
+                    <option value="">是否会员</option>
+                    <option value="1">用户</option>
+                    <option value="2">vip用户</option>
+                </select>
+            </div>
+            <button class="layui-btn layui-btn-radius" type="reset">重置</button>
+            <button class="layui-btn layui-btn-radius" type="button" id="btn">搜索 <i class="layui-icon">&#xe615;</i></button>
+        </form>
+    </div>
+    <table class="layui-table" id="table" lay-filter="test"></table>
+</div>
+
+
+<script type="text/html" id="operateBar">
+    <a title="重置密码" class="layui-btn layui-btn-mini" lay-event="pas"><i class="layui-icon">&#xe673;</i></a>
+</script>
+<script type="text/html" id="checkboxTpl">
+    <input type="checkbox" name="{{d.id}}" value="{{d.status}}" title="冻结" lay-filter="lockDemo"  {{ d.status == 2 ? 'checked' : '' }}>
+</script>
+<script>
+
+
+    layui.use(['table', 'laydate'], function () {
+        var table = layui.table,form = layui.form,laydate = layui.laydate, $ = layui.$;
+
+        // 渲染日期控件
+        laydate.render({
+            elem: '#start' // 开始时间
+        });
+        laydate.render({
+            elem: '#end' // 结束时间
+        });
+
+
+        //所获得的 tableIns 即为当前容器的实例
+        table.render({
+            toolbar:'#barDemo',
+            elem:'#table',// 绑定要被渲染的表格id
+            cellMinWidth: 130,//自适应
+            even: true, //开启隔行背景
+            cols: [
+                [
+                    {field:'id',align:'center',title: '用户ID',sort:true}//sort允许排序
+                    ,{field:'phone',title:'电话号码',align:'center'}
+                    ,{field:'username',title:'用户名称',align:'center'}
+                    ,{field:'password',title:'密码',align:'center'}
+                    ,{field:'id_card',title:'身份证',align:'center'}
+                    ,{field:'email',title:'邮箱',align:'center'}
+                    ,{field:'birthday',title:'生日',align:'center'}
+                    ,{field:'money',title:'用户余额',align:'center'}
+                    ,{field:'sex',align:'center',title: '性别',templet: function(row){
+                        if (row.sex==1 ) {
+                            return '男';
+                        }else if(row.sex==2){
+                            return '女';
+                        }
+                        return "";
+                    }}
+                    ,{field:'ro_id',align:'center',title: '所属角色',templet: '<div>{{d.dictBean.label}}</div>'}
+                    ,{field:'member',title:'是否是会员',align:'center',templet: function(row){
+                        if (row.member==2 ) {
+                            return 'vip用户';
+                        }else {
+                            return '用户';
+                        }
+
+                    }}
+                    ,{field:'picture',title:'头像',align:'center'}
+
+                    ,{field:'status', title:'是否冻结',  templet: '#checkboxTpl',sort:true}
+                    ,{field:'member_time',title:'会员到期时间',align:'center'}
+                    ,{field:'created',title:'创建时间', align:'center'}
+                    ,{field:'updated',title:'修改时间', align:'center'}
+                    , {toolbar: '#operateBar', title: '操作',  align: 'center',field:'right',}
+                ]
+            ],
+            url: '/master/list', //设置异步接口
+            page:true
+        });
+
+        table.on('tool(test)', function(obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            if (layEvent === 'pas') { //查看
+                layer.confirm('确认要重置密码吗？',function(index){
+                    $.post('/appUser/updatePass',{'id':data.id,'_method':'DELETE'},function (datas) {
+                        layer.msg(datas.msg);
+                        location.replace(location.href)
+                    })
+                });
+            }
+        });
+
+
+        // 模糊搜索
+        $(document).on('click','#btn',function(){
+            var array = $('#myform').serializeArray();
+            var param = {};
+            $.each(array,function (i,v) {
+                if(v.value != ''){
+                    param[v.name] = v.value;
+                }
+            })
+            //所获得的 tableIns 即为当前容器的实例
+            table.render({
+                toolbar:'#barDemo',
+                elem:'#table',// 绑定要被渲染的表格id
+
+                cellMinWidth: 130,//自适应
+                even: true, //开启隔行背景
+                cols: [
+                    [
+                        {field:'id',align:'center',title: '用户ID',sort:true}//sort允许排序
+                        ,{field:'phone',title:'电话号码',align:'center'}
+                        ,{field:'username',title:'用户名称',align:'center'}
+                        ,{field:'password',title:'密码',align:'center'}
+                        ,{field:'id_card',title:'身份证',align:'center'}
+                        ,{field:'email',title:'邮箱',align:'center'}
+                        ,{field:'birthday',title:'生日',align:'center'}
+                        ,{field:'money',title:'用户余额',align:'center'}
+                        ,{field:'sex',align:'center',title: '性别',templet: function(row){
+                            if (row.sex==1 ) {
+                                return '男';
+                            }else if(row.sex==2){
+                                return '女';
+                            }
+                            return "";
+                        }}
+                        ,{field:'ro_id',align:'center',title: '所属角色',templet: '<div>{{d.dictBean.label}}</div>'}
+                        ,{field:'member',title:'是否是会员',align:'center',templet: function(row){
+                            if (row.member==2 ) {
+                                return 'vip用户';
+                            }else {
+                                return '用户';
+                            }
+
+                        }}
+                        ,{field:'picture',title:'头像',align:'center'}
+
+                        ,{field:'status', title:'是否冻结',  templet: '#checkboxTpl',sort:true}
+                        ,{field:'member_time',title:'会员到期时间',align:'center'}
+                        ,{field:'created',title:'创建时间', align:'center'}
+                        ,{field:'updated',title:'修改时间', align:'center'}
+                        , {toolbar: '#operateBar', title: '操作',  align: 'center',field:'right',}
+                    ]
+                ],
+                url: '/master/list', //设置异步接口
+                page:true,
+                where:param
+            });
+        });
+        //监听锁定操作
+        form.on('checkbox(lockDemo)', function(obj){
+            var id = obj.elem.name;
+            var status = obj.value == 1 ? 2 : 1;
+            $.post('/appUser/freeze', {'id': id, '_method': 'PUT','status':status}, function (result) {
+                if(result.data > 0){
+                    layer.msg("操作成功！");
+                }else{
+                    layer.msg("操作失败！");
+                }
+                table.reload('table',{'url':'/master/list',page:1});
+            })
+        });
+    })
+
+</script>
+</body>
+
+</html>

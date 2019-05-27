@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.AppUserDao">
+
+    <resultMap id="appUsers" type="com.znsd.instapundit.bean.AppUserBean">
+        <id property="id" column="id"/>
+        <result property="sex" column="sex"/>
+        <result property="password" column="password"/>
+        <result property="status" column="status"/>
+        <result property="id_card" column="id_card"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="ro_id" column="ro_id"/>
+        <result property="picture" column="picture"/>
+        <result property="birthday" column="birthday"/>
+        <result property="member" column="member"/>
+        <result property="money" column="money"/>
+        <result property="member_time" column="member_time"/>
+        <result property="username" column="username"/>
+        <result property="created" column="created"/>
+        <result property="updated" column="updated"/>
+        <result property="dictBean.label" column="label"/>
+        <result property="dictBean.values" column="values"/>
+        <result property="dictBean.type" column="type"/>
+    </resultMap>
+
+
+    <!--分页查询-->
+    <select id="listPage" parameterType="com.znsd.instapundit.param.AppUserParam" resultMap="appUsers">
+        SELECT
+        u.id,
+        u.sex,
+        u.`password`,
+        u.status,
+        u.id_card,
+        u.email,
+        u.phone,
+        u.ro_id,
+        u.picture,
+        u.birthday,
+        u.member,
+        u.money,
+        u.member_time,
+        u.username,
+        u.created,
+        u.updated,
+        d.type type,
+        d.values,
+        d.label
+        FROM tb_user u
+        LEFT JOIN sys_dict d ON u.ro_id= d.values and d.type='role'
+        <where>
+            <if test="status==null">
+                u.status = 1
+            </if>
+            <if test="status!=null">
+                u.status = #{status}
+            </if>
+            <if test="sex!=null">
+                and u.sex LIKE CONCAT('%',#{sex},'%')
+            </if>
+            <if test="id_card!=null">
+                and u.id_card LIKE CONCAT('%',#{id_card},'%')
+            </if>
+            <if test="member!=null">
+                AND u.member LIKE CONCAT('%',#{member},'%')
+            </if>
+            <if test="email!=null">
+                AND u.email LIKE CONCAT('%',#{email},'%')
+            </if>
+            <if test="phone!=null">
+                AND u.phone LIKE CONCAT('%',#{phone},'%')
+            </if>
+            <if test="username!=null">
+                AND u.username LIKE CONCAT('%',#{username},'%')
+            </if>
+            <if test="start!=null and end!=null">
+                AND u.updated BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND u.updated &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND u.updated &lt;= #{end}
+            </if>
+        </where>
+        and d.values =1 and u.ro_id=1
+        LIMIT #{page},#{limit}
+    </select>
+
+    <!--查询总条数-->
+    <select id="queryCount" resultType="int" parameterType="com.znsd.instapundit.param.AppUserParam">
+        SELECT
+        count(1)
+        FROM tb_user u
+        LEFT JOIN sys_dict d ON u.ro_id= d.values and d.type='role'
+        <where>
+            <if test="status==null">
+                u.status = 1
+            </if>
+            <if test="status!=null">
+                u.status = #{status}
+            </if>
+            <if test="sex!=null">
+                and u.sex LIKE CONCAT('%',#{sex},'%')
+            </if>
+            <if test="id_card!=null">
+                and u.id_card LIKE CONCAT('%',#{id_card},'%')
+            </if>
+            <if test="member!=null">
+                AND u.member LIKE CONCAT('%',#{member},'%')
+            </if>
+            <if test="email!=null">
+                AND u.email LIKE CONCAT('%',#{email},'%')
+            </if>
+            <if test="phone!=null">
+                AND u.phone LIKE CONCAT('%',#{phone},'%')
+            </if>
+            <if test="username!=null">
+                AND u.username LIKE CONCAT('%',#{username},'%')
+            </if>
+            <if test="start!=null and end!=null">
+                AND u.updated BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND u.updated &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND u.updated &lt;= #{end}
+            </if>
+        </where>
+        and d.values =1 and u.ro_id=1
+    </select>
+
+
+    <select id="getUserByid" resultType="com.znsd.instapundit.bean.AppUserBean">
+         select * from  tb_user where id=#{id}
+    </select>
+
+    <select id="isMember" resultType="java.lang.Integer">
+        SELECT
+            count( 1 )
+        FROM
+            tb_user
+        WHERE
+            id = #{userID} AND member_time > now()
+    </select>
+
+    <!--修改状态-->
+    <update id="updateStatus" parameterType="com.znsd.instapundit.bean.AppUserBean">
+        update tb_user set status = #{status},updated = now() where id = #{id}
+    </update>
+
+    <!--重置密码-->
+    <update id="updatePass" parameterType="com.znsd.instapundit.bean.AppUserBean">
+        update tb_user
+        set  password=123456,
+        updated=now()
+        where id=#{id}
+    </update>
+
+    <!--app用户登录效验-->
+    <select id="loginCheck" resultType="com.znsd.instapundit.bean.AppUserBean">
+        SELECT
+            *
+        FROM
+            tb_user
+        WHERE
+            phone = #{phone} AND `password` = #{password}
+            OR email = #{phone} AND `password` = #{password} AND status=1
+    </select>
+
+    <!--手机端的登录日志插入-->
+    <insert id="addAppLog" parameterType="com.znsd.instapundit.bean.LoginLogBean">
+        INSERT INTO
+            sys_login_log
+            ( `user`, `way`, `ip`, `login_time`, `login_system` )
+        VALUES
+            (#{user}, 3, #{ip},NOW(),#{login_system})
+    </insert>
+
+    <!--checkPhone-->
+    <select id="checkPhone" parameterType="String" resultType="com.znsd.instapundit.bean.AppUserBean">
+        select * from tb_user where phone = #{key} or email = #{key}
+    </select>
+
+    <!--
+    查询当天发送短信的次数-->
+    <select id="sendNoteNum" resultType="Integer">
+        select count(1) from tb_note where TO_DAYS(time) = TO_DAYS(#{datatime})
+        and phone = #{phone}
+    </select>
+
+    <!--
+   查询当天发送邮件的次数-->
+    <select id="sendEmailNum" resultType="Integer">
+        select count(1) from tb_mail where TO_DAYS(time) = TO_DAYS(#{datetime})
+        and email = #{email}
+    </select>
+
+    <!--短信发送成功后插入发送的数据-->
+    <insert id="addNoteCodeRecord" parameterType="com.znsd.instapundit.bean.NoteBean">
+        INSERT INTO tb_note
+            (
+                `phone`, `note`, `type`, `time`
+            )
+        VALUES
+            (
+                #{phone}, #{note}, #{type},NOW()
+            )
+    </insert>
+
+    <!--通过手机号修改密码-->
+    <update id="updatePasswrodByPhone">
+        UPDATE `tb_user`
+            SET
+                `password` = #{password},
+                `updated` = NOW()
+            WHERE
+                phone = #{phone} or email = #{phone}
+    </update>
+
+    <!--记录邮件验证码发送-->
+    <insert id="addEmail">
+        INSERT INTO `tb_mail`
+            (
+                `email`, `note`, `type`, `time`
+            )
+        VALUES
+	        (
+	            #{email}, #{note}, #{type}, NOW()
+	        )
+
+    </insert>
+
+    <insert id="addAppuser">
+        INSERT INTO `tb_user`
+           (
+                `phone`,
+                `password`,
+                `username`,
+                `status`,
+                `created`,
+                `updated`,
+                member_time
+            )
+        VALUES
+            (
+                #{phone},
+                #{password},
+                #{username},
+                1,
+                NOW(),
+                NOW(), NOW()
+            )
+    </insert>
+</mapper>

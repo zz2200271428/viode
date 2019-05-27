@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-cn" class="iphonex-has-bottombar" data-use-rem="375" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title data-reactroot="">全部课程_在线 培训 视频 教程_腾讯课堂_腾讯课堂</title>
+		<meta itemProp="name" content="全部课程_在线 培训 视频 教程_腾讯课堂_腾讯课堂" data-reactroot="" />
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="applicable-device" content="mobile">
+		<meta http-equiv="x-dns-prefetch-control" content="on">
+		<meta name="keywords" content="语言,技能,培训,考试,兴趣爱好,亲子,课程">
+		<meta name="description" itemprop="description" content="腾讯课堂引入优秀教育机构和老师入驻，开设了语言学习、技能培训、考试学习、兴趣爱好、亲子相关的课程。依托QQ群视频和腾讯视频直播能力，实现老师线上课教学，学生即时互动学习的课堂。">
+		<link rel="stylesheet" th:href="@{/css/search.css}">
+		<script th:src="@{/js/jquery.min.js}"></script>
+	</head>
+	<body id="global">
+		<div id="courseList"></div>
+		<script>function customGetComputedStyle(e,t){return e.currentStyle?e.currentStyle[t]:window.getComputedStyle&&window.getComputedStyle(e,null)?window.getComputedStyle(e,null).getPropertyValue(t):e.style[t]}window.IMWEB_WEBPACK={},IMWEB_WEBPACK.CSSARRAY=[{name:"courseList",url:"//7.url.cn/edu/mobilev2/m-core/courseList.0a8c282b29ef0a3acb56.css"}];for(var i=0;i<IMWEB_WEBPACK.CSSARRAY.length;i++){var div=document.getElementById(IMWEB_WEBPACK.CSSARRAY[i].name);if("none"!==customGetComputedStyle(div,"display")){var newLink=document.createElement("link");newLink.rel="stylesheet",newLink.href=IMWEB_WEBPACK.CSSARRAY[i].url.replace("7.url.cn/edu","ke.qq.com"),document.head.appendChild(newLink),window.BJ_REPORT&&BJ_REPORT.report({level:2,msg:"css retry: "+newLink.href,ext:{msid:3044350}})}}</script>
+		<script>function IMWEB_WEBPACK_JS_ONLOAD(e){if(IMWEB_WEBPACK.firstLoad)for(;IMWEB_WEBPACK.jsRunCnt<IMWEB_WEBPACK.JSARRAY.length;){var n=IMWEB_WEBPACK.JSARRAY[IMWEB_WEBPACK.jsRunCnt];if(n.name===e)n.isLoad=!0,window["IMWEB_WEBPACK_"+n.name](),IMWEB_WEBPACK.jsRunCnt++;else if(-1!==n.name.indexOf("ie")&&-1===navigator.userAgent.indexOf("MSIE")){IMWEB_WEBPACK.jsRunCnt++;continue}break}else IMWEB_WEBPACK.jsLoadedCnt++,IMWEB_WEBPACK.jsLoadedCnt===IMWEB_WEBPACK.JSARRAY.length&&IMWEB_WEBPACK_RunScripts(),window.BJ_REPORT&&BJ_REPORT.report({level:2,msg:"js retry success: "+e,ext:{msid:3172411}})}IMWEB_WEBPACK.JSARRAY=[{name:"common_e0195639c2cc432386ac",url:"//7.url.cn/edu/mobilev2/m-core/common_e0195639c2cc432386ac.js"},{name:"vendor_7a10cac340913b7026a6",url:"//7.url.cn/edu/mobilev2/m-core/vendor_7a10cac340913b7026a6.js"},{name:"courseList_ec45aa3c15b66f39470d",url:"//7.url.cn/edu/mobilev2/m-core/courseList_ec45aa3c15b66f39470d.js"}],IMWEB_WEBPACK.firstLoad=!0,IMWEB_WEBPACK.jsRunCnt=0;</script>
+		<div id="react-body">
+			<header th:replace="header :: header"></header>
+			<div class="nav" data-active="">
+				<nav class="nav__tab border-bottom">
+					<div class="nav__tab-item">
+						<p class="nav__tab-item__title">综合排序</p><svg class="icon-svg nav__tab-item__icon svg--v-bottom" viewBox="0 0 480 480">
+							<use xlink:href="#v-bottom"></use>
+						</svg>;
+					</div>
+					<div class="nav__tab-item">
+						<p class="nav__tab-item__title">全部分类</p><svg class="icon-svg nav__tab-item__icon svg--v-bottom" viewBox="0 0 480 480">
+							<use xlink:href="#v-bottom"></use>
+						</svg>;
+					</div>
+					<div class="nav__tab-item">
+						<p class="nav__tab-item__title">筛选</p><svg class="icon-svg nav__tab-item__icon svg--v-bottom" viewBox="0 0 480 480">
+							<use xlink:href="#v-bottom"></use>
+						</svg>;
+					</div>
+				</nav>
+				<div class="nav__panel nav__panel-sort border-bottom">
+					<ul class="nav__menu can-scroll nav__panel-sort__menu"><a href="//m.ke.qq.com/m-core/courseList.html?sort=0">
+							<li class="nav__menu__item--selected nav__menu__item border-bottom">综合排序</li>
+						</a><a href="//m.ke.qq.com/m-core/courseList.html?sort=1">
+							<li class="nav__menu__item border-bottom">人气排序</li>
+						</a><a href="//m.ke.qq.com/m-core/courseList.html?sort=2">
+							<li class="nav__menu__item border-bottom">价格最低</li>
+						</a><a href="//m.ke.qq.com/m-core/courseList.html?sort=102">
+							<li class="nav__menu__item border-bottom">价格最高</li>
+						</a></ul>
+				</div>
+				<div class="nav__panel nav__panel-cate">
+					<ul class="nav__menu can-scroll nav__panel-cate__mt"><a href="//m.ke.qq.com/m-core/courseList.html?mt=0">
+							<li class="nav__menu__item--selected nav__menu__item"><img class="nav__menu__item-icon" src="//p.qpic.cn/qqconadmin/0/62727eb23e684053beaa1e7c3c22186a/0" />全部</li>
+						</a><a href="//m.ke.qq.com/m-core/courseList.html?mt=1001">
+							<li class="nav__menu__item"><img class="nav__menu__item-icon" src="//p.qpic.cn/qqconadmin/0/505956ecd9e94dfd96eaf3a52210a1c6/0" />IT</li>
+						</a><a href="//m.ke.qq.com/m-core/courseList.html?mt=1002">
+							<li class="nav__menu__item"><img class="nav__menu__item-icon" src="//p.qpic.cn/qqconadmin/0/db82fc25cab741e183b75d6caf5e2527/0" />设计</li>
+						</a><a href="//m.ke.qq.com/m-core/courseList.html?mt=1007">
+							<li class="nav__menu__item"><img class="nav__menu__item-icon" src="//p.qpic.cn/qqconadmin/0/c2f5f7469f5342a6988db967800e9730/0" />电商</li>
+						</a><a href="//m.ke.qq.com/m-core/courseList.html?mt=1004">
+							<li class="nav__menu__item"><img class="nav__menu__item-icon" src="//p.qpic.cn/qqconadmin/0/186aca22554d43fd97f966fb8c24d746/0" />职业</li>
+						</a><a href="//m.ke.qq.com/m-core/courseList.html?mt=1005">
+							<li class="nav__menu__item"><img class="nav__menu__item-icon" src="//p.qpic.cn/qqconadmin/0/8ed62e76be5b4cf6b36c9e621c27a6d3/0" />升学</li>
+						</a><a href="//m.ke.qq.com/m-core/courseList.html?mt=1006">
+							<li class="nav__menu__item"><img class="nav__menu__item-icon" src="//p.qpic.cn/qqconadmin/0/99b917f2eb884c68a7edb1905466ab7b/0" />兴趣</li>
+						</a><a href="//m.ke.qq.com/m-core/courseList.html?mt=1003">
+							<li class="nav__menu__item"><img class="nav__menu__item-icon" src="//p.qpic.cn/qqconadmin/0/0a2c731e02fd48a8a50fbbc42a35d3dc/0" />语言</li>
+						</a></ul>
+					<ul class="nav__menu can-scroll nav__panel-cate__st"><a href="//m.ke.qq.com/m-core/courseList.html?st=0">
+							<li class="nav__menu__item--selected nav__menu__item">全部</li>
+						</a></ul>
+					<ul class="nav__menu can-scroll nav__panel-cate__tt"><a href="//m.ke.qq.com/m-core/courseList.html?tt=0">
+							<li class="nav__menu__item--selected nav__menu__item">全部</li>
+						</a></ul>
+				</div>
+				<div class="nav__panel nav__panel-filter">
+					<div class="nav__panel-filter__wrapper">
+						<div class="nav__panel-filter__content can-scroll">
+							<section class="nav__panel-filter__menu border-top">
+								<h1 class="menu-title">课程类型</h1>
+								<div class="menu-btn"><button>随到随学</button></div>
+								<div class="menu-btn"><button>正在直播</button></div>
+								<div class="menu-btn"><button>系列课</button></div>
+							</section>
+							<section class="nav__panel-filter__menu border-top">
+								<h1 class="menu-title">价格区间</h1>
+								<div class="menu-btn"><button>免费</button></div>
+								<div class="menu-btn"><button>¥ 50以下</button></div>
+								<div class="menu-btn"><button>¥ 50-100</button></div>
+								<div class="menu-btn"><button>¥ 100-500</button></div>
+								<div class="menu-btn"><button>¥ 500-1000</button></div>
+								<div class="menu-btn"><button>¥ 1000以上</button></div>
+							</section>
+							<section class="nav__panel-filter__menu border-top">
+								<h1 class="menu-title">课程内容包含（可多选）</h1>
+								<div class="menu-btn"><button>直播授课</button></div>
+								<div class="menu-btn"><button>录播视频</button></div>
+								<div class="menu-btn"><button>课程资料</button></div>
+								<div class="menu-btn"><button>习题测验</button></div>
+								<div class="menu-btn"><button>试听</button></div>
+							</section>
+						</div>
+						<div class="nav__panel-filter__bottom border-top"><a href="javascript:;" class="js-filter-reset">清空筛选</a><a class="js-filter-submit">确定</a></div>
+					</div>
+				</div>
+				<div class="nav__mask"></div>
+			</div>
+			<div class="content ">
+				<div class="content-list">
+					<div>
+						<ul class="course-list">
+
+							<li class="course-list__item border-bottom click"   th:data-id="${video.id}" th:each=" video : ${listVideo}">
+								<a class="course-card-wrapper " data-report-module="course"  href="javascript:void(0);">
+									<div class="course-card-cover">
+										<img th:src="${video.cover_img}"  /><span
+										 class="course-card-tips">播放次数：[[${video.play_amount}]]</span></div>
+									<div class="course-card-content">
+										<h3 class="course-card-name" th:text="${video.video_title}"></h3>
+										<div class="course-card-price">
+
+											<span class="price" style="color:#5fb41b"><span>[[${video.video_type.label}]]</span>
+											<span class="operation-text" th:if="${video.video_type.values=='2'}"><font color="red" size="3">[[${video.price}]] ￥</font></span>
+											<span class="operation-text" th:if="${video.video_type.values=='4'}"><font color="red" size="3">[[${video.price}]] ￥</font></span>
+										</span></div>
+									</div>
+								</a>
+							</li>
+
+						<!--</ul><button class="course-list__status">正在拉取数据</button>-->
+					</div>
+					<div class="search-pagination"><a href="http://m.ke.qq.com/course/list?page=1">1</a><a href="http://m.ke.qq.com/course/list?page=2">2</a><a
+						 href="http://m.ke.qq.com/course/list?page=3">3</a><a href="http://m.ke.qq.com/course/list?page=4">4</a></div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		//搜索栏
+		$("#search").click(function() {
+			$(".search-mask").css("display", "block")
+			$(".m-header").addClass("in-search");
+		})
+		$(".u-button").click(function() {
+			$(".search-mask").css("display", "none")
+			$(".m-header").removeClass("in-search");
+		})
+		$('body').on('click', '.click', function () {
+			var videoID = $(this).attr('data-id');
+			window.location.href = '/video/play?videoID=' + videoID;
+		})
+	</script>
+</html>

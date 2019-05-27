@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<header class="m-header z-img-ready border-top border-bottom z-no-menu " th:fragment="header">
+    <div style="background-color:#fff"><a href="/index" data-report-module="nav" data-report-position="logo"
+                                          class="m-header__logo"><span
+            class="m-header__logo-pic"></span>腾讯课堂</a>
+        <div class="u-button u-search__btn" cmd='cencel'>取消</div>
+        <div class="m-header__search">
+            <!--<form class="u-search">-->
+            <div class="u-search">
+                <svg class="icon-svg i-search svg--search2" viewBox="0 0 480 480">
+                    <use xlink:href="#search2"></use>
+                </svg>
+                <input id="search" class="u-search__input z-abled" maxLength="40" autoComplete="off"
+                       placeholder="搜索课程/老师/机构"/>
+                <div class="u-search__reset-wrap"><i class="u-search__reset icon-font i-close"></i></div>
+            </div>
+            <!--</form>-->
+        </div>
+        <div class="search-mask iphonex-padding-bottom-34-fixed" data-report-module="searchbar" style="display: none;">
+            <section class="m-search-page__b">
+                <header class="m-search-page__h">
+                    <svg class="icon-svg icon-font i-hot svg--hot" viewBox="0 0 480 480">
+                        <use xlink:href="#hot"></use>
+                    </svg>
+                    热门搜索
+                </header>
+                <ul class="m-search-page__hotlist" id="sss">
+                    <!--<li class="clearfix"></li>-->
+                </ul>
+            </section>
+            <section class="m-search-page__b">
+                <header class="m-search-page__h">
+                    <svg class="icon-svg icon-font i-hot svg--hot" viewBox="0 0 480 480">
+                        <use xlink:href="#hot"></use>
+                    </svg>
+                    最近搜索
+                </header>
+                <ul class="m-search-page__hotlist" id="ssss">
+                    <!--<li class="clearfix"></li>-->
+                </ul>
+                <div class="m-search-page__clear" id="clear" cmd="clearHistory">清除搜索记录</div>
+            </section>
+            <!--<section class="m-search-page__b m-search-page__b&#45;&#45;his">
+                <header class="m-search-page__h i-time border-bottom">最近搜索</header>
+                <ul class="m-search-page__hislist">
+                    <li class="m-search-page__hisitem border-bottom">
+                        <a href="javascript:;" class="m-search-page__hisitem__link">
+                            <p class="m-search-page__hisword" cmd="searchHistory">java</p>
+                            <div class="m-search-page__hisdel icon-close" data-word="java" cmd="clearHistoryItem">
+                                <i class="icon-close"></i>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+                <div class="m-search-page__clear" cmd="clearHistory">清除搜索记录</div>
+            </section>-->
+        </div>
+    </div>
+    <script th:src="@{/js/header.js}"></script>
+</header>
+
+</body>
+</html>

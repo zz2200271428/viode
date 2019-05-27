@@ -1,0 +1,243 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <title>店铺详情</title>
+    <link rel="stylesheet" th:href="@{/css/bofang.css}">
+    <link type="text/css" rel="stylesheet" th:href="@{/css/wenda.css}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/font.css}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/dialog.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/dialog.js}"></script>
+</head>
+<body>
+
+
+<div class="wrapper" id="wrapper" th:fragment="wrapper_refresh">
+    <!--店铺ID-->
+    <input type="hidden" name="storeID" th:value="${store.id}">
+    <section class="app-download">
+        <a class="download-wording" href="javascript:void(0)" onclick="javascript :history.go(-1);"><img
+                class="red-envelope" th:src="@{/img/ht.png}"></a>
+        <div class="download-btns">
+            <img id="isImg" th:src="${isCollect}==true?'/img/shoucang-sc.png':'/img/shoucang-default.png'" width="30px"
+                 height="30px">
+            <span class="download-btn" id="isCollect" th:collect-status="${isCollect}==true?false:true"
+                  th:text="${isCollect}==true?'取消收藏':'收藏'">收藏</span>
+        </div>
+    </section>
+    <section id="banner" class="banner z-not-data" style="height: 110px;">
+
+    </section>
+    <header class="header">
+        <div class="header__cnt">
+            <!--店铺头像-->
+            <img class="header__logo" th:src="${store.simg}">
+            <div class="header__name__cont">
+                <!--店铺名称-->
+                <h1 class="header__name" th:text="${store.sname}"></h1>
+            </div>
+            <!--店铺介绍-->
+            <p class="u-teacher-card__desc" th:text="${store.store_desc}"></p>
+        </div>
+        <ul class="header__comment-list" style="margin-bottom: 60px">
+            <li class="header__comment-item">
+                <p>访问</p>
+                <p>[[${store.click_amount}]]</p>
+            </li>
+            <li class="header__comment-item">
+                <p>问题</p>
+                <p>[[${store.ask_count}]]</p>
+            </li>
+            <li class="header__comment-item">
+                <p>收藏</p>
+                <p>[[${store.count}]]</p>
+            </li>
+        </ul>
+
+    </header>
+    <nav class="nav-box">
+        <ul id="tab-bar" class="tab-bar with-2-tabs" th:data-cur-tab="${active}">
+            <li class="tab-bar__item" th:classappend="${active==0}?'z-active'" active="0">
+                <a href="javascript:void(0)">全部问答</a>
+            </li>
+            <li class="tab-bar__item" th:classappend="${active==1}?'z-active'" active="1">
+                <a href="javascript:void(0)">我的问答</a>
+            </li>
+        </ul>
+    </nav>
+    <div style="margin-bottom: 60px">
+        <div class="u-teacher-card" data-id="2621811928" data-hasreported="1"
+             data-reportonce="rid=agencyHome__tt2621811928&amp;module=Y-MQ-Organ&amp;action=TeacherTab_teacher_expo&amp;ver2=2621811928&amp;ver3=11212&amp;ver9=h5"
+             th:each="ask,askBean:${askList}" th:uid="${ask.id}">
+            <font class="status" th:color="${ask.ask_status}==1?'red':'#7fff00'"
+                  th:text="${ask.ask_status}==1?'未完成':'已完成'"></font>
+            <div>
+                <div style="float: right;margin-right: 10px;color: deeppink">[[${ask.reward}]] ￥</div>
+            </div>
+
+            <!--用户头像-->
+            <div class="u-teacher-card__img"><img th:src="${ask.user.picture}" width="65" height="65"></div>
+            <div class="u-teacher-card__right">
+                <!--用户名-->
+                <h3 class="u-teacher-card__name">
+                    <em class="u-teacher-card__word" th:text="${ask.user.username}"></em>
+                </h3>
+                <!--提问内容-->
+                <p class="u-teacher-card__desc" th:text="${ask.issue}"></p>
+                <!--提问时间-->
+                <p class="u-teacher-card__desc">
+                    <span th:text="${#dates.format(ask.ask_time,'yyyy-MM-dd kk:mm:ss')}"
+                          style="margin-right: 20px"></span>
+                </p>
+            </div>
+        </div>
+        <div th:if="${askList.size() == 0}" style="margin-top: 33%;margin-left: 33%">
+            <font color="#7fff00">[[${emptyMsg}]]</font>
+        </div>
+    </div>
+
+    <section class="detail__bottom--wrapper iphonex-padding-bottom">
+        <div id="plug_prompt_textarea" class="detail__bottom--container">
+            <button class="bottom-btn js-report-link apply"
+                    style="background-color: #23b8ff;color: #fff;background-image: url("
+            ")">我要提问
+            </button>
+        </div>
+    </section>
+</div>
+
+<script>
+    // 店铺ID
+    var storeID = $('input[name="storeID"]').val();
+
+    // 抽取dialog方法
+    function show(out) {
+        var d = dialog({
+            content: out
+        });
+        d.show();
+        setTimeout(function () {
+            d.close().remove();
+        }, 2000);
+    }
+
+    // 赏金发表问题
+    function reward(issue) {
+        var d = dialog({
+            title: '赏金',
+            content: '<input autofocus name="reward" />',
+            okValue: '提交',
+            ok: function () {
+                var reward = parseInt($('input[name="reward"]').val());
+                if (reward > 0) {
+                    $.ajax({
+                        url: '/store/issue',
+                        type: 'post',
+                        data: {'issue': issue, 'reward': reward, 'storeID': storeID},
+                        success: (result) => {
+                            show(result.msg);
+                            if (result.code == 200) {
+                                var active = $('#tab-bar').attr('data-cur-tab');
+                                $('#tab-bar').children().eq(active).click();
+                            }
+                        },
+                        error: (error) => {
+                            show('出错啦');
+                        }
+                    })
+                } else {
+                    this.title('请输入...');
+                    return false;
+                }
+
+            },
+            cancelValue: '取消提问',
+            cancel: function () {
+            }
+        });
+        d.show();
+        d.showModal();
+    }
+
+    $(function () {
+        $('body').on('click', '.tab-bar__item', function () {
+            var active = $(this).attr('active');
+            $('#wrapper').load("/store/active?storeID=" + storeID + "&active=" + active);
+        })
+
+        // 收藏按钮事件
+        $('body').on('click', '#isCollect', function () {
+            var flag = $('#isCollect').attr('collect-status'); // 当前收藏的状态
+            $.ajax({
+                url: '/store/collect',
+                type: 'post',
+                data: {'storeID': storeID, 'flag': flag},
+                success: (result) => {
+                    if (result == true || result == false) {
+                        show(result ? '收藏成功' : '取消成功');
+                        var active = $('#tab-bar').attr('data-cur-tab');
+                        $('#tab-bar').children().eq(active).click();
+                    } else {
+                        show('出错啦');
+                    }
+                },
+                error: (error) => {
+                    show('出错啦');
+                }
+            })
+        })
+
+        $('body').on('click', '#plug_prompt_textarea', function () {
+            var d = dialog({
+                title: '提问',
+                content: '<input autofocus name="issue" />',
+                okValue: '提交',
+                ok: function () {
+                    var issue = $('input[name="issue"]').val().trim();
+                    if (issue == '') {
+                        this.title('请输入...');
+                        return false;
+                    } else {
+                        reward(issue);
+                    }
+                },
+                cancelValue: '取消',
+                cancel: function () {
+                }
+            });
+            d.show();
+            d.showModal();
+        })
+
+        $('body').on('input propertychange', 'input[name="reward"]', function () {
+            var value = $(this).val();
+            if (value.length == 1 && value == 0) {
+                $(this).val(value.substr(0, value.length - 1));
+                return;
+            }
+            if (!/^[0-9]*$/.test(value)) {
+                if (isNaN(parseInt(value.substr(0, value.length - 1)))) {
+                    $(this).val('');
+                    return;
+                }
+                $(this).val(parseInt(value.substr(0, value.length - 1)));
+            }
+            if (parseInt(value) > 1000000) {
+                $(this).val('1000000');
+                show("赏金不能超过百万");
+            }
+        })
+
+        $('body').on('click', '.u-teacher-card', function () {
+            // 为每一个问题绑定事件
+            var id = $(this).attr('uid');
+            window.location.href="/ask/details?id="+id;
+        })
+
+    })
+</script>
+
+</body>
+</html>

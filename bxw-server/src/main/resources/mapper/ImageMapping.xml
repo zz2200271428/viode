@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.ImageDao">
+    <resultMap id="resultImage" type="ImageBean">
+        <id column="id" property="id"></id>
+        <result column="image_url" property="image_url"></result>
+        <result column="im_url" property="im_url"></result>
+        <result column="desc" property="desc"></result>
+        <result column="create_by" property="create_by"></result>
+        <result column="update_by" property="update_by"></result>
+        <result column="status" property="status"></result>
+        <result column="create_time" property="create_time"></result>
+        <result column="update_time" property="update_time"></result>
+    </resultMap>
+
+
+    <!--<select id="queryListImage"   parameterType="PageBean" resultType="com.znsd.instapundit.bean.ImageBean">
+        SELECT `id`,`image_url`,`desc`,`create_by`,`update_by`,`status`,
+        `create_time`,`update_time` FROM sys_image WHERE `status` = '1'  LIMIT #{page},#{limit}
+    </select>-->
+
+  <!--  <select id="getCount" resultType="int">
+        SELECT count(0) FROM sys_image WHERE `status` = 1
+    </select>-->
+    <select id="getCount" parameterType="com.znsd.instapundit.bean.ImageBean" resultType="int">
+        SELECT
+        count(0)
+        FROM
+        sys_image m
+        <where>
+            <if test="status==null">
+                AND m.status = 1
+            </if>
+            <if test="desc!=null">
+                m.desc LIKE CONCAT('%',#{desc},'%')
+            </if>
+            <if test="status!=null">
+                AND m.status = #{status}
+            </if>
+            <if test="start!=null and end!=null">
+                AND  m.create_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND  m.create_time &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND  m.create_time &lt;= #{end}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="addImage" >
+       INSERT INTO `sys_image`
+       (image_url,im_url,`desc`,`create_by`,`status`,create_time)
+       VALUES (#{image_url},#{im_url},#{desc },#{create_by},1,NOW())
+    </insert>
+
+
+    <select id="selectImageById" resultType="com.znsd.instapundit.bean.ImageBean">
+		 SELECT `id`,`image_url`,`im_url`,`desc`,`create_by`,`update_by`,`status`,
+        `create_time`,`update_time` FROM sys_image  WHERE  id = #{id}
+    </select>
+
+    <update id="updateStatus">
+        update sys_image set status = #{status},update_by=#{update_by},update_time = now() where id = #{id}
+    </update>
+
+
+    <update id="deleteImage">
+        UPDATE sys_image SET `status` = '3',update_time=NOW() WHERE id IN
+        <foreach collection="array" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </update>
+
+    <update id="saveImage" parameterType="com.znsd.instapundit.bean.ImageBean">
+        UPDATE  `sys_image`
+        <set>
+            <if test="image_url != null and image_url != ''">image_url = #{image_url},</if>
+            <if test="im_url != null and im_url != ''">im_url = #{im_url},</if>
+            <if test="desc != null and desc != ''">`desc` = #{desc},</if>
+           <if test="update_by != null and update_by != ''">update_by = #{update_by},</if>
+            update_time=NOW()
+        </set>
+        WHERE  id=#{id}
+    </update>
+
+
+    <select id="queryLikeImage" parameterType="com.znsd.instapundit.param.ImageParam" resultType="com.znsd.instapundit.bean.ImageBean">
+        SELECT
+        m.id,
+        m.image_url,
+        m.im_url,
+        m.desc,
+        m.create_by,
+        m.update_by,
+        m.status,
+        m.create_time,
+        m.update_time
+        FROM sys_image m
+        <where>
+            <if test="status==null">
+                AND m.status = 1
+            </if>
+            <if test="desc!=null">
+                m.desc LIKE CONCAT('%',#{desc},'%')
+            </if>
+            <if test="status!=null">
+                AND m.status = #{status}
+            </if>
+            <if test="start!=null and end!=null">
+                AND  m.create_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND  m.create_time &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND  m.create_time &lt;= #{end}
+            </if>
+        </where>
+         LIMIT #{page},#{limit}
+    </select>
+
+</mapper>

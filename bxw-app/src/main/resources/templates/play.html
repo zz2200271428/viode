@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>标题</title>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="applicable-device" content="mobile">
+    <link rel="stylesheet" th:href="@{/css/bofang.css}">
+    <link th:href="@{/css/video-js.min.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/dialog.css}"/>
+    <link rel="stylesheet" th:href="@{/css/jiangshi.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/video.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/dialog.js}"></script>
+</head>
+<body id='global'>
+<div id="react-body">
+    <!--视频的状态-->
+    <input id="video_type" type="hidden" th:value="${video.video_type.values}"/>
+    <!--是否是会员-->
+    <input id="isMember" type="hidden" th:value="${isMember}"/>
+    <!--视频ID-->
+    <input id="videoID" type="hidden" th:value="${video.id}"/>
+    <section class="app-download">
+        <a class="download-wording" href="javascript:void(0)" onclick="javascript :history.go(-1);"><img
+                class="red-envelope" th:src="@{/img/ht.png}"></a>
+        <div class="download-btns">
+            <img id="isImg" th:src="${isCollect}==true?'/img/shoucang-sc.png':'/img/shoucang-default.png'" width="30px"
+                 height="30px">
+            <span class="download-btn" id="isCollect" th:collect-status="${isCollect}==true?false:true"
+                  th:text="${isCollect}==true?'取消收藏':'收藏'"></span>
+        </div>
+    </section>
+    <main class='main'>
+        <section class="player">
+            <div class="player-cover" id="v_div" style="width: 100%;height: 100%">
+                <video id="video" class="video-js" th:poster="${video.cover_img}">
+                    <source th:src="${video.video_url}">
+                </video>
+            </div>
+        </section>
+    </main>
+    <section class="content">
+        <section class="basicInfo">
+            <h1>[[${video.video_title}]]</h1>
+            <h3 th:if="${video.video_intro}!=null" th:text="${video.video_intro}"></h3>
+            <div class="free-info basic-summary">
+                <div class="price free">[[${video.video_type.label}]]</div>
+                <div class="summary-item">收藏
+                    <!-- -->[[${video.collect}]]
+                </div>
+                <div class="summary-item">播放
+                    <!-- -->[[${video.play_amount}]]
+                </div>
+                <div class="operation-item">
+                    <svg class="icon-svg svg--consult" viewBox="0 0 480 480">
+                        <use xlink:href="#consult"></use>
+                    </svg>
+                    <span class="operation-text" th:if="${video.video_type.values=='2'}">
+                        <font color="red" size="3">[[${video.price}]] ￥</font></span>
+                    <span class="operation-text" th:if="${video.video_type.values=='4'}">
+                        <font color="red" size="3">[[${video.specialColumnBean.price}]] ￥</font></span>
+                </div>
+            </div>
+        </section>
+
+        <!--如果是专栏视频列出所有专栏下的视频-->
+        <div class="collapse-wrapper catalog-info" th:if="${isColumn}">
+            <div class="collapse-content">
+                <ul>
+                    <li class="sub-chapter" th:each="video,videoBean:${columnVideos}">
+                        <div class="chapter-header list-hide gray"><i class="icon-css-v icon-css-v--bottom column"
+                                                                      on_off="false"></i>
+                            <div class="sub-title suffix-0">
+                                <div class="sub-name">[[${video.video_intro}]]</div>
+                            </div>
+                        </div>
+                        <ul class="task-items hide">
+                            <div class="mod-pagination__wrap switchover" th:data-id="${video.id}"
+                                 style="margin-left: 40px">
+                                <ul class="mod-courseList">
+                                    <li>
+                                        <a href="javascript:void(0);" class="mod-courseList__link">
+                                            <div class="mod-courseList__item" data-type="5">
+                                                <div class="mod-course__face">
+                                                    <img th:src="${video.cover_img}" th:alt="${video.video_title}"
+                                                         style="display: inline;">
+                                                </div>
+                                                <div class="mod-course__info">
+                                                    <h3>[[${video.video_title}]]</h3>
+                                                    <p class="mod-course__agency">[[${play_amount}]]</p>
+                                                    <!--<p class="mod-course__pay ">免费</p>-->
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <section class="section agency-info">
+            <h2 class="section-tt">授课导师</h2><a class="agency-card" href="javascript:void(0)"><img
+                class="agency-avatar lazy-loading" alt="" th:src="${video.upload_by.picture}">
+            <div class="agency-desc">
+                <p class="agency-name">[[${video.upload_by.username}]]</p>
+                <ul class="agency-data">
+                    <li>视频数
+                        <!-- -->[[${video.upload_by.videoCount}]]
+                    </li>
+                    <li class="slash"> |</li>
+                    <li>专栏数
+                        <!-- -->[[${video.upload_by.columnCount}]]
+                    </li>
+                </ul>
+            </div>
+        </a>
+        </section>
+        <section class="section comment-info" style="margin-bottom: 50px" id="cdiv">
+            <h2 class="section-tt" id="commentHead">学员评论(
+                <!-- -->[[${comments.size()}]]
+                <!-- -->)<a class="btn-viewall" href="javascript:void(0)" id="refresh"><img
+                        style="width: 30px;height: 30px" th:src="@{/img/sx.png}"></a></h2>
+            <div id="comment-list">
+                <ul class="comment-list" th:each="comment,commentBean:${comments}">
+                    <li class="comment-item" style="margin-bottom: 10px">
+                        <div class="comment-user"><img class="comment-avatar" th:src="${comment.user.picture}">
+                            <div>
+                                <p class="comment-username">[[${comment.user.username}]]</p><span class="star-list"><svg
+                                    class="icon-svg star svg--star" viewBox="0 0 480 480">
+											<use xlink:href="#star"></use>
+										</svg><svg class="icon-svg star svg--star" viewBox="0 0 480 480">
+											<use xlink:href="#star"></use>
+										</svg><svg class="icon-svg star svg--star" viewBox="0 0 480 480">
+											<use xlink:href="#star"></use>
+										</svg><svg class="icon-svg star svg--star" viewBox="0 0 480 480">
+											<use xlink:href="#star"></use>
+										</svg><svg class="icon-svg star svg--star" viewBox="0 0 480 480">
+											<use xlink:href="#star"></use>
+										</svg></span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="comment-content">
+                                <p class="comment-txt">[[${comment.comment}]]</p>
+                                <p class="comment-foot"><span
+                                        class="comment-studytime">[[${comment.user.dictBean.label}]]</span>
+                                    <time class="comment-time"
+                                          th:text="${#dates.format(comment.time,'yyyy-MM-dd kk:mm:ss')}"></time>
+                                </p>
+                            </div>
+                        </div>
+
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </section>
+
+    <section class="detail__bottom--wrapper iphonex-padding-bottom">
+        <div id="plug_prompt_textarea" class="detail__bottom--container">
+            <button class="bottom-btn js-report-link"
+                    style="background-color: #23b8ff;color: #fff;background-image: url("
+            ")">发表评论
+            </button>
+        </div>
+    </section>
+</div>
+</body>
+<!--视频播放相关-->
+<script type="text/javascript">
+    var token = false;
+    var play = false;
+    var isMember = $('#isMember').val();
+    var videoID = $('#videoID').val(); // 视频ID
+    // 初始化tooken判断该用户是否有权限观看
+    $.ajax({
+        url: '/video/isPay',
+        type: 'get',
+        data: {'videoID': videoID},
+        success: (result) => {
+            if (result == true) {
+                token = true;
+            }
+        },
+        error: (error) => {
+        }
+    })
+
+    var width = $('#v_div').width();
+    var height = $('#v_div').height();
+    var player = videojs('video', {
+        muted: true,/*true/false 是否静音*/
+        controls: true,/*true/false 是否拥有控制条 【默认true】,如果设为false ,那么只能通过api进行控制了。也就是说界面上不会出现任何控制按钮*/
+        height: height,
+        width: width,
+        loop: false/*类型： boolean使视频一结束就重新开始。*/
+    }, function onPlayerReady() {
+        this.on('ended', function () { // 播放结束事件
+        });
+        this.on('pause', function () { // 播放暂停事件
+        });
+        this.on('play', function () { // 播放开始事件
+            if (play == false) {
+                $.post('/video/playCount', {'videoID': videoID}, function (result) {
+                })
+                play = true;
+            }
+            // var duration = player.duration(); // 视频时长
+            // var time = player.currentTime(); // 当前播放时长
+            // player.pause(); // 视频暂停方法
+            // player.load(); // 视频重载的方法
+        });
+    });
+
+    // 清除所有的播放状态，回到最开始的时候
+    function clearStatus() {
+        player.load(); // 视频重载的方法
+        timer = setInterval('probation()', 1000); // 试看五分中的定时函数
+    }
+
+    function testToken() {
+        console.log('我是试看结束的监控器')
+        clearInterval(timer2);
+        var video_type = $('#video_type').val();
+        if (video_type == 2) { // 付费视频
+            player.pause();
+            var d = dialog({
+                title: '该视频需要购买才能观看！',
+                content: '立即购买？',
+                okValue: '立即购买',
+                ok: function () {
+                    this.title('提交中…');
+                    pay();
+                    return true;
+                },
+                cancelValue: '我在看看',
+                cancel: function () {
+                    clearStatus();
+                }
+            });
+            d.show();
+            d.showModal();
+        } else if (video_type == 3) { // 会员视频
+            if (isMember == 'true') { // 如果是会员
+                token = true; // 给予令牌
+            } else { // 如果不是会员，在进行操作
+                player.pause();
+                var d = dialog({
+                    title: '该视频需要成为会员才能观看！',
+                    content: '立即跳转开通会员页面？',
+                    okValue: '跳转',
+                    ok: function () {
+                        window.location.href = "/pay/vipPage";
+                        this.title('提交中…');
+                        return true;
+                    },
+                    cancelValue: '我在看看',
+                    cancel: function () {
+                        clearStatus();
+                    }
+                });
+                d.show();
+                d.showModal();
+            }
+        } else if (video_type == 4) { // 专栏视频
+            player.pause();
+            var d = dialog({
+                title: '购买专栏即可观看专栏下所有视频！',
+                content: '立即购买？',
+                okValue: '立即购买',
+                ok: function () {
+                    this.title('提交中…');
+                    pay();
+                    return true;
+                },
+                cancelValue: '我在看看',
+                cancel: function () {
+                    clearStatus();
+                }
+            });
+            d.show();
+            d.showModal();
+        } else { // 如果是免费视频直接给予令牌
+            token = true;
+        }
+
+    }
+
+    var timer = setInterval('probation()', 1000); // 试看五分中的定时函数
+    var timer2;
+
+    // 视频试看5分钟
+    function probation() {
+        if (token) {
+            clearInterval(timer);
+            return;
+        }
+        var time = player.currentTime(); // 当前播放时长
+        console.log('当前播放时长，试看五分钟：' + time)
+        if (time >= 300) {
+            clearInterval(timer);
+            timer2 = setInterval('testToken()', 500);
+        }
+    }
+
+    // 购买视频
+    function pay() {
+        $.ajax({
+            url: '/video/pay',
+            type: 'post',
+            data: {'videoID': videoID},
+            success: (result) => {
+                if (result.code == 200) {
+                    show(result.msg);
+                    token = true; // 支付成功给予令牌
+                    player.play(); // 继续播放
+                } else {
+                    if (result.code == 400500) {
+                        var d = dialog({
+                            title: '余额不足，支付失败！',
+                            content: '立即跳转余额充值页面？',
+                            okValue: '跳转',
+                            ok: function () {
+                                window.location.href = "/pay/charge";
+                                this.title('提交中…');
+                                return true;
+                            },
+                            cancelValue: '稍后充值',
+                            cancel: function () {
+                            }
+                        });
+                        d.show();
+                        d.showModal();
+                    } else {
+                        show(result.msg);
+                    }
+                    clearStatus();
+                }
+            },
+            error: (error) => {
+                show('出错啦');
+                clearStatus();
+            }
+        })
+    }
+</script>
+
+<script>
+    $(function () {
+        $('body').on('click', '#refresh', function () {
+            $.ajax({
+                url: '/video/comments?videoID=' + videoID,
+                type: 'get',
+                success: (data) => {
+                    appendComment(data);
+                },
+                error: (error) => {
+                    show('出错啦');
+                }
+            })
+        })
+
+        // 专栏视频切换
+        $('body').on('click', '.switchover', function () {
+            var id = $(this).attr('data-id');
+            window.location.href = "/video/play?videoID=" + id;
+        })
+
+        // 专栏下的视频列表特效
+        $('body').on('click', '.column', function () {
+            var on_off = $(this).attr('on_off');
+            if (on_off == 'true') {
+                $(this).parent().next().addClass('hide');
+                $(this).parent().addClass('list-hide gray');
+                $(this).removeClass('icon-css-v--top');
+                $(this).addClass('icon-css-v--bottom');
+                $(this).attr('on_off', 'false');
+            } else {
+                $(this).parent().next().removeClass('hide');
+                $(this).parent().removeClass('list-hide gray');
+                $(this).addClass('icon-css-v--top');
+                $(this).removeClass('icon-css-v--bottom');
+                $(this).attr('on_off', 'true');
+            }
+
+        })
+
+    });
+
+    // 抽取dialog方法
+    function show(out) {
+        var d = dialog({
+            content: out
+        });
+        d.show();
+        setTimeout(function () {
+            d.close().remove();
+        }, 2000);
+    }
+
+    // 收藏按钮事件
+    $('body').on('click', '#isCollect', function () {
+        var flag = $('#isCollect').attr('collect-status'); // 当前收藏的状态
+        $.ajax({
+            url: '/video/collect',
+            type: 'post',
+            data: {'videoID': videoID, 'flag': flag},
+            success: (result) => {
+                if (result == true || result == false) {
+                    show(isCollect(result));
+                } else {
+                    show('出错啦');
+                }
+            },
+            error: (error) => {
+                show('出错啦');
+            }
+        })
+    })
+
+    // 发表评论按钮事件
+    $('body').on('click', '#plug_prompt_textarea', function () {
+        var d = dialog({
+            title: 'biu~biu~biu！',
+            content: '<input autofocus name="comment" />',
+            okValue: 'biu',
+            ok: function () {
+                var comment = $('input[name="comment"]').val().trim();
+                if (comment == '') {
+                    this.title('请输入...');
+                    return false;
+                } else {
+                    $.ajax({
+                        url: '/video/comment',
+                        type: 'post',
+                        data: {'videoID': videoID, 'comment': comment},
+                        success: (result) => {
+                            show(result.msg);
+                            $('#refresh').click();
+                        },
+                        error: (error) => {
+                            show('出错啦');
+                        }
+                    })
+                }
+            },
+            cancelValue: '取消',
+            cancel: function () {
+            }
+        });
+        d.show();
+        d.showModal();
+    })
+
+    // 根据收藏结果处理样式，true代表收藏，false代表取消收藏
+    function isCollect(judge) {
+        if (judge == true) {
+            $('#isImg').attr('src', '/img/shoucang-sc.png');
+            $('#isCollect').text('取消收藏');
+            $('#isCollect').attr('collect-status', 'false');
+            return "收藏成功";
+        } else {
+            $('#isImg').attr('src', '/img/shoucang-default.png');
+            $('#isCollect').text('收藏');
+            $('#isCollect').attr('collect-status', 'true');
+            return "取消成功";
+        }
+    }
+
+    // 评论拼接
+    function appendComment(data) {
+        if (data instanceof Array) {
+            if (data.length > 0) {
+                $('#commentHead').empty();
+                $('#commentHead').append(appendCommentHead(data));
+                $('#comment-list').empty();
+                $('#comment-list').append(appendCommentBody(data));
+            } else {
+                var d = dialog({
+                    title: '评论空空如也，占个沙发呗！',
+                    content: '要发表评论吗？',
+                    okValue: '确定',
+                    ok: function () {
+                        this.title('提交中…');
+                        $('#plug_prompt_textarea').click();
+                        return true;
+                    },
+                    cancelValue: '取消',
+                    cancel: function () {
+                    }
+                });
+                d.show();
+                d.showModal();
+            }
+        } else {
+            show('出错啦');
+        }
+    }
+
+    //  拼接评论头部
+    function appendCommentHead(data) {
+        var html = "学员评论(\n" +
+            "                <!-- -->" + data.length + "\n" +
+            "                <!-- -->)<a class=\"btn-viewall\" href=\"javascript:void(0)\" id=\"refresh\"><img style=\"width: 30px;height: 30px\" src=\"/img/sx.png\"></a>";
+        return html;
+    }
+
+    // 拼接评论主体
+    function appendCommentBody(data) {
+        var html = "<ul id=\"comment-list\" class=\"comment-list\">";
+        $.each(data, function (i, comment) {
+            html += "<li class=\"comment-item\" style=\"margin-bottom: 10px\">\n" +
+                "                    <div class=\"comment-user\"><img class=\"comment-avatar\" src=\"" + comment.user.picture + "\">\n" +
+                "                        <div>\n" +
+                "                            <p class=\"comment-username\">" + comment.user.username + "</p>\n" +
+                "\t\t\t\t\t\t\t\t<span class=\"star-list\">\n" +
+                "\t\t\t\t\t\t\t\t\t<svg class=\"icon-svg star svg--star\" viewBox=\"0 0 480 480\">\n" +
+                "\t\t\t\t\t\t\t\t\t\t<use xlink:href=\"#star\"></use>\n" +
+                "\t\t\t\t\t\t\t\t\t</svg>\n" +
+                "\t\t\t\t\t\t\t\t\t<svg class=\"icon-svg star svg--star\" viewBox=\"0 0 480 480\">\n" +
+                "\t\t\t\t\t\t\t\t\t\t<use xlink:href=\"#star\"></use>\n" +
+                "\t\t\t\t\t\t\t\t\t</svg>\n" +
+                "\t\t\t\t\t\t\t\t\t<svg class=\"icon-svg star svg--star\" viewBox=\"0 0 480 480\">\n" +
+                "\t\t\t\t\t\t\t\t\t\t<use xlink:href=\"#star\"></use>\n" +
+                "\t\t\t\t\t\t\t\t\t</svg>\n" +
+                "\t\t\t\t\t\t\t\t\t<svg class=\"icon-svg star svg--star\" viewBox=\"0 0 480 480\">\n" +
+                "\t\t\t\t\t\t\t\t\t\t<use xlink:href=\"#star\"></use>\n" +
+                "\t\t\t\t\t\t\t\t\t</svg>\n" +
+                "\t\t\t\t\t\t\t\t\t<svg class=\"icon-svg star svg--star\" viewBox=\"0 0 480 480\">\n" +
+                "\t\t\t\t\t\t\t\t\t\t<use xlink:href=\"#star\"></use>\n" +
+                "\t\t\t\t\t\t\t\t\t</svg>\n" +
+                "\t\t\t\t\t\t\t\t</span>\n" +
+                "                        </div>\n" +
+                "                    </div>\n" +
+                "                    <div>\n" +
+                "                        <div class=\"comment-content\">\n" +
+                "                            <p class=\"comment-txt\">" + comment.comment + "</p>\n" +
+                "                            <p class=\"comment-foot\">\n" +
+                "\t\t\t\t\t\t\t\t<span class=\"comment-studytime\">" + comment.user.dictBean.label + "</span>\n" +
+                "                                <time class=\"comment-time\">" + comment.time + "</time>\n" +
+                "                            </p>\n" +
+                "                        </div>\n" +
+                "                    </div>\n" +
+                "                </li>";
+            "                </ul>";
+        })
+        return html;
+    }
+</script>
+</html>

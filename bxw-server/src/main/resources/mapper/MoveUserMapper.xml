@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.MoveUserDao">
+    <select id="queryList" resultType="com.znsd.instapundit.bean.MoveUserBean">
+            SELECT
+                id,
+                phone,
+                `password`,
+                username,
+                id_card,
+                email,
+                birthday,
+                sex,
+                member,
+                money,
+                ro_id,
+                picture,
+                member_time,
+                `status`,
+                created,
+                updated
+            FROM tb_user
+            <where>
+                <if test=" moveUserBean.id!=null ">
+                     id=#{moveUserBean.id}
+                </if>
+                <if test="moveUserBean.id==null and moveUserBean.phone!=null ">
+                  and  phone=#{moveUserBean.phone}
+                </if>
+                <if test=" moveUserBean.password!=null">
+                   and password=#{moveUserBean.password}
+                </if>
+                <if test=" moveUserBean.email!=null and moveUserBean.id==null">
+                    and email=#{moveUserBean.email}
+                </if>
+            </where>
+    </select>
+    <insert id="addMoveUserBean">
+          UPDATE tb_user
+          <set>
+              <if test="moveUserBean.username !=null ">
+                  username=#{moveUserBean.username},
+              </if>
+              <if test="moveUserBean.id_card !=null ">
+                  id_card=#{moveUserBean.id_card},
+              </if>
+              <if test="moveUserBean.email !=null ">
+                    email=#{moveUserBean.email},
+              </if>
+              <if test="moveUserBean.birthday !=null">
+                    birthday=#{moveUserBean.birthday},
+              </if>
+              <if test="moveUserBean.sex !=null">
+                   sex=#{moveUserBean.sex},
+              </if>
+                  updated=NOW()
+          </set>
+        WHERE id = #{moveUserBean.id};
+    </insert>
+    <update id="UpdateImg" parameterType="com.znsd.instapundit.bean.MoveUserBean">
+        UPDATE `instapundit`.`tb_user`
+        SET
+            picture= #{picture},
+            updated =NOW()
+        WHERE id = #{id};
+    </update>
+</mapper>

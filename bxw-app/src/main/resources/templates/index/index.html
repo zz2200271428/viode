@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>boxuewangindex</title>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="applicable-device" content="mobile">
+
+
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/sosuo.css}">
+    <link rel="stylesheet" th:href="@{/css/swiper-3.4.2.min.css}">
+    <link rel="stylesheet" th:href="@{/css/jiangshi.css}">
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+    <link rel="stylesheet" th:href="@{/css/foot.css}">
+    <link rel="stylesheet" th:href="@{/css/smallicon.css}">
+    <script type="text/javascript" th:src="@{/js/smallicon.js}"></script>
+    <script th:src="@{/js/swiper.min.js}"></script>
+    <script th:src="@{/js/jquery.min.js}"></script>
+
+
+</head>
+
+<body id="global" class="data-ready isuin">
+
+<header th:replace="header :: header"></header>
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+        <div class="swiper-slide" th:each="slideshowList,slideshow : ${slide}"
+             th:if="${slideshow.count}<=4"><a th:href="${slideshowList.shurl}"><img th:src="${slideshowList.photo}"></a></div>
+
+    </div>
+    <!-- Add Pagination -->
+    <div class="swiper-pagination"></div>
+</div>
+
+</div>
+<section class="custom">
+    <div class="custom__mod" data-hasreported="1"
+         data-reportonce="rid=index__custom&amp;module=Y-MQ-Homepage&amp;action=exposure&amp;obj1=custom&amp;obj2=1000&amp;ver2=0"
+         data-report-module="IT互联网热门课程">
+        <h2 class="common-title">小图标</h2>
+        <div class="tab">
+            <ul class="ul-container">
+                <li>
+                    <div class="tab-box" th:each="imageBeanList,imageBean : ${image}"
+                    >
+                        <a th:href="${imageBeanList.im_url}">
+                            <img th:src="${imageBeanList.image_url}">
+                            [[${imageBeanList.desc}]]
+                        </a>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+    <div class="custom__mod" data-hasreported="1"
+         data-reportonce="rid=index__custom&amp;module=Y-MQ-Homepage&amp;action=exposure&amp;obj1=custom&amp;obj2=1000&amp;ver2=0"
+         data-report-module="IT互联网热门课程">
+        <h2 class="common-title">免费推荐</h2>
+        <ul class="common__course-list">
+            <li class="common__course-item" data-report-position="1" data-cid="185189"
+                th:each="videoBeans,freeBean : ${freevideo}"
+                th:if="${freeBean.count}<=4"
+            ><a th:href="@{'/video/play?videoID='+${videoBeans.id}}"
+                class="common__course-link" data-midx="0" data-cidx="0">
+                <div class="common__course-cover-wrap"><img data-isload="1" th:src="${videoBeans.cover_img}"
+                                                            class="common__course-cover">
+                </div>
+                <h3 class="common__course-title">[[${videoBeans.video_title}]]</h3>
+
+                <p class="common__course-price">免费<span class="common__course-pkg"><em
+                        class="common__course-pkg1">0课程</em>
+								<em class="common__course-pkg2"></em></span>
+                </p>
+            </a>
+            </li>
+            <section class="more">
+                <a th:href="@{/free/all}"  class="more__link" id="look">查看全部</a>
+            </section>
+        </ul>
+    </div>
+    <div class="custom__mod" data-hasreported="1"
+         data-reportonce="rid=index__custom&amp;module=Y-MQ-Homepage&amp;action=exposure&amp;obj1=custom&amp;obj2=1000&amp;ver2=0"
+         data-report-module="IT互联网热门课程">
+        <h2 class="common-title">会员推荐</h2>
+        <ul class="common__course-list">
+            <li class="common__course-item" data-report-position="1" data-cid="185189"
+                th:each="member,memberBean : ${membervideo}"
+                th:if="${memberBean.count}<=4"
+            ><a th:href="@{'/video/play?videoID='+${member.id}}"
+                class="common__course-link" data-midx="0" data-cidx="0">
+                <div class="common__course-cover-wrap"><img data-isload="1" th:src="${member.cover_img}"
+                                                            class="common__course-cover">
+                </div>
+                <h3 class="common__course-title">[[${member.video_title}]]</h3>
+
+                <p class="common__course-price" style="color: red">VIP<span class="common__course-pkg"><em
+                        class="common__course-pkg1">0课程</em>
+                                        <em class="common__course-pkg2"></em></span>
+                </p>
+            </a>
+            </li>
+            <section class="more">
+                <a  th:href="@{/member/all}" class="more__link" id="look">查看全部</a>
+            </section>
+        </ul>
+    </div>
+    <div class="custom__mod" data-hasreported="1"
+         data-reportonce="rid=index__custom&amp;module=Y-MQ-Homepage&amp;action=exposure&amp;obj1=custom&amp;obj2=1000&amp;ver2=0"
+         data-report-module="IT互联网热门课程">
+        <h2 class="common-title">付费推荐</h2>
+        <ul class="common__course-list">
+            <li class="common__course-item" data-report-position="1" data-cid="185189"
+                th:each="pay,payBean : ${payvideo}"
+                th:if="${payBean.count}<=4"
+            ><a th:href="@{'/video/play?videoID='+${pay.id}}"
+                class="common__course-link" data-midx="0" data-cidx="0">
+                <div class="common__course-cover-wrap"><img data-isload="1" th:src="${pay.cover_img}"
+                                                            class="common__course-cover">
+                </div>
+                <h3 class="common__course-title">[[${pay.video_title}]]</h3>
+
+                        <p class="common__course-price" style="color: red">￥ [[${pay.price}]] <span class="common__course-pkg"><em class="common__course-pkg1">0课程</em>
+                                        <em class="common__course-pkg2"></em></span>
+                </p>
+            </a>
+            </li>
+            <section class="more">
+                <a  th:href="@{/pay/all}" class="more__link" id="look">查看全部</a>
+            </section>
+        </ul>
+    </div>
+
+
+    <div class="custom__mod" data-hasreported="1"
+         data-reportonce="rid=index__custom&amp;module=Y-MQ-Homepage&amp;action=exposure&amp;obj1=custom&amp;obj2=1000&amp;ver2=0"
+         data-report-module="IT互联网热门课程">
+        <h2 class="common-title">专栏推荐</h2>
+        <ul class="common__course-list">
+            <li class="common__course-item" data-report-position="1" data-cid="185189"
+                th:each="special,specialBean : ${specialvideo}"
+                th:if="${specialBean.count}<=4"
+            ><a th:href="@{'/video/play?videoID='+${special.id}}"
+                class="common__course-link" data-midx="0" data-cidx="0">
+                <div class="common__course-cover-wrap"><img data-isload="1" th:src="${special.cover_img}"
+                                                            class="common__course-cover">
+                </div>
+                <h3 class="common__course-title">[[${special.video_title}]]</h3>
+
+                        <p class="common__course-price" style="color: red">￥ [[${special.price}]]<span class="common__course-pkg"><em class="common__course-pkg1">0课程</em>
+                                        <em class="common__course-pkg2"></em></span>
+                </p>
+            </a>
+            </li>
+            <section class="more">
+                <a th:href="@{/special/all}" class="more__link" id="look">查看全部</a>
+            </section>
+        </ul>
+    </div>
+
+    <div class="custom__mod" data-hasreported="1" data-reportonce="rid=index__custom&amp;module=Y-MQ-Homepage&amp;action=exposure&amp;obj1=custom&amp;obj2=1000&amp;ver2=0"
+         data-report-module="IT互联网热门课程">
+        <h2 class="common-title">讲师视频专栏</h2>
+        <ul class="common__course-list" >
+            <li class="common__course-item" data-report-position="1" data-cid="185189"
+                th:each="Lecturer,lecturerBean : ${lecturer}"
+                th:if="${lecturerBean.count}<=4"
+            > <a th:href="@{'/video/play?videoID='+${Lecturer.id}}"
+                 class="common__course-link" data-midx="0" data-cidx="0">
+                <div class="common__course-cover-wrap"><img data-isload="1" th:src="${Lecturer.cover_img}"
+                                                            class="common__course-cover">
+                </div>
+                <h3 class="common__course-title">[[${Lecturer.video_title}]]</h3>
+                <p class="common__course-price" style="color: red" >
+                    	[[${Lecturer.price}]]<span class="common__course-pkg"><em class="common__course-pkg1">0课程</em>
+                                        <em class="common__course-pkg2"></em></span>
+                </p>
+            </a>
+            </li>
+            <section class="more">
+                <a th:href="@{/lecturer/all}" class="more__link" id="look">查看全部</a>
+            </section>
+        </ul>
+    </div>
+
+
+           <div class="custom__mod" data-hasreported="1" data-reportonce="rid=index__custom&amp;module=Y-MQ-Homepage&amp;action=exposure&amp;obj1=custom&amp;obj2=1000&amp;ver2=0"
+                 data-report-module="IT互联网热门课程">
+                <h2 class="common-title">大咖讲师视频</h2>
+                <ul class="common__course-list" >
+                    <li class="common__course-item" data-report-position="1" data-cid="185189"
+                        th:each="masters,appUserBean : ${master}" th:if="${appUserBean.count}<=4"
+                    > <a th:href="@{'/video/play?videoID='+${masters.id}}"
+                         class="common__course-link" data-midx="0" data-cidx="0">
+                        <div class="common__course-cover-wrap"><img data-isload="1" th:src="${masters.cover_img}" class="common__course-cover">
+                        </div>
+                        <h3 class="common__course-title">[[${masters.video_title}]]</h3>
+                        <p class="common__course-price" style="color: red" >
+						[[${masters.price}]]<span class="common__course-pkg"><em class="common__course-pkg1">0课程</em>
+                                        <em class="common__course-pkg2"></em></span>
+                </p>
+            </a>
+            </li>
+            <section class="more">
+                <a th:href="@{/master/all}" class="more__link" id="look">查看全部</a>
+            </section>
+        </ul>
+    </div>
+
+
+</section>
+
+<section class="topic-seo">
+    <div class="topic-seo-mod">
+        <h2 class="common-title">博学网</h2>
+    </div>
+</section>
+
+
+		<div th:replace="~{foot::foot(active='index')}"></div>
+
+	</body>
+	<script>
+		var swiper = new Swiper('.swiper-container', {
+			pagination: '.swiper-pagination',
+			slidesPerView: 'auto',
+			paginationClickable: true,
+			spaceBetween: 30,
+			centeredSlides: true,
+			autoplay: 2500,
+			autoplayDisableOnInteraction: false
+		});
+	</script>
+	<script>
+		NavTouch('.tab');
+
+</script>
+
+<script>
+    /*window.onload=function()
+    {
+        var olink=$("#link").val();
+        var odiv=$("#thediv").val();
+        olink.onclick=function()
+        {
+            Show_Hidden(odiv);
+            return false;
+        }
+    }*/
+</script>
+
+
+</html>

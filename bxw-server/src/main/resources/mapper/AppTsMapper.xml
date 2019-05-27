@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.AppTSDao">
+    <insert id="addTeach" parameterType="com.znsd.instapundit.bean.TeacherApplyBean">
+            	INSERT INTO `instapundit`.`tb_teacher_apply`(
+                        `uname`, `datum`,
+                        `idc_img`,`idc_img2`,
+                         `cashdeposit`, `contact`,
+                         `check_status`, `store_desc`,
+                         `apply_time`, `u_id`)
+            	 VALUES (
+                         #{uname},#{datum} ,
+                         #{idc_img},#{idc_img2},
+                        1000, #{contact},
+                         1, #{store_desc},
+                         NOW(), #{check_status}
+            	     );
+    </insert>
+    <insert id="addStore" parameterType="com.znsd.instapundit.bean.StoreBean">
+          INSERT INTO `instapundit`.`tb_store_apply`
+          (
+              `sname`, `simg`,
+              `uname`, `datum`,
+              `idc_img`, `idc_img2`,
+              `cashdeposit`, `contact`,
+              `check_status`, `store_desc`,
+              `apply_time`,`uid`
+             )
+              VALUES (
+                #{sname},#{simg},
+                #{uname},#{datum},
+                #{idc_img},#{idc_img2},
+                1000,#{contact},
+                1,#{store_desc},
+                NOW(),#{check_status}
+              );
+    </insert>
+    <update id="UpdateTeach" parameterType="com.znsd.instapundit.bean.TeacherApplyBean">
+          UPDATE
+                `instapundit`.`tb_teacher_apply`
+            <set>
+                <if test="uname!=null">
+                    uname =#{ uname},
+                </if>
+                <if test="contact!=null">
+                    contact =#{contact},
+                </if>
+                <if test="store_desc!=null">
+                    store_desc =#{store_desc}
+                </if>
+                apply_time=NOW()
+            </set>
+            WHERE u_id = #{id};
+    </update>
+    <update id="UpdateStore" parameterType="com.znsd.instapundit.bean.StoreBean">
+          UPDATE `instapundit`.`tb_store`
+          <set>
+              <if test="sname!=null and sname!=''">
+                  sname = #{sname},
+              </if>
+              <if test="contact!=null and contact!=''">
+                  contact = #{contact},
+              </if>
+              <if test="store_desc!=null and store_desc!='' ">
+                  store_desc =#{store_desc}
+              </if>
+              <if test="simg!=null and simg!='' ">
+                  simg =#{simg}
+              </if>
+          </set>
+            WHERE id = #{id};
+    </update>
+    <select id="selectTeachOne" parameterType="com.znsd.instapundit.bean.TeacherApplyBean" resultType="com.znsd.instapundit.bean.TeacherApplyBean">
+          SELECT id,uname,contact,store_desc  FROM
+              tb_teacher_apply
+          WHERE u_id=#{id} and check_status=2
+    </select>
+    <select id="selectTeach" parameterType="com.znsd.instapundit.bean.TeacherApplyBean" resultType="com.znsd.instapundit.bean.TeacherApplyBean">
+          SELECT id,uname,contact,store_desc  FROM
+              tb_teacher_apply
+          WHERE u_id=#{id} and check_status=1
+    </select>
+    <select id="selectStoreBeanOne" parameterType="com.znsd.instapundit.bean.StoreBean" resultType="com.znsd.instapundit.bean.StoreBean">
+         SELECT id,uname,contact,store_desc  FROM
+              tb_store_apply
+          WHERE uid=#{id} and check_status=1
+    </select>
+    <select id="selectStoreBean" parameterType="com.znsd.instapundit.bean.StoreBean" resultType="com.znsd.instapundit.bean.StoreBean">
+        SELECT id,sname,contact,store_desc  FROM
+            tb_store
+          WHERE uid=#{id}
+    </select>
+    <update id="UpdateTeachMoney" parameterType="com.znsd.instapundit.bean.TeacherApplyBean">
+          UPDATE `instapundit`.`tb_user` SET  money =#{cashdeposit} WHERE id = #{check_status};
+    </update>
+    <update id="UpdateStoreMoney" parameterType="com.znsd.instapundit.bean.StoreBean">
+          UPDATE `instapundit`.`tb_user` SET  money =#{cashdeposit} WHERE id = #{check_status};
+    </update>
+</mapper>

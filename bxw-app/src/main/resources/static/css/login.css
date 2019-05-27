@@ -1,0 +1,210 @@
+html {
+    font-size: 20px;
+}
+
+body {
+    background-color: #F5F5F5;
+    max-width: 750px;
+}
+
+html, body {
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+@font-face {
+    font-family: 'iconfont';  /* project id 330796 */
+    src: url('../fonts/iconfont.eot');
+    src: url('../fonts/iconfont.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/iconfont.woff') format('woff'),
+    url('../fonts/iconfont.ttf') format('truetype'),
+    url('../fonts/iconfont.svg#iconfont') format('svg');
+}
+
+.iconfont {
+    font-family: 'iconfont';
+    font-style: normal;
+    font-size: 25px;
+}
+
+/*公用*/
+.header, .login_search p {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+
+
+/*头部 background: #0095FC;*/
+.header {
+    height: 2.25rem;
+    max-width: 750px;
+    line-height: 2.25rem;
+    color: #8e8e8e;
+    justify-content: space-between;
+    padding: 0 .7rem;
+}
+
+.header span {
+    flex: 3;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.header i {
+    flex: 1;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.header b {
+    flex: 1;
+    text-align: right;
+    cursor: pointer;
+}
+
+
+#content1 {
+    width: 100%;
+    height: 100%;
+}
+
+#content2 {
+    margin-top: .5rem;
+    display: none;
+}
+
+
+#dx_login .name span {
+    margin-right: .5rem;
+    width: 8rem;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    border-radius: 5px;
+    background-color: #BAAFAF;
+    margin-top: .2rem;
+    display: block;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+}
+
+#dx_login .name i {
+    display: inline;
+    color: #fff;
+}
+
+#bbb {
+    display: none;
+    border-radius: 5px;
+}
+
+#dx_login .name b {
+    display: inline-block;
+    width: 5rem;
+    display: none;
+    position: absolute;
+    left: 1.5rem;
+    top: 0;
+}
+
+
+#dx_login .login_search p {
+    width: 100%;
+    height: 2.2rem;
+    line-height: 2.2rem;
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+}
+
+#dx_login .login_search p input {
+    width: 100%;
+    height: 100%;
+    padding: 0 .5rem;
+    font-size: .8rem;
+}
+
+#dx_login .login a {
+    display: block;
+    margin: auto;
+    width: 90%;
+    height: 2rem;
+    line-height: 2rem;
+    background: #1d88bd;
+    color: #ffffff;
+    text-align: center;
+    border-radius: 5px;
+}
+
+
+#dx_login .password {
+    border-bottom: 1px solid #ccc;
+}
+
+#dx_login .password span {
+    cursor: pointer;
+}
+
+#dx_login .password img {
+    width: 2.5rem;
+    height: 2rem;
+    margin-right: .5rem
+}
+
+#dx_login .login p {
+    text-align: center;
+    padding: .3rem 0;
+    color: #888;
+}
+
+/*提示*/
+.tip p {
+    padding: 1rem .7rem;
+    color: #777;
+    font-size: .6rem;
+}
+
+.tip p a {
+    color: #77C4E4;
+}
+
+.tip p a:hover {
+    color: red;
+    text-decoration: underline;
+}
+
+
+#dx_login .login p .about {
+    display: inline;
+    background-color: #F5F5F5;
+    color: #888;
+}
+
+
+/*修改placeholder的颜色*/
+input::-webkit-input-placeholder { /* WebKit browsers */
+    color: #999;
+}
+
+input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: #999;
+}
+
+input::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: #999;
+}
+
+input:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color: #999;
+}
+
+
+
+
+
+
+
+
+

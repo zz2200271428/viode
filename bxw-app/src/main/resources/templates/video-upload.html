@@ -1,0 +1,212 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="multipart/form-data;  charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+    <title></title>
+    <link rel="stylesheet" th:href="@{/css/myCenterCss/weui.min.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+    <link rel="stylesheet" th:href="@{/css/dingdan.css}"/>
+    <link rel="stylesheet" th:href="@{/css/dialog.css}"/>
+    <style type="text/css">
+        .show {
+            margin-top: 5px;
+            position: relative;
+            width: 950px;
+        }
+
+        .show .item {
+            position: absolute;
+            width: 350px;
+            height: 150px;
+            text-align: center;
+        }
+
+        .show img {
+            max-width: 350px;
+            max-height: 150px;
+            box-shadow: 0px 1px 1px 1px #AAA3A3;
+        }
+
+        .show img:hover {
+            box-shadow: 0px 1px 1px 2px #83ABD2;
+        }
+
+        .show .big {
+            z-index: 2;
+        }
+
+        .show .big img {
+            max-width: none;
+            max-height: none;
+            box-shadow: 2px 2px 10px 2px #666;
+        }
+    </style>
+<body id="global">
+
+<div class="container">
+    <header class="m-header z-img-ready border-top border-bottom z-no-menu ">
+        <div class="aui-navBar aui-navBar-fixed">
+            <a href="javascript:void(0)" onclick="javascript :history.go(-1);" class="aui-navBar-item">
+                <img th:src="@{/img/ht.png}" style="width: 25px;height: 25px">
+            </a>
+            <div class="aui-center">
+                <span class="aui-center-title">视频管理</span>
+            </div>
+            <a th:href="@{/index}" class="aui-navBar-item" id="home">
+                <img th:src="@{/img/home.png}" style="width: 25px;height: 25px">
+            </a>
+        </div>
+
+
+    </header>
+    <div class="tab">
+
+        <div class="tab__bar f-border-1px" style="visibility: visible;">
+            <div class="tab__bar--item z-active">
+                <h3 class="tab__bar--title"><a th:href="@{/video/to_upload}">视频上传</a></h3>
+            </div>
+            <div class="tab__bar--item">
+                <h3 class="tab__bar--title"><a th:href="@{/video/to_create_column}">创建专栏</a><span
+                        class="tab__bar--num"></span></h3>
+            </div>
+            <div class="tab__bar--item">
+                <h3 class="tab__bar--title"><a th:href="@{/video/toVideoManagerList}">视频列表</a></h3>
+            </div>
+            <div class="tab__bar--item">
+                <h3 class="tab__bar--title"><a th:href="@{/video/toColumnManagerList}">专栏列表</a><span
+                        class="tab__bar--num"></span></h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form action="/video/video-form" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="to_upload_token" th:value="${session.to_upload_token}">
+    <div class="weui-cells weui-cells_form wy-address-edit">
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label wy-lab">视频标题</label></div>
+            <div class="weui-cell__bd"><input name="video_title" class="weui-input" type="text" required
+                                              placeholder="请输入视频标题"></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label wy-lab">视频简介</label></div>
+            <div class="weui-cell" style="height: 100px;">
+                <div class="weui-cell__bd"><textarea id="store_desc" class="weui-textarea" name="video_intro" rows=""
+                                                     cols="" placeholder="你可以介绍一下你的视频让别人更好的了解它200字之内"></textarea></div>
+            </div>
+        </div>
+
+        <div class="weui-cell select">
+            <div class="weui-cell__hd"><label class="weui-label wy-lab">视频类型</label></div>
+            <div class="weui-cell_select">
+                <select name="videoType" id="select" required>
+                    <option value="">请选择：</option>
+                    <option value="1">免费</option>
+                    <option value="2">付费</option>
+                    <option value="3">会员</option>
+                    <option value="4">专栏</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label wy-lab">视频封面</label></div>
+            <div class="weui-cell__bd"><input id="file" name="file" accept=".png,.jpg" class="weui-input" type="file"
+                                              required
+                                              placeholder="请上传视频封面"></div>
+
+        </div>
+
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label wy-lab">视频</label></div>
+            <div class="weui-cell__bd"><input id="file2" name="file2" accept=".mp4" class="weui-input" type="file"
+                                              required
+                                              placeholder="请上传视频"></div>
+        </div>
+
+    </div>
+
+    <div id="" style="text-align:center;margin-top: 85px">
+        <input class="weui-btn weui-btn_primary" style="display: none" id="smt" type="submit" value="上传"/>
+        <input class="weui-btn weui-btn_primary" id="btn" type="button" value="上传"/>
+        <input class="weui-btn weui-btn_primary" type="button" id="button" value="重置"/>
+    </div>
+</form>
+<script type="text/javascript" th:src="@{/js/jquery-1.9.0.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/dialog.js}"></script>
+<script>
+    // 抽取dialog方法
+    function show(out) {
+        var d = dialog({
+            content: out
+        });
+        d.show();
+        setTimeout(function () {
+            d.close().remove();
+        }, 2000);
+    }
+
+    $(function () {
+        $('#btn').on('click', function () {
+            var file = $('#file').val();
+            var suffix = file.substr(file.lastIndexOf("."), file.length);
+            if (file != '') {
+                if (!".jpg" == suffix || !".png" == suffix) {
+                    show("视频封面格式错误，只支持[.jpg][.png]格式的图片");
+                    return;
+                }
+            }
+            var file2 = $('#file2').val();
+            var suffix2 = file2.substr(file2.lastIndexOf("."), file2.length);
+            if (file2 != '') {
+                if (".mp4" != suffix2) {
+                    show("视频格式错误，只支持[.mp4]格式的视频");
+                    return;
+                }
+            }
+            $('#smt').click();
+        })
+
+        $('#select').change(function () {
+            var value = $('#select').val();
+            if (value == '2') {
+                var priceElements = "<div class=\"weui-cell hide\">\n" +
+                    "            <div class=\"weui-cell__hd\"><label class=\"weui-label wy-lab\">视频价格</label></div>\n" +
+                    "            <div class=\"weui-cell__bd\"><input name=\"price\" class=\"weui-input\" type=\"text\" required\n" +
+                    "             placeholder=\"请输入视频价格\" pattern=\"[1-9]{1}[0-9]*\"></div>\n" +
+                    "        </div>";
+                $('.hide').remove();
+                $('.select').after(priceElements);
+            } else if (value == '4') {
+                var options = "";
+                $.get('/video/mycolumn', function (data) {
+                    console.log(data.length > 0)
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            var v = data[i];
+                            options += "<option value='" + v.id + "'>" + v.spe_title + "</option>";
+                        }
+                    }
+                    var columnElements = "<div class=\"weui-cell hide\">\n" +
+                        "            <div class=\"weui-cell__hd\"><label class=\"weui-label wy-lab\">所属专栏</label></div>\n" +
+                        "            <div class=\"weui-cell_select\">\n" +
+                        "                <select name=\"from_sc\" id=\"column\">\n" +
+                        "                    <option value=\"\">请选择：</option>\n" + options +
+                        "                </select>\n" +
+                        "            </div>\n" +
+                        "        </div>";
+                    $('.hide').remove();
+                    $('.select').after(columnElements);
+                })
+            } else {
+                $('.hide').remove();
+            }
+
+        });
+
+    })
+</script>
+</body>
+</html>

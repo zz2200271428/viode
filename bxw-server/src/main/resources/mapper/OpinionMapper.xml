@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.OpinionDao">
+
+    <select id="listPage" parameterType="com.znsd.instapundit.param.OpinionParam" resultType="OpinionBean">
+      SELECT
+          id,
+          content,
+          ip,
+          time
+      FROM
+	      tb_opinion_separate
+	      <where>
+            <if test="start!=null and end!=null">
+                time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND  time &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND  time &lt;= #{end}
+            </if>
+          </where>
+        LIMIT #{page},#{limit}
+    </select>
+    <select id="getCount" parameterType="com.znsd.instapundit.param.OpinionParam" resultType="int">
+      SELECT
+         count(0)
+      FROM
+	      tb_opinion_separate
+	    <where>
+            <if test="start!=null and end!=null">
+                time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND  time &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND  time &lt;= #{end}
+            </if>
+        </where>
+    </select>
+</mapper>

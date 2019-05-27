@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+		<title></title>
+		<link rel="stylesheet" th:href="@{/css/myCenterCss/weui.min.css}">
+		<link rel="stylesheet" th:href="@{/css/login.css}">
+		<style type="text/css">
+	        .show{margin-top: 5px; position: relative; width: 950px; }
+	        .show .item{position: absolute; width: 350px; height: 150px; text-align:center;}
+	        .show img{max-width: 350px;max-height: 150px;   box-shadow: 0px 1px 1px 1px #AAA3A3;}
+	        .show img:hover{box-shadow: 0px 1px 1px 2px #83ABD2;}
+	        .show .big{z-index: 2;}
+			/*cursor: url(./images/small.cur),auto;,cursor: url(./images/big.cur),auto; */
+	        .show .big img{max-width: none; max-height: none; box-shadow: 2px 2px 10px 2px #666;}
+	    </style>
+	</head>
+	<body>
+		 <div class="header">
+	        <span>修改头像</span>
+	    </div>
+	<form action="/app/UpdateImg" method="post" enctype="multipart/form-data">
+		<div id="" style="height: 200px;"></div>
+		 <div class='upload_box'>
+        	<input type="file" name="file" id='upimg' multiple style="display: none;">
+	    </div>
+	    <div id="btn_add2" style="display: block; text-align:center;" >
+	    		<img  th:src="@{/img/fe23cc922ab9164fa83962f4751dd6c0.png}" >
+	    </div>
+	     <div class='show' id="show" style="height: 200px; "></div>
+	     
+	     <div id="name" style="">
+	    	 <input class="weui-btn weui-btn_primary" type="submit" value="确认修改头像" />
+	    	 <input  class="weui-btn weui-btn_primary" type="button" id="button" value="重置"/>
+	   	 </div>
+	 </form>    
+	</body>
+	<script type="text/javascript" th:src="@{/js/jquery-1.9.0.min.js}" ></script>
+	<script type="text/javascript">
+		$(function(){
+			$("#btn_add2").click(function(){
+				$("#upimg").trigger("click");
+				$("#upimg").change(function(){
+					var x = document.getElementById("upimg").files;
+					$("#btn_add2").attr("style","display:none;");
+				})
+			});
+			$("#button").click(function(){
+				window.location.reload();
+			});
+		})
+
+		var Upload = (function(){
+			var upimg = document.getElementById('upimg');
+			var show  = document.getElementById('show');
+
+			function init(){
+				if(!(window.FileReader && window.File && window.FileList && window.Blob)){
+					show.innerHTML = '您的浏览器不支持fileReader';
+					upimg.setAttribute('disabled', 'disabled');
+					return false;
+				}
+				handler();
+			}
+
+			function handler(){
+				upimg.addEventListener('change', function(e){
+					var files = this.files;
+					if(files.length){
+						checkFile(this.files);
+					}
+				});
+			}
+
+			function checkFile(files){
+				if (files.length != 0) {
+					//获取文件并用FileReader进行读取
+					var html = '';
+					var i = 0, j = show.childElementCount;
+					var funcs = function(){
+						if(files[i]){
+							var x = parseInt((i+j)/4)*250;
+							var y = ((i+j)%4)*250;
+							var reader = new FileReader();
+							if(!/image\/\w+/.test(files[i].type)){
+								show.innerHTML = "请确保文件为图像类型";
+								return false;
+							}
+							reader.onload = function(e) {
+								html += '<div class="item" style="top:'+x+'px; left:'+y+'px;text-align:center;"><img src="'+e.target.result+'" alt="img"></div>';
+								i++;
+								funcs(); // onload为异步调用
+							};
+							reader.readAsDataURL(files[i]);
+						}else{
+							show.innerHTML += html;
+						}
+					}
+					funcs();
+				}
+			}
+			return {
+				init : init
+			}
+		})();
+		Upload.init();
+	</script>
+</html>

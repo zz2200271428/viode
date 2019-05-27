@@ -1,0 +1,503 @@
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+textarea,
+p,
+blockquote,
+th,
+td,
+menu {
+    margin: 0;
+    padding: 0;
+}
+
+.mod-teacher__wrap {
+    padding-bottom: 35px;
+}
+
+a,
+div {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.mod-banner {
+    min-height: 117px;
+    background: #ccc;
+    position: relative;
+}
+
+.mod-teacher__info {
+    box-sizing: border-box;
+    padding: 0 15px;
+    margin-top: -42px;
+}
+
+.mod-teacher__info .mod-teacher__fn {
+    padding-left: 20%;
+    position: relative;
+    height: 60px;
+}
+
+.mod-teacher__info .mod-teacher__face {
+    display: block;
+    width: 60px;
+    height: 60px;
+    overflow: hidden;
+    border-radius: 30px;
+    position: absolute;
+    background: #ccc;
+    margin-left: 22%;
+
+}
+
+.mod-teacher__info span {
+    display: inline-block;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+.common-title {
+    position: relative;
+    height: 22px;
+    font-size: 20px;
+    line-height: 22px;
+    text-align: center;
+    letter-spacing: 4px;
+    color: #777;
+    margin-top: 5%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-size: 100%;
+    font-weight: 400;
+}
+
+.nav {
+    z-index: 1100;
+    z-index: var(--zIndexNav);
+    left: 0;
+    width: 100%;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.border-bottom {
+    position: relative;
+}
+
+.nav__tab {
+    z-index: 1;
+}
+
+.nav__tab,
+.nav__tab-item {
+    position: relative;
+    background-color: #fff;
+}
+
+.nav__tab {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.nav__tab-item {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: hidden;
+    box-sizing: border-box;
+    min-width: 7.14286rem;
+    height: 2.85714rem;
+    line-height: 2.85714rem;
+    text-align: center;
+    background-color: var(--white);
+    box-shadow: 0 0 0.07143rem #ededed;
+}
+
+.nav__tab,
+.nav__tab-item {
+    position: relative;
+    background-color: #fff;
+}
+
+.nav__tab-item--selected {
+    color: #23b8ff;
+}
+
+.u-teacher-card {
+    display: block;
+    overflow: hidden;
+    padding: 14px 0;
+    background-color: #fff;
+}
+
+.u-teacher-card__img {
+    float: left;
+    overflow: hidden;
+    -webkit-border-radius: 65px;
+    border-radius: 65px;
+    width: 65px;
+    height: 65px;
+}
+
+a,
+div {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.u-teacher-card__right {
+    margin-left: 75px;
+    padding-right: 10px;
+}
+
+.u-teacher-card__info {
+    font-size: 14px;
+    line-height: 14px;
+    color: #000;
+}
+
+.u-teacher-card__desc {
+    overflow: hidden;
+    margin-top: 8px;
+    max-height: 63px;
+    font-size: 14px;
+    line-height: 21px;
+    color: #777;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+}
+
+.u-teacher-card__info-item {
+    display: inline-block;
+    margin-right: 12px;
+    border-right: 1px solid #ddd;
+    padding-right: 12px;
+    height: 14px;
+}
+
+.u-teacher-card__info-item:last-child {
+    margin-right: 0;
+    border-right: 0;
+    padding-right: 0;
+}
+
+.u-teacher-card__info-item {
+    display: inline-block;
+    margin-right: 12px;
+    border-right: 1px solid #ddd;
+    padding-right: 12px;
+    height: 14px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-size: 100%;
+    font-weight: 400;
+}
+
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+textarea,
+p,
+blockquote,
+th,
+td,
+menu {
+    margin: 0;
+    padding: 0;
+}
+
+user agent stylesheet h3 {
+    display: block;
+    font-size: 1.17em;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+
+.u-teacher-card__word {
+    display: inline-block;
+    overflow: hidden;
+    margin-right: 4px;
+    margin-bottom: 9px;
+    max-width: 70%;
+    font-size: 16px;
+    font-style: normal;
+    line-height: 22px;
+    vertical-align: top;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    color: #000;
+}
+
+.nav {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9020;
+    background: #fff;
+}
+
+.nav__list {
+    overflow: hidden;
+    height: 50px;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 0;
+}
+
+ul,
+menu,
+dir {
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+}
+
+@media only screen and (max-width: 360px) .nav__item {
+    margin: 0 23px;
+}
+
+    .nav__item {
+        display: inline-block;
+        vertical-align: middle;
+        margin: 0 25px;
+        width: 42px;
+        height: 100%;
+    }
+
+    .border-top:before,
+    .border-bottom:after {
+        display: block;
+        position: absolute;
+        right: 0;
+        left: 0;
+        border-top: 1px solid #e1e1e1;
+        content: ' '
+    }
+
+    .border-top {
+        position: relative
+    }
+
+    .border-top:before {
+        top: 0
+    }
+
+    .border-bottom {
+        position: relative
+    }
+
+    .border-bottom:after {
+        bottom: 0
+    }
+
+    .f-border-1px {
+        position: relative
+    }
+
+    .f-border-1px:after {
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        -webkit-transform: scale(1);
+        -webkit-transform-origin: 0 0;
+        content: '';
+        pointer-events: none
+    }
+
+    .page-loading {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        min-height: 200px;
+        color: #444;
+        background: #f4f4f4
+    }
+
+    .page-loading p {
+        position: absolute;
+        top: 50%;
+        margin-top: -10px;
+        width: 100%;
+        height: 20px;
+        font-size: 14px;
+        line-height: 20px;
+        text-align: center;
+        color: #c8c8c8
+    }
+
+
+    @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (min-height: 720px), only screen and (device-width: 414px) and (device-height: 896px) and (min-height: 724px) {
+        .iphonex-has-bottombar {
+            height: 100%;
+            box-sizing: border-box;
+            padding-bottom: 34px
+        }
+
+        .iphonex-has-bottombar:after {
+            content: '';
+            z-index: 9998;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 34px;
+            background: #fff
+        }
+
+        .iphonex-gray:after {
+            background: #efeff4
+        }
+
+        .iphonex-padding-bottom-fixed {
+            padding-bottom: 104px
+        }
+
+        #global {
+        }
+
+        #global .iphonex-bottom-fixed {
+            bottom: 34px
+        }
+
+        #global .iphonex-padding-bottom-34-fixed {
+            padding-bottom: 34px
+        }
+
+        #global .iphonex-padding-bottom-34-height-fixed {
+            padding-bottom: 34px;
+            height: auto
+        }
+
+        #global .iphonex-padding-bottom-fixed {
+            padding-bottom: 84px
+        }
+
+        #global .iphone-margin-top-44 {
+            margin-top: 44px
+        }
+
+        #global #guideMask {
+            bottom: 34px;
+            height: auto
+        }
+    }
+
+    .m-header {
+        position: relative;
+        top: 0;
+        z-index: 10010;
+        width: 100%;
+        height: 45px;
+        line-height: 45px;
+        background: #fff;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
+    }
+
+    .m-header .m-header__search {
+        margin: 0 50px;
+        padding: 8px 0
+    }
+
+    .btn_menubar_bottom {
+        background: #fff;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        height: 50px;
+
+    .btn_experience,
+    .btn_avator {
+        width: 50%;
+        float: left;
+        border-top: 1px solid #ddd;
+        text-align: center;
+    }
+}
+
+.nav__link:link,
+.nav__link:visited,
+.nav__link:active,
+.nav__link:hover {
+    color: #000;
+}
+
+.nav__link {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    color: #000;
+}
+
+a, div {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}

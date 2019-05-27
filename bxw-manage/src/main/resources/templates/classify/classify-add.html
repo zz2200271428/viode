@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.1</title>
+    <meta name="renderer" content="webkit" accept-charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+    <link rel="stylesheet" th:href="@{/css/xadmin.css}">
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/js/xadmin.js}"></script>
+    <script type="text/javascript" th:src="@{/js/cookie.js}"></script>
+
+  </head>
+  
+  <body>
+    <div class="x-body">
+        <form id="role" action="" method="post" class="layui-form layui-form-pane">
+            <input class="id" type="hidden" name="id" th:value="${classify.id}" th:if="${classify != null}">
+            <input class="mth" type="hidden" name="_method" value="put" th:if="${classify != null and classify.id != null}">
+                <div class="layui-form-item">
+                    <label for="name" class="layui-form-label">
+                        <span class="x-red">*</span>类别名称
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="name" th:value="${classify != null ? classify.name: ''}" name="name" required="" lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label for="desc" class="layui-form-label">
+                        <span class="x-red">*</span>类别描述
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="desc" th:value="${classify != null ? classify.desc : ''}" name="desc" required="" lay-verify="required"
+                        autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <!--<div class="layui-form-item">
+                    <label for="values" class="layui-form-label">
+                        <span class="x-red">*</span>字段值
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="values" th:value="${dict != null ? dict.values : ''}" name="values" required="" lay-verify="required"
+                        autocomplete="off" class="layui-input">
+                    </div>
+                </div>-->
+                <div class="layui-form-item">
+                    <label for="number" class="layui-form-label">
+                        <span class="x-red">*</span>分类的级别
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="number" th:value="${classify != null ? classify.number : ''}" name="number" required="" lay-verify="required"
+                        autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                <button class="layui-btn" lay-submit="" lay-filter="add">保存信息</button>
+              </div>
+            </form>
+    </div>
+    <script>
+        $(function () {
+
+
+
+           var menu= $("input:checkbox[name='ids']")// 遍历name=test的多选框
+
+           var rolemenu =$(".roleson")
+
+            console.info(menu)
+            console.info(rolemenu.eq(1).text())
+            for (var i = 0 ;i<menu.length;i++){
+                for (var j = 0;j<rolemenu.length;j++){
+                    if (menu.eq(i).val() == rolemenu.eq(j).text()){
+                        menu.eq(i).attr("checked","checked")
+                    }
+                }
+            }
+
+        })
+    </script>
+    <script>
+        layui.use(['form','layer','table'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer;
+            var table = layui.table;
+        
+          //自定义验证规则
+          form.verify({
+            nikename: function(value){
+              if(value.length < 5){
+                return '昵称至少得5个字符啊';
+              }
+            }
+            ,pass: [/(.+){6,12}$/, '密码必须6到12位']
+            ,repass: function(value){
+                if($('#L_pass').val()!=$('#L_repass').val()){
+                    return '两次密码不一致';
+                }
+            }
+          });
+
+          //监听提交
+          form.on('submit(add)', function(data){
+            //发异步，把数据提交给后台
+               //获得表单数据
+              var formData = data.field;
+              //初始化选择框的值
+              var ids = ""
+              //拼接选中的值
+              //打印查看选中的值
+              console.info(ids)
+              console.info(formData)
+              var param = {};
+              $.post('/Classify/save',{'_method':$(".mth").val(),'id':$(".id").val(),'name':formData.name,'desc':formData.desc,'number':formData.number},function (datas) {
+                //根据返回来的code判定，0为正常
+                if (datas.code=200) {
+                    //弹出返回来的msg
+                    layer.alert(datas.msg, {icon: 6},function () {
+                        // 获得frame索引
+                        var index = parent.layer.getFrameIndex(window.name);
+                        //关闭当前frame
+                        parent.layer.close(index);
+                        //刷新父级页面
+                        window.parent.location.reload();
+                    });
+                }
+              });
+            return false;
+          });
+
+
+        form.on('checkbox(father)', function(data){
+
+            if(data.elem.checked){
+                $(data.elem).parent().siblings('td').find('input').prop("checked", true);
+                form.render(); 
+            }else{
+               $(data.elem).parent().siblings('td').find('input').prop("checked", false);
+                form.render();  
+            }
+        });
+          
+          
+        });
+    </script>
+    <!--<script>var _hmt = _hmt || []; (function() {-->
+        <!--var hm = document.createElement("script");-->
+        <!--hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";-->
+        <!--var s = document.getElementsByTagName("script")[0];-->
+        <!--s.parentNode.insertBefore(hm, s);-->
+      <!--})();</script>-->
+  </body>
+
+</html>

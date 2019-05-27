@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>欢迎页面-X-admin2.1</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+  <link rel="stylesheet" th:href="@{/css/font.css}">
+  <link rel="stylesheet" th:href="@{/css/xadmin.css}">
+  <link rel="stylesheet" th:href="@{/lib/layui/css/layui.css}" media="all">
+  <script type="text/javascript" th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
+  <script type="text/javascript" th:src="@{/js/cookie.js}"></script>
+  <script type="text/javascript" th:src="@{/js/xadmin.js}"></script>
+</head>
+
+<body class="">
+
+<div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">演示</a>
+        <a><cite>导航元素</cite></a>
+      </span>
+  <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+    <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+</div>
+<div class="x-body">
+  <div class="layui-row">
+    <form id="myform" class="layui-form layui-col-md12 x-so">
+      <input class="layui-input"  autocomplete="off" placeholder="开始日" name="start" id="start">
+      <input class="layui-input"  autocomplete="off" placeholder="截止日" name="end" id="end">
+      <input type="text" name="spe_title" placeholder="请输入专栏标题" autocomplete="off" class="layui-input" value="">
+      <button class="layui-btn layui-btn-radius" type="reset">重置</button>
+      <button class="layui-btn layui-btn-radius" type="button" id="btn">搜索 <i class="layui-icon">&#xe615;</i></button>
+    </form>
+  </div>
+  <table class="layui-table" id="tableOut" lay-filter="tableOut"></table>
+</div>
+
+<script type="text/html" id="barDemo">
+  <button class="layui-btn layui-btn-danger delAll"><i class="layui-icon"></i>批量删除</button>
+</script>
+<script type="text/html" id="bar">
+  <a title="删除" class="del" value="{{d.id}}" href="javascript:;"><i class="layui-icon">&#xe640;</i>
+</script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+  layui.use(['jquery', 'laydate', 'util', 'layer', 'table', 'form'], function ($, laydate, util, layer, table, form) {
+
+    // 渲染日期控件
+    laydate.render({
+      elem: '#start' // 开始时间
+    });
+    laydate.render({
+      elem: '#end' // 结束时间
+    });
+
+      // 假释真的需要默认点击搜索在下面table render过之后再调用$dom.click()即可
+      //监听工具条
+      table.on('tool(tableOut)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+        var data = obj.data; //获得当前行数据
+        var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+        // 异常不要用它原来的这个作为tr的dom
+        // var tr = obj.tr; //获得当前行 tr 的DOM对象
+        var $this = $(this);
+        var tr = $this.parents('tr');
+        var trIndex = tr.data('index');
+        if (layEvent === 'addRowTable') {
+          // 外围的table的id + tableIn_ + 当前的tr的data-index
+          $(this).attr('lay-event', 'fold').html('-');
+          var tableId = 'tableOut_tableIn_' + trIndex;
+          var _html = [
+            '<tr class="table-item">',
+            '<td colspan="' + tr.find('td').length + '" style="padding: 6px 12px;">',
+            '<table id="' + tableId + '"></table>',
+            '</td>',
+            '</tr>'
+          ];
+          tr.after(_html.join('\n'));
+          // 渲染table
+          table.render({
+            elem: '#' +tableId,
+            cols: [
+              [
+                {field:'id',title:'ID',width:'10%',align:'center',sort:true}
+                ,{field:'video_title',title:'视频标题',width:'10%',align:'center'}
+                ,{field:'video_intro',title:'视频简介',width:'10%',align:'center'}
+                ,{field: 'cover_img',title: '视频封面',templet:'<div><img src="{{d.cover_img}}"></div>'}
+                ,{field:'video_url',title:'视频源',width:'10%',align:'center',templet:function (row) {
+                  return '<span value="' + row.id + '" class="layui-btn layui-btn-normal layui-btn-mini play">点击播放</span>'
+                }}
+                ,{field:'video_length',title:'时长',width:'10%',align:'center',sort:true}
+                ,{field:'play_amount',title:'点击数',width:'10%',align:'center',sort:true}
+                ,{field:'collect',title:'收藏',width:'10%',align:'center',sort:true}
+                ,{field:'video_status',title:'视频状态',width:'10%',align:'center',sort:true,templet:function (row) {
+                  return row.video_status == 1 ? "正常" : "冻结";
+                }}
+                ,{field:'upload_time',title:'上传时间',width:'13%',align:'center',sort:true}
+              ]
+            ],
+            url: '/specialColumn/video?id='+data.id,
+          });
+        } else if (layEvent === 'fold') {
+          $(this).attr('lay-event', 'addRowTable').html('+');
+          tr.next().remove();
+        }
+      });
+
+      table.render({
+        toolbar:'#barDemo',
+        elem: '#tableOut',
+        even: true, //开启隔行背景
+        cols: [
+          [
+            {checkbox: true, LAY_CHECKED: false},
+            {
+              field: 'btn',
+              width: 50,
+              align: 'center',
+              templet: function (d) {
+                return '<a style="width: 100%; height: 100%;cursor: pointer;" lay-event="addRowTable">+</a>'
+              }
+            },
+            {field: 'id', title: 'ID',width:'10%',align:'center', sort: true},
+            {field:'create_by.id',title:'创建人',width:'10%',align:'center',templet:function (row) {
+                return '<span value="' + row.create_by.id + '" class="layui-btn layui-btn-normal layui-btn-mini particulars">查看详情</span>'
+            }},
+            {field: 'spe_title', title: '专栏标题',width:'20%',align:'center'},
+            {field: 'spe_desc', title: '专栏描述',width:'20%',align:'center'},
+            {field: 'cover_img', title: '专栏封面',width:'10%',align:'center',templet:'<div><img src="{{d.cover_img}}"></div>'},
+            {field: 'price', title: '专栏价格',width:'10%',align:'center',templet:function (row) {
+              return row.price + ' ￥'
+            }},
+            {field: 'create_time', title: '创建时间',width:'13%',align:'center'},
+            {toolbar:'#bar',title:'操作',width:'100',align:'center',fixed: 'right'}
+          ]
+        ],
+        url: '/specialColumn/', //设置异步接口
+        page:true
+      });
+
+    // 模糊搜索
+    $(document).on('click','#btn',function(){
+      var array = $('#myform').serializeArray();
+      var param = {};
+      $.each(array,function (i,v) {
+        if(v.value != ''){
+          param[v.name] = v.value;
+        }
+      })
+      table.render({
+        toolbar:'#barDemo',
+        elem: '#tableOut',
+        even: true, //开启隔行背景
+        cols: [
+          [
+            {checkbox: true, LAY_CHECKED: false},
+            {
+              field: 'btn',
+              width: 50,
+              align: 'center',
+              templet: function (d) {
+                return '<a style="width: 100%; height: 100%;cursor: pointer;" lay-event="addRowTable">+</a>'
+              }
+            },
+            {field:'create_by.id',title:'创建人',width:'10%',align:'center',templet:function (row) {
+              return '<span value="' + row.create_by.id + '" class="layui-btn layui-btn-normal layui-btn-mini particulars">查看详情</span>'
+            }},
+            {field: 'id', title: 'ID',width:'10%',align:'center', sort: true},
+            {field: 'spe_title', title: '专栏标题',width:'20%',align:'center'},
+            {field: 'spe_desc', title: '专栏描述',width:'20%',align:'center'},
+            {field: 'cover_img', title: '专栏封面',width:'10%',align:'center',templet:'<div><img src="{{d.cover_img}}"></div>'},
+            {field: 'price', title: '专栏价格',width:'10%',align:'center',templet:function (row) {
+                return row.price + ' ￥'
+            }},
+            {field: 'create_time', title: '创建时间',width:'13%',align:'center'},
+            {toolbar:'#bar',title:'操作',width:'100',align:'center',fixed: 'right'}
+          ]
+        ],
+        url: '/specialColumn/', //设置异步接口
+        page:true,
+        where:param
+      });
+    });
+
+    // 删除按钮事件
+    $(document).on('click','.del',function(){
+      var id = $(this).attr("value");
+      layer.confirm('确认要删除' + id + '吗？',function(){
+        $.post('/specialColumn/', {'ids':id, '_method': 'DELETE'}, function (result) {
+          if(result.code == 200){
+            layer.msg(result.msg, {icon: 1,time:1000});
+          }else{
+            layer.msg(result.msg, {icon: 2,time:1000});
+          }
+          table.reload('tableOut',{'url':'/specialColumn/',page:1});
+        })
+      });
+    });
+
+    // 批量删除按钮事件
+    $(document).on('click','.delAll',function(){
+      var array = table.checkStatus('tableOut').data;
+      if(array.length == 0){
+        return layer.msg('请选择', {icon: 2,time:1000});
+      }
+      var ids = [];
+      $.each(array,function (i,v) {
+        ids.push(v.id);
+      })
+      layer.confirm('确认要删除选中记录吗？',function(){
+        //捉到所有被选中的，发异步进行删除
+        $.post('/specialColumn/', {'ids':ids.join(',') , '_method': 'DELETE'}, function (result) {
+          if(result.code == 200){
+            layer.msg(result.msg, {icon: 1,time:1000});
+          }else{
+            layer.msg(result.msg, {icon: 2,time:1000});
+          }
+          table.reload('tableOut',{'url':'/specialColumn/',page:1});
+        })
+      });
+    });
+
+    // 播放按钮事件
+    $(document).on('click','.play',function(){
+      x_admin_show('播放视频', '/video/play?id='+$(this).attr('value'), 1000, 500,true);
+    })
+
+    $(document).on('click','.particulars',function(){
+      x_admin_show('详情页面', '/appUser/particulars?id='+$(this).attr('value'), 1000, 500);
+    });
+
+  });
+</script>
+</body>
+</html>

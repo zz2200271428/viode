@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title data-reactroot="">我的</title>
+		<meta itemProp="name" content="全部课程_在线 培训 视频 教程_腾讯课堂_腾讯课堂" data-reactroot="" />
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+
+		<meta name="format-detection" content="telephone=no">
+		<meta name="applicable-device" content="mobile">
+		<meta http-equiv="x-dns-prefetch-control" content="on">
+		<meta name="keywords" content="语言,技能,培训,考试,兴趣爱好,亲子,课程">
+		<meta name="description" itemprop="description" content="腾讯课堂引入优秀教育机构和老师入驻，开设了语言学习、技能培训、考试学习、兴趣爱好、亲子相关的课程。依托QQ群视频和腾讯视频直播能力，实现老师线上课教学，学生即时互动学习的课堂。">
+		<link rel="stylesheet" th:href="@{/css/font.css}" />
+		<link rel="stylesheet" th:href="@{/css/foot.css}" />
+		<link rel="stylesheet" th:href="@{/css/sosuo.css}" />
+		<link rel="stylesheet" th:href="@{/css/me.css}" />
+
+		<script th:src="@{/js/jquery.min.js}"></script>
+		<script th:src="@{/js/dialog.js}"></script>
+	</head>
+	<body id="global">
+		<div id="courseList"></div>
+		<div id="react-body">
+			<header th:replace="header :: header"></header>
+			<div class="main" id="main">
+				<div class="wrapper">
+					<div class="info" id="info">
+						<h1 class="info-tit border-bottom">
+							<a th:href="@{/app/Img}">
+								<img class="info-tit-logo" th:src="${moveUserBean.picture}" >
+							</a>
+							<span class="info-tit-name" th:text="${moveUserBean!=null?moveUserBean.username:'用户' }"></span>
+							<a th:href="@{/app/message}" class="info-tit-link js-chatList" data-name="chatList">
+								<span class="info-tit-point">个人信息</span>
+								<i class="info-tit-msg icon-font i-news"></i>
+							</a>
+						</h1>
+						<ul class="info-list">
+							<li class="info-item">
+								<a href="javascript:;" class="info-item-link order" title="订单管理" data-name="orderList">
+									<i class="icon-font i-management2 info-item-font "></i>
+									<p class="info-item-des">订单管理</p>
+								</a>
+							</li>
+							<li class="info-item">
+								<a href="javascript:;" class="info-item-link collect" title="收藏" data-name="myFav">
+									<i class="icon-font i-heart-border3 info-item-font"></i>
+									<p class="info-item-des">收藏</p>
+								</a>
+							</li>
+						</ul>
+					</div>
+					<div id="lists">
+						<ul class="list list--first" id="list">
+							<li class="list-item border-bottom arrow-right" id="balanceItem" style="display: list-item;">
+								<a th:href="@{/pay/wallet}" class="list-item-link" title="余额" data-name="myBalance">
+									<span class="list-item-name">余额</span>
+									<span class="list-item-des hide" style="display: inline;">
+										<i class="list-item-des-icon icon-font i-kedian"></i>
+										<span class="list-item-des-num js-balance-num"  th:text="${moveUserBean!=null}?${moveUserBean.money}:0">0</span>
+									</span>
+								</a>
+							</li>
+
+							<li class="list-item border-bottom arrow-right" id="distributionItem" style="display: list-item;" th:if="${moveUserBean!=null && moveUserBean.ro_id == 1} ">
+								<a th:href="@{/TS/teach}" class="list-item-link" title="讲师申请" data-name="m-core/distribution">
+									<span class="list-item-name">申请成为讲师</span>
+								</a>
+							</li>
+							<li class="list-item border-bottom arrow-right">
+								<a th:href="@{/pay/vipPage}" class="list-item-link" title="开通会员" data-name="feedback">
+									<span class="list-item-name" >开通会员</span>
+								</a>
+							</li>
+
+							<li class="list-item border-bottom arrow-right">
+								<a th:href="@{/app/setting}" class="list-item-link" title="设置" data-name="feedback">
+									<span class="list-item-name">设置</span>
+								</a>
+							</li>
+						</ul>
+						<div id="extList" th:if="${moveUserBean!=null && moveUserBean.ro_id!= 1 }">
+							<ul class="list" >
+								<!--th:if="${moveUserBean!=null} and ${moveUserBean.picture=='2'}"-->
+								<li class="list-item border-bottom arrow-right ">
+									<a th:href="@{/teacher/homepage}" class="list-item-link" data-link="//m.10010.com/queen/tencent/head-card.html?channel=66" data-id="2">
+										<span class="list-item-name">讲师主页</span>
+									</a>
+								</li>
+								<li class="list-item border-bottom arrow-right ">
+									<a th:href="@{/TS/store}" class="list-item-link" data-link="//m.10010.com/queen/tencent/head-card.html?channel=66" data-id="2">
+										<span class="list-item-name">申请店铺</span>
+									</a>
+								</li>
+								<li class="list-item border-bottom arrow-right ">
+									<a th:href="@{/video/to_upload}" class="list-item-link" data-link="//m.10010.com/queen/tencent/head-card.html?channel=66" data-id="2">
+										<span class="list-item-name">视频管理</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div></div>
+		<div th:replace="~{foot::foot(active='app/MoveUser')}"></div>
+	</body>
+	<script>
+		//搜索栏
+		$("#search").click(function() {
+			$(".search-mask").css("display", "block")
+			$(".m-header").addClass("in-search");
+		})
+		$(".u-button").click(function() {
+			$(".search-mask").css("display", "none")
+			$(".m-header").removeClass("in-search");
+		})
+	</script>
+
+	<script>
+		$(".order").on('click',function () {
+			window.location.href="/order/orderPage"
+		})
+		$(".collect").on('click',function () {
+			window.location.href="/collect/list"
+		})
+	</script>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.1</title>
+    <meta name="renderer" content="webkit" accept-charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+    <link rel="stylesheet" th:href="@{/css/xadmin.css}">
+</head>
+
+<body>
+<div class="x-body">
+    <form id="role" action="" method="post" class="layui-form layui-form-pane">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>真实姓名
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" th:value="${user.uname}" name="uname" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span> 联系方式
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" th:value="${user.contact}" name="contact" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>讲师介绍
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" th:value="${user.store_desc}" name="store_desc" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>保证金额
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" th:value="${user.cashdeposit}" name="cashdeposit" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>资质证明
+            </label>
+            <div class="layui-input-inline">
+
+                <img class="layui-upload-img"  id="datum" width="200px"
+                     height="150px" th:src="${user.datum}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span> 身份证照片
+            </label>
+            <div class="layui-input-inline">
+                <img class="layui-upload-img"  id="idc_img" width="200px"
+                     height="150px" th:src="${user.idc_img}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>审核状态
+            </label>
+            <div class="layui-input-inline">
+                <input type="text"  th:if="${user.check_status=='1'}" th:value="待审核" name="check_status" autocomplete="off" class="layui-input">
+                <input type="text"  th:if="${user.check_status=='2'}" th:value="已通过" name="check_status" autocomplete="off" class="layui-input">
+                <input type="text"  th:if="${user.check_status=='3'}" th:value="未通过" name="check_status" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>理由
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" th:value="${user.reason}" name="reason" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>申请时间
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" th:value="${#dates.format(user.apply_time,'yyyy-MM-dd HH:mm:ss')}" name="created" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>审核时间
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" th:value="${#dates.format(user.check_time,'yyyy-MM-dd HH:mm:ss')}" name="created" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+
+</html>

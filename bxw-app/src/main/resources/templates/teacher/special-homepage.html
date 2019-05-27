@@ -1,0 +1,130 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>标题</title>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="applicable-device" content="mobile">
+    <link rel="stylesheet" th:href="@{/css/font.css}">
+    <link rel="stylesheet" th:href="@{/css/jiangshi.css}">
+    <link rel="stylesheet" th:href="@{/css/sosuo.css}">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/video.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/dialog.js}"></script>
+    <title>专栏主页</title>
+</head>
+<body id="global" class="h5 isuin">
+<header th:replace="header :: header"></header>
+<div class="mod-teacher__wrap">
+    <div class="mod-banner">
+        <img th:src="${special.cover_img}" alt="banner" width="100%">
+    </div>
+    <div id="js-teacherBaseInfo" class="mod-teacher__info">
+
+        <div class="mod-teacher__fn"><img th:src="${special.cover_img}" class="mod-teacher__face">
+            <h1 class="mod-teacher__name" th:text="${special.spe_title}"></h1>
+            <!--专栏ID-->
+            <input id="specialID" type="hidden" th:value="${special.id}"/>
+        </div>
+        <div style="height: 5%;width: 50%;margin-left: 70%;align:center">
+              <!-- <img style="height: 80%;width: 10%" id="isImg" th:src="@{/img/shoucang-sc.png}">
+                <span style="height: 10%; line-height: 10%">收藏</span>-->
+            <img id="isImg" th:src="${isCollect}==true?'/img/shoucang-sc.png':'/img/shoucang-default.png'" width="15%"
+                 height="100%">
+            <span class="download-btn" id="isCollect" th:collect-status="${isCollect}==true?false:true"
+                  th:text="${isCollect}==true?'取消收藏':'收藏'"></span>
+        </div>
+        <div class="mod-teacher__ai">
+            <div class="mod-teacher__intro"><span class="mod-teacher__label">栏目描述</span><span class="mod-teacher__value"
+                                                                                              th:text="${special.spe_desc}"></span>
+            </div>
+        </div>
+    </div>
+    <div id="js-courseList__wrap" class="mod-courseList__wrap">
+        <h2>讲师专栏</h2>
+        <div class="mod-pagination__wrap">
+            <ul id="js-courseList" class="mod-courseList">
+                <li class="click" th:data-id="${Video.id}" th:each=" Video : ${listVideo}">
+                    <a href="javascript:void(0);" class="mod-courseList__link">
+                        <div class="mod-courseList__item" data-type="5">
+                            <div class="mod-course__face">
+                                <img th:src="${Video.cover_img}" th:alt="${Video.video_intro}" style="display: inline;">
+                            </div>
+                            <div class="mod-course__info">
+                                <h3 th:text="${Video.video_title}"></h3>
+                                <p class="mod-course__agency">点击量[[${Video.play_amount}]]</p>
+                                <p class="operation-text " color="red" size="3">￥[[${Video.price}]]</p>
+                                <!-- <p class="mod-course__pay " th:text="${Video.video_type.label}"></p>-->
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    //搜索栏
+    $("#search").click(function () {
+        $(".search-mask").css("display", "block")
+        $(".m-header").addClass("in-search");
+    })
+    $(".u-button").click(function () {
+        $(".search-mask").css("display", "none")
+        $(".m-header").removeClass("in-search");
+    })
+
+    $('body').on('click', '.click', function () {
+        var videoID = $(this).attr('data-id');
+        window.location.href = '/video/play?videoID=' + videoID;
+    })
+
+    var specialID=$('#specialID').val();
+    // 收藏按钮事件
+    $('body').on('click', '#isCollect', function () {
+        var flag = $('#isCollect').attr('collect-status'); // 当前收藏的状态
+        $.ajax({
+            url: '/search/collect',
+            type: 'post',
+            data: {'specialID': specialID, 'flag': flag},
+            success: (result) => {
+                if (result == true || result == false) {
+                    //window.location.reload()
+                    show(isCollect(result));
+                } else {
+                    show('出错啦');
+                }
+            },
+            error: (error) => {
+                show('出错啦');
+            }
+        })
+    })
+    // 根据收藏结果处理样式，true代表收藏，false代表取消收藏
+    function isCollect(judge) {
+        if (judge == true) {
+            $('#isImg').attr('src', '/img/shoucang-sc.png');
+            $('#isCollect').text('取消收藏');
+            $('#isCollect').attr('collect-status', 'false');
+            return "收藏成功";
+        } else {
+            $('#isImg').attr('src', '/img/shoucang-default.png');
+            $('#isCollect').text('收藏');
+            $('#isCollect').attr('collect-status', 'true');
+            return "取消成功";
+        }
+    }
+    // 抽取dialog方法
+    function show(out) {
+        var d = dialog({
+            content: out
+        });
+        d.show();
+        setTimeout(function () {
+            d.close().remove();
+        }, 2000);
+    }
+</script>
+</html>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.LoginLogDao">
+
+    <resultMap id="log" type="LoginLogBean">
+        <id property="id" column="id"/>
+        <result property="user" column="user"/>
+        <result property="ip" column="ip"/>
+        <result property="login_time" column="login_time"/>
+        <result property="login_system" column="login_system"/>
+        <result property="way.id" column="way"/>
+        <result property="way.label" column="label"/>
+        <result property="way.values" column="valuse"/>
+    </resultMap>
+
+    <select id="listPage" parameterType="com.znsd.instapundit.param.LoginLogParam" resultMap="log">
+    SELECT
+        l.id,
+        l.way,
+        l.user,
+        l.ip,
+        l.login_time,
+        l.login_system,
+        d.label,
+        d.`values`
+    FROM
+        sys_login_log l
+        LEFT JOIN sys_dict d ON l.way = d.`values`
+        AND d.type = 'logintype'
+        <where>
+            <if test="user!=null">
+                l.user LIKE CONCAT('%',#{user},'%')
+            </if>
+            <if test="login_system!=null">
+                AND l.login_system = #{login_system}
+            </if>
+
+            <if test="start!=null and end!=null">
+                AND  l.login_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND  l.login_time &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND   l.login_time &lt;= #{end}
+            </if>
+        </where>
+        LIMIT #{page} , #{limit}
+    </select>
+    <select id="getCount" parameterType="com.znsd.instapundit.param.LoginLogParam" resultType="int">
+    SELECT
+      count(0)
+    FROM
+        sys_login_log l
+        LEFT JOIN sys_dict d ON l.way = d.`values`
+        AND d.type = 'logintype'
+        <where>
+            <if test="user!=null">
+                l.user LIKE CONCAT('%',#{user},'%')
+            </if>
+            <if test="login_system!=null">
+                AND l.login_system = #{login_system}
+            </if>
+
+            <if test="start!=null and end!=null">
+                AND  l.login_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND  l.login_time &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND   l.login_time &lt;= #{end}
+            </if>
+        </where>
+    </select>
+</mapper>

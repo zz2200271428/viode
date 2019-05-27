@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.AppMasterDao">
+
+    <resultMap id="appUsers" type="AppUserBean">
+        <id property="id" column="id"/>
+        <result property="sex" column="sex"/>
+        <result property="password" column="password"/>
+        <result property="status" column="status"/>
+        <result property="id_card" column="id_card"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="ro_id" column="ro_id"/>
+        <result property="picture" column="picture"/>
+        <result property="birthday" column="birthday"/>
+        <result property="member" column="member"/>
+        <result property="money" column="money"/>
+        <result property="member_time" column="member_time"/>
+        <result property="username" column="username"/>
+        <result property="created" column="created"/>
+        <result property="updated" column="updated"/>
+        <result property="dictBean.label" column="label"/>
+        <result property="dictBean.values" column="values"/>
+        <result property="dictBean.type" column="type"/>
+    </resultMap>
+
+
+    <!--分页查询-->
+    <select id="listPage" parameterType="com.znsd.instapundit.param.AppUserParam" resultMap="appUsers">
+        SELECT
+        u.id,
+        u.sex,
+        u.`password`,
+        u.status,
+        u.id_card,
+        u.email,
+        u.phone,
+        u.ro_id,
+        u.picture,
+        u.birthday,
+        u.member,
+        u.money,
+        u.member_time,
+        u.username,
+        u.created,
+        u.updated,
+        d.type type,
+        d.values,
+        d.label
+        FROM tb_user u
+        LEFT JOIN sys_dict d ON u.ro_id= d.values and d.type='role'
+        <where>
+            <if test="status==null">
+                u.status = 1
+            </if>
+            <if test="status!=null">
+                u.status = #{status}
+            </if>
+            <if test="sex!=null">
+                and u.sex LIKE CONCAT('%',#{sex},'%')
+            </if>
+            <if test="id_card!=null">
+                and u.id_card LIKE CONCAT('%',#{id_card},'%')
+            </if>
+            <if test="member!=null">
+                AND u.member LIKE CONCAT('%',#{member},'%')
+            </if>
+            <if test="email!=null">
+                AND u.email LIKE CONCAT('%',#{email},'%')
+            </if>
+            <if test="phone!=null">
+                AND u.phone LIKE CONCAT('%',#{phone},'%')
+            </if>
+            <if test="username!=null">
+                AND u.username LIKE CONCAT('%',#{username},'%')
+            </if>
+            <if test="start!=null and end!=null">
+                AND u.updated BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND u.updated &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND u.updated &lt;= #{end}
+            </if>
+        </where>
+        and d.`values`=3 and u.ro_id=3
+        LIMIT #{page},#{limit}
+    </select>
+
+    <!--查询总条数-->
+    <select id="queryCount" resultType="int" parameterType="com.znsd.instapundit.param.AppUserParam">
+        SELECT
+        count(1)
+        FROM tb_user u
+        LEFT JOIN sys_dict d ON u.ro_id= d.values and d.type='role'
+        <where>
+            <if test="status==null">
+                u.status = 1
+            </if>
+            <if test="status!=null">
+                u.status = #{status}
+            </if>
+            <if test="sex!=null">
+                and u.sex LIKE CONCAT('%',#{sex},'%')
+            </if>
+            <if test="id_card!=null">
+                and u.id_card LIKE CONCAT('%',#{id_card},'%')
+            </if>
+            <if test="member!=null">
+                AND u.member LIKE CONCAT('%',#{member},'%')
+            </if>
+            <if test="email!=null">
+                AND u.email LIKE CONCAT('%',#{email},'%')
+            </if>
+            <if test="phone!=null">
+                AND u.phone LIKE CONCAT('%',#{phone},'%')
+            </if>
+            <if test="username!=null">
+                AND u.username LIKE CONCAT('%',#{username},'%')
+            </if>
+            <if test="start!=null and end!=null">
+                AND u.updated BETWEEN #{start} AND #{end}
+            </if>
+            <if test="start!=null and end==null">
+                AND u.updated &gt;= #{start}
+            </if>
+            <if test="start==null and end!=null">
+                AND u.updated &lt;= #{end}
+            </if>
+        </where>
+        and d.values =3 and u.ro_id=3
+    </select>
+
+
+</mapper>

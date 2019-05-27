@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.AppIndexDao">
+    <resultMap id="resultImage" type="ImageBean">
+        <id column="id" property="id"></id>
+        <result column="image_url" property="image_url"></result>
+        <result column="im_url" property="im_url"></result>
+        <result column="desc" property="desc"></result>
+        <result column="create_by" property="create_by"></result>
+        <result column="update_by" property="update_by"></result>
+        <result column="status" property="status"></result>
+        <result column="create_time" property="create_time"></result>
+        <result column="update_time" property="update_time"></result>
+    </resultMap>
+
+    <select id="queryListImageIndex"  resultMap="resultImage">
+        SELECT `id`,`image_url`,`im_url`,`desc`,`create_by`,`update_by`,`status`,
+        `create_time`,`update_time` FROM sys_image WHERE `status` = '1'
+    </select>
+
+
+    <resultMap id="resultSlideshow" type="SlideshowBean">
+        <id column="id" property="id"></id>
+        <result column="photo" property="photo"></result>
+        <result column="shurl" property="shurl"></result>
+        <result column="create_by" property="create_by"></result>
+        <result column="update_by" property="update_by"></result>
+        <result column="status" property="status"></result>
+        <result column="create_time" property="create_time"></result>
+        <result column="update_time" property="update_time"></result>
+    </resultMap>
+
+    <select id="queryListSlideshow" resultMap="resultSlideshow">
+            SELECT
+            m.id,
+            m.photo,
+            m.shurl,
+            m.create_by,
+            m.update_by,
+            m.status,
+            m.create_time,
+            m.update_time
+            FROM sys_slideshow m WHERE m.`status` = 1
+  </select>
+
+    <resultMap id="appUsers" type="AppUserBean">
+        <id property="id" column="id"/>
+        <result property="sex" column="sex"/>
+        <result property="password" column="password"/>
+        <result property="status" column="status"/>
+        <result property="id_card" column="id_card"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="ro_id" column="ro_id"/>
+        <result property="picture" column="picture"/>
+        <result property="birthday" column="birthday"/>
+        <result property="member" column="member"/>
+        <result property="money" column="money"/>
+        <result property="member_time" column="member_time"/>
+        <result property="username" column="username"/>
+        <result property="created" column="created"/>
+        <result property="updated" column="updated"/>
+        <result property="dictBean.label" column="label"/>
+        <result property="dictBean.values" column="values"/>
+        <result property="dictBean.type" column="type"/>
+        <result property="dictBean.status" column="statuss"/>
+        <result column="store_desc" property="teacherApplyBean.store_desc"></result>
+    </resultMap>
+
+    <!--查询-->
+    <select id="queryListMaster" resultMap="appUsers">
+       SELECT
+            u.id,
+            u.sex,
+            u.`password`,
+            u.status,
+            u.id_card,
+            u.email,
+            u.phone,
+            u.ro_id,
+            u.picture,
+            u.birthday,
+            u.member,
+            u.money,
+            u.member_time,
+            u.username,
+            u.created,
+            u.updated,
+            d.type type,
+            d.values,
+            d.label
+        FROM tb_user u
+        LEFT JOIN sys_dict d ON u.ro_id= d.values and d.type='role'
+        WHERE
+          u.status = 1 and d.`values`=3 AND d.`status` = 1
+    </select>
+
+
+    <!--查询-->
+    <select id="queryListLecturer" resultMap="appUsers">
+         SELECT
+            u.id,
+            u.sex,
+            u.`password`,
+            u.status,
+            u.id_card,
+            u.email,
+            u.phone,
+            u.ro_id,
+            u.picture,
+            u.birthday,
+            u.member,
+            u.money,
+            u.member_time,
+            u.username,
+            u.created,
+            u.updated,
+            d.type type,
+            d.values,
+            d.status as statuss,
+            d.label
+        FROM tb_user u
+        LEFT JOIN sys_dict d ON u.ro_id= d.values and d.type='role'
+        WHERE
+          u.status = 1 and   d.`values`=2  AND d.`status` = 1
+    </select>
+
+
+
+    <resultMap id="VideoResult" type="com.znsd.instapundit.bean.VideoBean">
+        <id column="id" property="id"></id>
+        <result column="picture" property="upload_by.picture"></result>
+        <result column="username" property="upload_by.username"></result>
+        <result column="store_desc" property="upload_by.teacherApplyBean.store_desc"></result>
+        <result column="label" property="video_type.label"></result>
+        <result column="values" property="video_type.values"></result>
+        <result column="video_intro" property="video_intro"></result>
+        <result column="userId" property="upload_by.id"></result>
+        <result column="video_title" property="video_title"></result>
+        <result column="video_url" property="video_url"></result>
+        <result column="play_amount" property="play_amount"></result>
+        <result column="price" property="price"></result>
+        <result column="video_length" property="video_length"></result>
+        <result column="cover_img" property="cover_img"></result>
+        <result column="spe_desc" property="specialColumnBean.spe_desc"></result>
+        <result column="spe_title" property="specialColumnBean.spe_title"></result>
+        <result column="ScCover_img" property="specialColumnBean.cover_img"></result>
+        <result column="scId" property="specialColumnBean.id"></result>
+    </resultMap>
+
+
+    <select id="queryListVideo" resultMap="VideoResult">
+      SELECT
+            u.id userId,
+            u.username,
+            sd.values,
+            sd.label,
+            v.upload_by,
+            v.id,
+            v.video_title,
+            v.video_intro,
+            v.video_url,
+            v.price,
+            v.play_amount,
+            v.from_sc,
+            v.video_length,
+            v.cover_img
+            FROM
+            tb_user u
+            LEFT JOIN tb_video v ON u.id = v.upload_by
+            LEFT JOIN sys_dict sd ON sd.VALUES = v.video_type
+            AND sd.type = 'videotype'
+            WHERE
+            u.`status` = 1
+            and v.video_type=#{video_type}
+            and v.video_status = 1
+            AND v.check_status = 2
+            AND sd.`status`=1
+            ORDER BY v.play_amount DESC
+    </select>
+
+    <select id="getVideoById" resultMap="VideoResult">
+        select * from tb_video where id = #{id} ORDER BY upload_time DESC
+    </select>
+
+    <select id="getVideoBySpeId" resultMap="VideoResult">
+        select * from tb_video where video_status != 3 and check_status = 2 and from_sc = #{id}
+    </select>
+
+    <resultMap id="SpecialColumnResult" type="SpecialColumnBean">
+        <id property="id" column="id" />
+        <result property="spe_title" column="spe_title" />
+        <result property="spe_desc" column="spe_desc" />
+        <result property="cover_img" column="cover_img" />
+        <result property="create_by.id" column="create_by" />
+        <result property="spe_status" column="spe_status" />
+        <result property="price" column="price" />
+        <result property="create_time" column="create_time" />
+    </resultMap>
+
+    <select id="specialList" resultMap="SpecialColumnResult" parameterType="com.znsd.instapundit.param.SpecialColumnParam">
+        SELECT
+        *
+        FROM
+        tb_special_column
+        WHERE
+        spe_status = 1
+        ORDER BY
+        create_time DESC
+    </select>
+
+
+    <resultMap id="RoleVideoResult" type="com.znsd.instapundit.bean.VideoBean">
+        <id column="id" property="id"></id>
+        <result column="picture" property="upload_by.picture"></result>
+        <result column="username" property="upload_by.username"></result>
+        <result column="store_desc" property="upload_by.teacherApplyBean.store_desc"></result>
+        <result column="label" property="video_type.label"></result>
+        <result column="values" property="video_type.values"></result>
+        <result column="video_intro" property="video_intro"></result>
+        <result column="userId" property="upload_by.id"></result>
+        <result column="video_title" property="video_title"></result>
+        <result column="video_url" property="video_url"></result>
+        <result column="play_amount" property="play_amount"></result>
+        <result column="price" property="price"></result>
+        <result column="video_length" property="video_length"></result>
+        <result column="cover_img" property="cover_img"></result>
+        <result column="spe_desc" property="specialColumnBean.spe_desc"></result>
+        <result column="spe_title" property="specialColumnBean.spe_title"></result>
+        <result column="ScCover_img" property="specialColumnBean.cover_img"></result>
+        <result column="scId" property="specialColumnBean.id"></result>
+
+    </resultMap>
+
+
+    <select id="queryListMasterVideo" resultMap="RoleVideoResult">
+      SELECT
+            u.id userId,
+            u.username,
+            sd.values,
+            sd.label,
+            v.upload_by,
+            v.id,
+            v.video_title,
+            v.video_intro,
+            v.video_url,
+            v.price,
+            v.play_amount,
+            v.from_sc,
+            v.video_length,
+            v.cover_img
+            FROM
+            tb_user u
+            LEFT JOIN tb_video v ON u.id = v.upload_by
+            LEFT JOIN sys_dict sd ON sd.VALUES = v.video_type
+            AND sd.type = 'role'
+            WHERE
+            u.`status` = 1
+            and v.video_type=#{video_type}
+            and v.video_status = 1
+            AND v.check_status = 2
+            AND sd.`status`=1
+            ORDER BY v.play_amount DESC
+    </select>
+
+
+
+    <!--讲师的信息-->
+    <resultMap id="resultTeacher" type="com.znsd.instapundit.bean.AppUserBean">
+        <id column="id" property="id"></id>
+        <result column="picture" property="picture"></result>
+        <result column="username" property="username"></result>
+        <result column="store_desc" property="teacherApplyBean.store_desc"></result>
+    </resultMap>
+
+    <!--查询用户信息-->
+    <select id="userTeacher" resultMap="appUsers">
+        SELECT
+            u.id,
+            u.sex,
+            u.`password`,
+            u.status,
+            u.id_card,
+            u.email,
+            u.phone,
+            u.ro_id,
+            u.picture,
+            u.birthday,
+            u.member,
+            u.money,
+            u.member_time,
+            u.username,
+            u.created,
+            u.updated,
+           v.upload_by,
+            v.id,
+            v.video_title,
+            v.video_intro,
+            v.video_url,
+            v.price,
+            v.play_amount,
+            v.from_sc,
+            v.video_length,
+            v.cover_img,
+            d.type type,
+            d.values,
+            d.label,
+			ta.store_desc
+        FROM tb_user u
+        LEFT JOIN sys_dict d ON u.ro_id= d.values and d.type='role'
+				LEFT JOIN tb_teacher_apply ta ON u.id = ta.u_id
+				LEFT JOIN tb_video v ON ta.u_id = v.upload_by
+					WHERE
+			u.`status` = 1
+			and u.id =#{id}
+			and ta.check_status=2
+			GROUP BY u.id
+    </select>
+
+</mapper>

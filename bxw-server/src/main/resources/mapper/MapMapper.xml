@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.MapDao">
+    <resultMap id="MapResult" type="com.znsd.instapundit.bean.StoreBean">
+        <id property="id" column="id" />
+        <result property="sname" column="sname" />
+        <result property="simg" column="simg" />
+        <result property="contact" column="contact" />
+        <result property="store_desc" column="store_desc" />
+        <result property="status" column="status" />
+        <result property="open_time" column="open_time" />
+        <result property="click_amount" column="click_amount" />
+        <result property="ask_count" column="ask_count" />
+    </resultMap>
+
+    <select id="MapApplyList" resultMap="MapResult">
+        SELECT
+        sname,click_amount
+        FROM
+        tb_store
+        WHERE
+            <if test="status == null">
+                status = 1
+            </if>
+    </select>
+
+    <resultMap id="VideoResult" type="com.znsd.instapundit.bean.VideoBean">
+        <id property="id" column="id"/>
+        <result property="video_title" column="video_title"/>
+        <result property="play_amount" column="play_amount"/>
+        <result property="video_status" column="video_status"/>
+        <result property="video_type.label" column="label"/>
+        <result property="video_type.type" column="type"/>
+        <result property="video_type.values" column="values"/>
+    </resultMap>
+
+    <select id="MapVoideList" resultMap="VideoResult">
+      select play_amount,
+            video_title
+      from tb_video
+        WHERE
+        <if test="video_status == null">
+            video_status = 1
+        </if>
+      order by play_amount
+      desc limit 0,5
+    </select>
+
+    <resultMap id="VideoType" type="com.znsd.instapundit.bean.VideoBean">
+        <id property="id" column="id"/>
+        <result property="video_title" column="video_title"/>
+        <result property="play_amount" column="mun"/>
+        <result property="video_status" column="video_status"/>
+        <result property="video_type.label" column="sname"/>
+        <result property="video_type.type" column="type"/>
+        <result property="video_type.values" column="values"/>
+    </resultMap>
+
+    <select id="MapTypeList" resultMap="VideoType" >
+        SELECT SUM(t.play_amount) as mun  , d.label as sname
+        FROM tb_video t
+        LEFT JOIN sys_dict d on
+        t.video_type =d.`values`
+        WHERE   d.type = 'videotype'  GROUP BY d.label
+    </select>
+
+
+
+</mapper>

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znsd.instapundit.bxwserver.dao.RoleDao">
+
+	<resultMap id="roleResult" type="com.znsd.instapundit.bean.RoleBean">
+		<id property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="create_by" column="create_by"/>
+		<result property="update_by" column="update_by"/>
+		<result property="status" column="status"/>
+		<result property="create_time" column="create_time"/>
+		<result property="update_time" column="update_time"/>
+		<result property="createname" column="createname"/>
+		<result property="updatename" column="updatename"/>
+	</resultMap>
+
+	<select id="queryList" resultMap="roleResult">
+		SELECT
+			r.id,
+			r.`name`,
+			r.desc,
+			r.create_by,
+			r.update_by,
+			r.`status`,
+			r.allot,
+			r.create_time,
+			r.update_time,
+			u.nickname createname,
+			uu.nickname updatename
+		FROM
+			sys_role r
+			LEFT JOIN sys_user u on u.id = r.create_by
+		    LEFT JOIN sys_user uu on uu.id = r.update_by
+		<where>
+			<if test="name != null">
+				r.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="status != null">
+				AND r.status = #{status}
+			</if>
+			<if test="start != null and end != null">
+				AND r.update_time BETWEEN #{start} AND #{end}
+			</if>
+			<if test="start!=null and end == null">
+				AND r.update_time &gt;= #{start}
+			</if>
+			<if test="start==null and end != null">
+				AND r.update_time &lt;= #{end}
+			</if>
+		</where>
+		ORDER BY
+			r.create_time
+		DESC
+			LIMIT #{page},#{limit}
+	</select>
+
+	<select id="querySumCount" resultType="Integer" parameterType="com.znsd.instapundit.param.MenuParam">
+		select count(1) from sys_role r
+		where 1 = 1
+		<if test="name != null">
+			AND r.name LIKE CONCAT('%',#{name},'%')
+		</if>
+		<if test="status != null">
+			AND r.status = #{status}
+		</if>
+		<if test="start != null and end != null">
+			AND r.update_time BETWEEN #{start} AND #{end}
+		</if>
+		<if test="start!=null and end == null">
+			AND r.update_time &gt;= #{start}
+		</if>
+		<if test="start==null and end != null">
+			AND r.update_time &lt;= #{end}
+		</if>
+	</select>
+
+	<update id="deleteRoleById">
+		UPDATE
+		sys_role
+		SET
+		status = 2 ,
+		update_by = #{id},
+		update_time=NOW()
+		WHERE
+		id = #{ids}
+		<!--IN
+		<foreach collection="ids" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>-->
+	</update>
+
+	<select id="querySonMenuList" resultType="com.znsd.instapundit.bean.MenuBean">
+		SELECT
+			id,
+			`name`,
+			parent_id
+		FROM
+			sys_menu
+			where parent_id!=0
+	</select>
+
+	<insert id="addRole" useGeneratedKeys="true" keyProperty="id" parameterType="com.znsd.instapundit.bean.RoleBean">
+		INSERT INTO sys_role
+			  (
+			   	`name`, `create_by`, `update_by`,
+			   	 `status`, `create_time`, `update_time`, `desc`
+			  )
+		VALUES
+			 (
+			 	#{name}, #{create_by}, #{update_by}, #{status}, NOW(), NOW(), #{desc}
+			 )
+	</insert>
+	
+	<insert id="addRoleMenu">
+		INSERT INTO
+			`sys_role_menu`(`role_id`, `menu_id`)
+		VALUES
+		<foreach collection="ids" item="item" index="index" separator=",">
+			(#{id},#{item})
+		</foreach>
+	</insert>
+
+    <select id="checkRoleName" parameterType="String" resultType="com.znsd.instapundit.bean.RoleBean">
+        SELECT * FROM sys_role WHERE name = #{name}
+    </select>
+
+	<select id="queryMenuList" resultType="com.znsd.instapundit.bean.MenuBean" parameterType="com.znsd.instapundit.bean.MenuBean">
+       SELECT
+          *
+        FROM
+            sys_menu
+        WHERE
+            parent_id = 0
+            AND `status` = 1 and allot != 2
+    </select>
+
+    <resultMap id="roleMenu" type="com.znsd.instapundit.bean.RoleBean">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="desc" column="desc"/>
+        <collection property="menuList" ofType="com.znsd.instapundit.bean.MenuBean">
+            <id property="id" column="mid"/>
+            <result property="name" column="sname"/>
+            <result property="parent_id" column="parent_id"/>
+        </collection>
+    </resultMap>
+    <select id="queryRoleById" parameterType="Integer" resultMap="roleMenu">
+        SELECT
+            r.id,
+            r.`name`,
+            r.`desc`,
+            m.id mid,
+            m.`name` sname,
+            m.parent_id,
+            mm.`name` pname
+        FROM
+            sys_role r
+        LEFT JOIN sys_role_menu rm on r.id = rm.role_id
+        LEFT JOIN sys_menu m on m.id = rm.menu_id
+        LEFT JOIN sys_menu mm on m.parent_id = mm.id
+        WHERE
+	        r.id = #{id}
+    </select>
+
+	<update id="updateRoleById" parameterType="com.znsd.instapundit.bean.RoleBean">
+		UPDATE sys_role
+			<set>
+				<if test="name != null and name != ''">
+					name = #{name},
+				</if>
+				<if test="desc!=null and desc != ''">
+					desc = #{desc},
+				</if>
+				update_time = NOW(),
+				update_by = #{create_by}
+			</set>
+		  WHERE
+			  id = #{id}
+	</update>
+
+	<delete id="deleteRoleMenu" parameterType="Integer">
+		DELETE FROM sys_role_menu WHERE role_id = #{id}
+	</delete>
+
+	<insert id="updateRoleMenu">
+		INSERT INTO sys_role_menu(role_id, menu_id) VALUES
+		<foreach collection="ids" item="item" index="index" separator=",">
+			(#{id},#{item})
+		</foreach>
+	</insert>
+
+	<update id="updateAllot">
+		UPDATE sys_menu
+		SET allot = 1
+		WHERE
+			id in
+			<foreach collection="ids" item="item" index="index" separator="," open="(" close=")">
+				#{item}
+			</foreach>
+	</update>
+
+    <select id="getListAll" resultType="com.znsd.instapundit.bean.RoleBean">
+		SELECT * FROM sys_role WHERE  status = 1
+	</select>
+
+	<!--<update id="updateStatus">
+		UPDATE sys_role set status = 3 where id = #{id}
+	</update>-->
+</mapper>

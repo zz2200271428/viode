@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>会员充值</title>
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/dialog.js}"></script>
+
+</head>
+<body>
+
+<section class="aui-flexView">
+    <header class="aui-navBar aui-navBar-fixed">
+        <a th:href="@{/app/MoveUser}" class="aui-navBar-item">
+            <i class="icon icon-return"></i>
+        </a>
+        <div class="aui-center">
+            <span class="aui-center-title">会员充值</span>
+        </div>
+        <a href="javascript:;" class="aui-navBar-item">
+            <i class="icon icon-sys"></i>
+        </a>
+    </header>
+    <section class="aui-scrollView">
+        <div class="aui-flex aui-flex-gradual">
+            <div class="aui-flex-user">
+                <img th:src="${vip.picture}" alt="">
+                <span class="aui-flex-vip">
+                        
+                    </span>
+            </div>
+            <div class="aui-flex-box">
+                <h2 id="username" th:text="${vip.username}"></h2>
+                <p>
+                    <em th:text="${time}==1 ? '钻石会员' : '普通用户'"></em>
+                </p>
+            </div>
+            <div class="aui-flex-Member">
+                <p th:text="${time}==1 ? ${#dates.format(vip.member_time,'yyyy-MM-dd ')}:''"></p>
+            </div>
+        </div>
+
+        <div class="aui-flex-member-list">
+            <h2>钻石会员</h2>
+            <ul class="aui-cho-box">
+                <li class="aui-flex on">
+                    <div class="aui-flex-box">
+                        <h3>
+                            1个月
+                            <em class="aui-flex-box-tj">
+                                <img th:src="@{/img/icon-tj.png}" alt="">
+                            </em>
+                        </h3>
+                        <p>开通钻石会员享受VIP视频</p>
+                    </div>
+                    <div class="aui-original-thj">
+                        特惠价 <i>￥</i>
+                    </div>
+                    <i class="aui-price">30</i>
+                </li>
+
+                <li class="aui-flex">
+                    <div class="aui-flex-box">
+                        <h3>3个月</h3>
+                        <p>开通钻石会员享受VIP视频</p>
+                    </div>
+                    <div class="aui-original-thj">
+                        特惠价 <i>￥</i>
+                    </div>
+                    <i class="aui-price">88</i>
+                    <div class="aui-original-pic">
+                        ￥90
+                    </div>
+                </li>
+                <li class="aui-flex">
+                    <div class="aui-flex-box">
+                        <h3>12个月</h3>
+                        <p>开通钻石会员享受VIP视频</p>
+                    </div>
+                    <div class="aui-original-thj">
+                        特惠价 <i>￥</i>
+                    </div>
+                    <i class="aui-price">342 </i>
+                    <div class="aui-original-pic">
+                        ￥360
+                    </div>
+                </li>
+
+            </ul>
+            <div style="display:none">
+                <input name="" type="text" value="1" class="auiSks"/>
+            </div>
+            <p class="aui-total b-line">
+                需要支付： <span id="money">30</span>
+                元
+
+
+            </p>
+            <div class="chi">
+                <div class="aui-flex b-line" style="padding:15px 0">
+                    <div class="aui-flex-wx">
+                        <img th:src="@{/img/icon-wx.png}" alt="">
+                    </div>
+                    <div class="aui-flex-box aui-flex-box-clear">
+                        <h4>
+                            余额支付
+
+
+                            <em class="aui-flex-box-tj">
+                                <img th:src="@{/img/icon-tj.png}" alt="">
+                            </em>
+                        </h4>
+                        <p>亿万用户的选择，更快更安全</p>
+                    </div>
+                    <input type="hidden" name="uid" id="uid" th:value="${vip.id}">
+                    <div class="aui-payment-method">
+                        <label class="cell-right">
+                            <input type="radio" name="radio" value="wx" checked="checked">
+                            <i class="cell-radio-icon"></i>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="aui-tabBar aui-tabBar-fixed">
+        <button class="aui-tabBar-btn">续费会员卡,继续享受VIP视频</button>
+    </footer>
+</section>
+<script type="text/javascript">
+    $(document).ready(function (e) {
+        $(".aui-cho-box li").click(function () {
+
+            $(this).addClass("on").siblings().removeClass("on");
+            tola();
+        });
+    });
+
+    function tola() {
+        var $li = $(".aui-cho-box").children("li.on");
+        var money = $li.children("i").text();
+        var count = $(".auiSks").val();
+        $(".aui-total span").text(money * count);
+    }
+
+    $(".aui-tabBar-btn").on('click', function () {
+        var money = document.getElementById("money").innerHTML;
+        var month;
+        if (money==30){
+            month=1*30;
+        }
+        if (money==88){
+            month=3*30;
+        }
+        if (money==342){
+            month=12*30;
+        }
+        var uid = $("input:hidden[name='uid']").val();
+        var name = $("#username").html();
+        $.post("/pay/vip", {'money': money, 'id': uid,'sex':month,'username':name},function (date) {
+            window.location
+            var d = dialog({
+                content:date.msg
+            });
+            d.show();
+            setTimeout(function () {
+                d.close().remove();
+                location.replace("/pay/vipPage?id="+uid)
+            }, 2000);
+
+        });
+
+    })
+</script>
+</body>
+</html>
+<!--下面是无用代码-->
+
